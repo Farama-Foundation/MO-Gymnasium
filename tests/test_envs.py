@@ -18,3 +18,8 @@ def test_minecart():
     env = gym.make('minecart-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_mountaincar():
+    env = gym.make('mo-mountaincar-v0')
+    env = LinearReward(env)
+    check_env(env)
