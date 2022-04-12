@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import gym
 import numpy as np
 import pygame
@@ -63,6 +65,15 @@ class DeepSeaTreasure(gym.Env):
         return False
     
     def render(self, mode='human'):
+        # The size of a single grid square in pixels
+        pix_square_size = self.window_size / self.size
+        if self.window is None:
+            self.submarine_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/submarine.png')
+            self.submarine_img = pygame.transform.scale(self.submarine_img, (pix_square_size, pix_square_size))
+            self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
+            self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/treasure.png')
+            self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
+
         if self.window is None and mode == "human":
             pygame.init()
             pygame.display.init()
@@ -70,11 +81,9 @@ class DeepSeaTreasure(gym.Env):
         if self.clock is None and mode == "human":
             self.clock = pygame.time.Clock()
 
+        self.font = pygame.font.SysFont(None, 30)
         canvas = pygame.Surface((self.window_size, self.window_size))
-        canvas.fill((0, 0, 255))
-        pix_square_size = (
-            self.window_size / self.size
-        )  # The size of a single grid square in pixels
+        canvas.fill((0, 105, 148))
 
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):
@@ -83,26 +92,16 @@ class DeepSeaTreasure(gym.Env):
                         canvas,
                         (0, 0, 0),
                         pygame.Rect(
-                            pix_square_size * np.array([j,i]),
+                            pix_square_size * np.array([j,i]) + 0.5,
                             (pix_square_size, pix_square_size),
                         ),
                     )
                 elif self.sea_map[i,j] != 0:
-                   pygame.draw.rect(
-                        canvas,
-                        (120, 120, 120),
-                        pygame.Rect(
-                            pix_square_size * np.array([j,i]),
-                            (pix_square_size, pix_square_size),
-                        ),
-                    ) 
-
-        pygame.draw.circle(
-            canvas,
-            (234, 221, 202),
-            (self.current_state[::-1] + 0.5) * pix_square_size,
-            pix_square_size / 3,
-        )
+                   canvas.blit(self.treasure_img, np.array([j,i]) * pix_square_size)
+                   img = self.font.render(str(self.sea_map[i,j]), True, (0,255,0))
+                   canvas.blit(img, np.array([j,i]) * pix_square_size + np.array([5, 20]))
+ 
+        canvas.blit(self.submarine_img, self.current_state[::-1] * pix_square_size)
 
         for x in range(self.size + 1):
             pygame.draw.line(
@@ -110,14 +109,14 @@ class DeepSeaTreasure(gym.Env):
                 0,
                 (0, pix_square_size * x),
                 (self.window_size, pix_square_size * x),
-                width=3,
+                width=2,
             )
             pygame.draw.line(
                 canvas,
                 0,
                 (pix_square_size * x, 0),
                 (pix_square_size * x, self.window_size),
-                width=3,
+                width=2,
             )
 
         if mode == "human":
