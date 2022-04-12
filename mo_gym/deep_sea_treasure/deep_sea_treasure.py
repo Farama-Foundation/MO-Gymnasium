@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+import pygame
 from gym.spaces import Box, Discrete
 
 
@@ -10,7 +11,14 @@ class DeepSeaTreasure(gym.Env):
 
     CCS weights: [1,0], [0.7,0.3], [0.67,0.33], [0.6,0.4], [0.56,0.44], [0.52,0.48], [0.5,0.5], [0.4,0.6], [0.3,0.7], [0, 1]
     """
+
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+
     def __init__(self, float_state=False):
+        self.size = 11
+        self.window_size = 512
+        self.window = None
+        self.clock = None
 
         self.float_state = float_state
 
@@ -54,8 +62,77 @@ class DeepSeaTreasure(gym.Env):
                 return True
         return False
     
-    def render(self, mode=None):
-        pass
+    def render(self, mode='human'):
+        if self.window is None and mode == "human":
+            pygame.init()
+            pygame.display.init()
+            self.window = pygame.display.set_mode((self.window_size, self.window_size))
+        if self.clock is None and mode == "human":
+            self.clock = pygame.time.Clock()
+
+        canvas = pygame.Surface((self.window_size, self.window_size))
+        canvas.fill((0, 0, 255))
+        pix_square_size = (
+            self.window_size / self.size
+        )  # The size of a single grid square in pixels
+
+        for i in range(self.sea_map.shape[0]):
+            for j in range(self.sea_map.shape[1]):
+                if self.sea_map[i,j] == -10:
+                    pygame.draw.rect(
+                        canvas,
+                        (0, 0, 0),
+                        pygame.Rect(
+                            pix_square_size * np.array([j,i]),
+                            (pix_square_size, pix_square_size),
+                        ),
+                    )
+                elif self.sea_map[i,j] != 0:
+                   pygame.draw.rect(
+                        canvas,
+                        (120, 120, 120),
+                        pygame.Rect(
+                            pix_square_size * np.array([j,i]),
+                            (pix_square_size, pix_square_size),
+                        ),
+                    ) 
+
+        pygame.draw.circle(
+            canvas,
+            (234, 221, 202),
+            (self.current_state[::-1] + 0.5) * pix_square_size,
+            pix_square_size / 3,
+        )
+
+        for x in range(self.size + 1):
+            pygame.draw.line(
+                canvas,
+                0,
+                (0, pix_square_size * x),
+                (self.window_size, pix_square_size * x),
+                width=3,
+            )
+            pygame.draw.line(
+                canvas,
+                0,
+                (pix_square_size * x, 0),
+                (pix_square_size * x, self.window_size),
+                width=3,
+            )
+
+        if mode == "human":
+            # The following line copies our drawings from `canvas` to the visible window
+            self.window.blit(canvas, canvas.get_rect())
+            pygame.event.pump()
+            pygame.display.update()
+
+            # We need to ensure that human-rendering occurs at the predefined framerate.
+            # The following line will automatically add a delay to keep the framerate stable.
+            self.clock.tick(self.metadata["render_fps"])
+        else:  # rgb_array
+            return np.transpose(
+                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
+            )
 
     def get_state(self):
         if self.float_state:
@@ -64,7 +141,9 @@ class DeepSeaTreasure(gym.Env):
             state = self.current_state.copy()
         return state
 
-    def reset(self, **kwargs):
+    def reset(self, seed=None, **kwargs):
+        super().reset(seed=seed)
+
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0
         state = self.get_state()
@@ -88,3 +167,18 @@ class DeepSeaTreasure(gym.Env):
         state = self.get_state()
 
         return state, vec_reward, terminal, {}
+
+    def close(self):
+        if self.window is not None:
+            pygame.display.quit()
+            pygame.quit()
+
+
+if __name__ == '__main__':
+
+    env = DeepSeaTreasure()
+    done = False
+    env.reset()
+    while not done:
+        env.render()
+        obs, r, done, info = env.step(env.action_space.sample())
