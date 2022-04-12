@@ -15,6 +15,7 @@ setup(
     install_requires=[
         "gym",
         "numpy",
+        "pygame"
     ],
     extras_require=extras,
     tests_require=["pytest", "mock"],
