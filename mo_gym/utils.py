@@ -8,7 +8,9 @@ ActType = TypeVar("ActType")
 
 
 class LinearReward(gym.Wrapper):
-
+    """Wrapper for Multi-Objective Envs
+    Makes the env return a scalar reward, which is the the dot-product between the reward vector and the weight vector.
+    """
     def __init__(self, env: gym.Env, weight: np.ndarray = None):
         super().__init__(env)
         if weight is None:

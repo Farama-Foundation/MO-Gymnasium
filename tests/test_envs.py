@@ -13,3 +13,8 @@ def test_four_room():
     env = gym.make('four-room-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_minecart():
+    env = gym.make('minecart-v0')
+    env = LinearReward(env)
+    check_env(env)
