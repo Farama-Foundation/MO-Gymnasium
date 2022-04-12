@@ -8,3 +8,8 @@ def test_deep_sea_treasure():
     env = gym.make('deep-sea-treasure-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_four_room():
+    env = gym.make('four-room-v0')
+    env = LinearReward(env)
+    check_env(env)
