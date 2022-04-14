@@ -15,7 +15,7 @@ def test_four_room():
     check_env(env)
 
 def test_minecart():
-    env = gym.make('minecart-v0', image_observation=True)
+    env = gym.make('minecart-v0')
     env = LinearReward(env)
     check_env(env)
 

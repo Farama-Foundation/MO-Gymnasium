@@ -3,8 +3,6 @@ from __future__ import print_function
 import itertools
 import json
 import math
-import random
-import sys
 from math import ceil
 from pathlib import Path
 
@@ -494,7 +492,7 @@ class Minecart(gym.Env):
                 # Cart left base
                 self.cart.departed = True
 
-        if not self.end and change:
+        if change and self.image_observation:
             self.render_pygame()
 
         return self.get_state(change), reward, self.end, {}
@@ -505,7 +503,6 @@ class Minecart(gym.Env):
         Returns:
             bool -- True if something was mined
         """
-
         if self.cart.speed < EPS_SPEED:
             # Get closest mine
             mine = min(self.mines, key=lambda mine: mine.distance(self.cart))
@@ -534,7 +531,6 @@ class Minecart(gym.Env):
         Returns:
             np.array -- array of pixels, with shape (width, height, channels)
         """
-
         if update:
             self.pixels = pygame.surfarray.array3d(self.screen)
 
@@ -575,10 +571,11 @@ class Minecart(gym.Env):
         """
         super().reset(seed=seed)
 
-        if self.screen is None:
+        if self.screen is None and self.image_observation:
             self.render(mode='rgb_array') # init pygame
 
-        self.render_pygame()
+        if self.image_observation:
+            self.render_pygame()
  
         self.cart.content = np.zeros(self.ore_cnt)
         self.cart.pos = np.array(HOME_POS)
@@ -612,6 +609,9 @@ class Minecart(gym.Env):
             self.cart_image = pygame.transform.rotozoom(
                 pygame.image.load(CART_IMG).convert_alpha(), 0,
                 CART_SCALE)
+
+        if not self.image_observation:
+            self.render_pygame()  # if the obs is not an image, then step would not have rendered the screen
 
         if mode == 'human':
             self.clock.tick(FPS)
