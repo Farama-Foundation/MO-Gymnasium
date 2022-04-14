@@ -199,7 +199,7 @@ class FourRoom(gym.Env):
                         ),
                     )
                 elif self.maze[i,j] == '2':
-                    pygame.draw.polygon(canvas, GREEN, [(pos+0.5)*pix_square_size, (pos+np.array([0.,1.]))*pix_square_size, (pos+1.)*pix_square_size])
+                    pygame.draw.polygon(canvas, GREEN, [(pos+np.array([0.5,0.0]))*pix_square_size, (pos+np.array([0.,1.]))*pix_square_size, (pos+1.)*pix_square_size])
                 elif self.maze[i,j] == '3':
                     pygame.draw.circle(canvas, RED,
                         (pos + 0.5) * pix_square_size,
