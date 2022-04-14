@@ -205,7 +205,7 @@ class Minecart(gym.Env):
         self.image_observation = image_observation
         if self.image_observation:
             shape = (WIDTH, HEIGHT, 3)
-            self.observation_space = Box(low=np.zeros(shape), high=255*np.ones((WIDTH, HEIGHT, 3)), dtype=np.int32)
+            self.observation_space = Box(low=np.zeros(shape), high=255*np.ones((WIDTH, HEIGHT, 3)), dtype=np.uint8)
         else:
             self.observation_space = Box(np.zeros(7), np.ones(7), dtype=np.float32)
         
