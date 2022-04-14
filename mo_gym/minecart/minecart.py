@@ -177,6 +177,7 @@ class Minecart(gym.Env):
                  config=str(Path(__file__).parent.absolute()) + '/mine_config.json'):
 
         self.screen = None
+        self.last_render_mode_used = None
 
         with open(config) as f:
             data = json.load(f)
@@ -204,12 +205,12 @@ class Minecart(gym.Env):
         self.image_observation = image_observation
         if self.image_observation:
             shape = (WIDTH, HEIGHT, 3)
-            self.observation_space = Box(low=np.zeros(shape), high=np.ones((WIDTH, HEIGHT, 3)))
+            self.observation_space = Box(low=np.zeros(shape), high=255*np.ones((WIDTH, HEIGHT, 3)), dtype=np.int32)
         else:
             self.observation_space = Box(np.zeros(7), np.ones(7), dtype=np.float32)
         
         self.action_space = Discrete(6)
-        self.reward_space = Box(low=-1, high=1, shape=(self.ore_cnt + 1,))
+        self.reward_space = Box(low=-1, high=self.capacity, shape=(self.ore_cnt + 1,))
 
     def obj_cnt(self):
         return self.ore_cnt + 1
@@ -426,7 +427,7 @@ class Minecart(gym.Env):
                 mine.pos[1] * (1 - 2 * MARGIN)) * HEIGHT + MARGIN * HEIGHT
             self.mine_rects.append(mine_sprite.rect)
 
-    def step(self, action, frame_skip=4, incremental_frame_skip=True, render=False):
+    def step(self, action, frame_skip=4, incremental_frame_skip=True):
         """Perform the given action `frame_skip` times
          ["Mine", "Left", "Right", "Accelerate", "Brake", "None"]
         Arguments:
@@ -493,8 +494,8 @@ class Minecart(gym.Env):
                 # Cart left base
                 self.cart.departed = True
 
-        if not self.end and change and render:
-            self.render()
+        if not self.end and change:
+            self.render_pygame()
 
         return self.get_state(change), reward, self.end, {}
 
@@ -574,6 +575,11 @@ class Minecart(gym.Env):
         """
         super().reset(seed=seed)
 
+        if self.screen is None:
+            self.render(mode='rgb_array') # init pygame
+
+        self.render_pygame()
+ 
         self.cart.content = np.zeros(self.ore_cnt)
         self.cart.pos = np.array(HOME_POS)
         self.cart.speed = 0
@@ -592,9 +598,10 @@ class Minecart(gym.Env):
         return string
 
     def render(self, mode='human'):
-        if self.screen is None:
+        if self.screen is None or self.last_render_mode_used != mode:
+            self.last_render_mode_used = mode
             pygame.init()
-            self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+            self.screen = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN if mode=='rgb_array' else 0)
             self.clock = pygame.time.Clock()
 
             self.initialize_mines()
@@ -606,7 +613,6 @@ class Minecart(gym.Env):
                 pygame.image.load(CART_IMG).convert_alpha(), 0,
                 CART_SCALE)
 
-        self.render_pygame()
         if mode == 'human':
             self.clock.tick(FPS)
             pygame.display.update()
@@ -617,7 +623,6 @@ class Minecart(gym.Env):
             return tmp_arr
 
     def render_pygame(self):
-
         pygame.event.get()
 
         self.mine_sprites.update()
@@ -740,7 +745,7 @@ def pareto_filter(costs, minimize=True):
 
 
 if __name__ == '__main__':
-    env = Minecart()
+    env = Minecart(image_observation=True)
     done = False
     env.reset()
     while True:
