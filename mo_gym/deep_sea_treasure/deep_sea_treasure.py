@@ -92,13 +92,13 @@ class DeepSeaTreasure(gym.Env):
                         canvas,
                         (0, 0, 0),
                         pygame.Rect(
-                            pix_square_size * np.array([j,i]) + 0.5,
+                            pix_square_size * np.array([j,i]) + 0.6,
                             (pix_square_size, pix_square_size),
                         ),
                     )
                 elif self.sea_map[i,j] != 0:
                    canvas.blit(self.treasure_img, np.array([j,i]) * pix_square_size)
-                   img = self.font.render(str(self.sea_map[i,j]), True, (0,255,0))
+                   img = self.font.render(str(self.sea_map[i,j]), True, (255, 255, 255))
                    canvas.blit(img, np.array([j,i]) * pix_square_size + np.array([5, 20]))
  
         canvas.blit(self.submarine_img, self.current_state[::-1] * pix_square_size)
@@ -109,14 +109,14 @@ class DeepSeaTreasure(gym.Env):
                 0,
                 (0, pix_square_size * x),
                 (self.window_size, pix_square_size * x),
-                width=2,
+                width=1,
             )
             pygame.draw.line(
                 canvas,
                 0,
                 (pix_square_size * x, 0),
                 (pix_square_size * x, self.window_size),
-                width=2,
+                width=1,
             )
 
         if mode == "human":
@@ -178,6 +178,8 @@ if __name__ == '__main__':
     env = DeepSeaTreasure()
     done = False
     env.reset()
-    while not done:
+    while True:
         env.render()
         obs, r, done, info = env.step(env.action_space.sample())
+        if done:
+            env.reset()
