@@ -1,4 +1,4 @@
-![tests](https://github.com/LucasAlegre/mo-gym/actions/workflows/test.yml/badge.svg)
+![tests](https://github.com/LucasAlegre/mo-gym/workflows/Python%20tests/badge.svg)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/LucasAlegre/mo-gym/blob/main/LICENSE)
 
