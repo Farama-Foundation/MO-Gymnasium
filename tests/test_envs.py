@@ -28,3 +28,8 @@ def test_resource_gathering():
     env = gym.make('resource-gathering-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_mario():
+    env = gym.make('mo-supermario-v0')
+    env = LinearReward(env)
+    check_env(env)

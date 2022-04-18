@@ -1,7 +1,12 @@
 from setuptools import find_packages, setup
 
 # Environment-specific dependencies.
-extras = {}
+extras = {
+    "mario": ["nes-py", "gym-super-mario-bros"],
+    "minecart" : ["scipy"]
+}
+extras["all"] = extras["mario"] + extras["minecart"]
+
 
 setup(
     name="mo-gym",

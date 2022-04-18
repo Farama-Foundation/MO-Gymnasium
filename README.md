@@ -1,4 +1,4 @@
-[![tests](https://github.com/LucasAlegre/mo-gym/actions/workflows/test.yml/badge.svg)](https://github.com/LucasAlegre/mo-gym/actions/workflows/test.yml)
+![tests](https://github.com/LucasAlegre/mo-gym/actions/workflows/test.yml/badge.svg)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/LucasAlegre/mo-gym/blob/main/LICENSE)
 
@@ -39,6 +39,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 |  `four-room-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/four-room.png" width="200px"> | Discrete / Discrete |  `[item1, item2, item3]` | Agent must collect three different types of items in the map and reach the goal.|
 |  `mo-mountaincar-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/mo-mountaincar.png" width="200px"> | Continuous / Discrete |  `[time_penalty, reverse_penalty, forward_penalty]` | Classic Mountain Car env, but with extra penalties for the forward and reverse actions. From [Vamplew et al. 2011](https://www.researchgate.net/publication/220343783_Empirical_evaluation_methods_for_multiobjective_reinforcement_learning_algorithms). |
 |  `minecart-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/minecart.png" width="200px"> | Continuous or Image / Discrete |  `[ore1, ore2, fuel]`  | Agent must collect two types of ores and minimize fuel consumption. From [Abels et al. 2019](https://arxiv.org/abs/1809.07803v2). |
+|  `mo-supermario-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/mario.png" width="200px"> | Image / Discrete |  `[x_pos, time, death, coin, enemy]`  | Multi-objective version of [SuperMarioBrosEnv](https://github.com/Kautenja/gym-super-mario-bros). Objectives are defined similarly as in [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf). |
 
 
 ## Citing
@@ -59,5 +60,5 @@ If you use this repository in your work, please cite:
 ## Acknowledgments
 
 * The `minecart-v0` env is a refactor of https://github.com/axelabels/DynMORL.
-* The `deep-sea-treasure-v0` is based on https://github.com/RunzheYang/MORL.
+* The `deep-sea-treasure-v0` and `mo-supermario-v0` are based on https://github.com/RunzheYang/MORL.
 * The `four-room-v0` is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.
