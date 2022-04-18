@@ -6,7 +6,7 @@ from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 from gym_super_mario_bros import SuperMarioBrosEnv
 import gym_super_mario_bros
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import mo_gym
 
