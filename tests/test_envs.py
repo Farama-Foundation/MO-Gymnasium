@@ -33,3 +33,8 @@ def test_mario():
     env = gym.make('mo-supermario-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_reacher():
+    env = gym.make('mo-reacher-v0')
+    env = LinearReward(env)
+    check_env(env)

@@ -4,4 +4,5 @@ import mo_gym.minecart
 import mo_gym.mountain_car
 import mo_gym.resource_gathering
 import mo_gym.mario
+import mo_gym.reacher
 from mo_gym.utils import *
