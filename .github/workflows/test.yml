@@ -21,6 +21,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pytest
+        git clone https://github.com/benelot/pybullet-gym.git
+        pip install -e pybullet-gym
         pip install -e .[all]
     - name: Full Python tests
       run: |
