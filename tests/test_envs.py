@@ -38,3 +38,8 @@ def test_reacher():
     env = gym.make('mo-reacher-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_breakable_bottles():
+    env = gym.make('breakable-bottles-v0')
+    env = LinearReward(env)
+    check_env(env)
