@@ -10,16 +10,12 @@ class BreakableBottles(Env):
     RIGHT = 1
     PICKUP = 2
 
-    def __init__(self, size=5, prob_drop=0.1, time_penalty=-1, dropped_bottle_penalty=-50, bottle_reward=25, unbreakable_bottles=False, seed=None):
+    def __init__(self, size=5, prob_drop=0.1, time_penalty=-1, bottle_reward=25, unbreakable_bottles=False, seed=None):
         # settings
         self.prob_drop = prob_drop
         self.time_penalty = time_penalty
-        self.dropped_bottle_penalty = dropped_bottle_penalty
         self.bottle_reward = bottle_reward
         self.unbreakable_bottles = False 
-
-        # performance measure
-        self.r_star = 0
 
         # properties
         self.num_objectives = 3
@@ -90,12 +86,6 @@ class BreakableBottles(Env):
                 self.bottles_dropped[self.location - 1] -= 1
                 # add bottle to agent's inventory
                 self.bottles_carrying += 1
-
-        # R* = sum time_step_penalty + delivery_reward + dropped_bottle_penalty
-        self.r_star += sum(reward)
-        if terminal:
-            self.r_star += self.dropped_bottle_penalty*sum(np.array(self.bottles_dropped) > 0)
-        
 
         # next observation
         observation = self._get_obs()
