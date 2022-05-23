@@ -21,7 +21,7 @@ class ResourceGathering(gym.Env):
         self.window = None
         self.clock = None
 
-        # The map of the deep sea treasure (convex version)
+        # The map of the resource gathering environment
         self.map = np.array([
             [' ', ' ', 'R1', 'E2', ' '],
             [' ', ' ', 'E1', ' ', 'R2'],
@@ -39,7 +39,7 @@ class ResourceGathering(gym.Env):
             3: np.array([0, 1], dtype=np.int32)  # right
         }
 
-        # state space specification: 2-dimensional discrete box
+        # state space specification: 4-dimensional discrete box
         self.observation_space = Box(low=0.0, high=5.0, shape=(4,), dtype=np.int32)
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
@@ -126,7 +126,7 @@ class ResourceGathering(gym.Env):
         return state
 
     def reset(self, seed=None, **kwargs):
-        super().reset(seed=seed)
+        #super().reset(seed=seed)
 
         self.current_pos = self.initial_pos
         self.has_gem = 0
