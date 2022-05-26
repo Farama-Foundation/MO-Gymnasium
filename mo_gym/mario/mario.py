@@ -22,13 +22,15 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         self.single_stage = True
         self.done_when_dead = True
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
         self.coin = 0
         self.x_pos = 0
         self.time = 0
         self.score = 0
         self.stage_bonus = 0
         self.lives = 2
+        if return_info:
+            return super().reset(), {}
         return super().reset()
 
     def step(self, action):

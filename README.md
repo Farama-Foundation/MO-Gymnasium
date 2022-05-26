@@ -6,7 +6,7 @@
 
 Gym environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gym's API](https://github.com/openai/gym), but return vectorized rewards as numpy arrays.
 
-For details on multi-objective MPDS (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
+For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 
 ## Install
 ```bash

@@ -88,9 +88,11 @@ class FourRoom(gym.Env):
         s = [element for tupl in state for element in tupl]
         return np.array(s, dtype=np.int32)
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
         self.state = (random.choice(self.initial), tuple(0 for _ in range(len(self.shape_ids))))
+        if return_info:
+            return self.state_to_array(self.state), {}
         return self.state_to_array(self.state)
     
     def step(self, action): 

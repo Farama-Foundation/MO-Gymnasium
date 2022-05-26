@@ -563,7 +563,7 @@ class Minecart(gym.Env):
             "pixels": self.get_pixels(update)
         } """
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
         """Resets the environment to the start state
 
         Returns:
@@ -583,6 +583,8 @@ class Minecart(gym.Env):
         self.cart.angle = 45
         self.cart.departed = False
         self.end = False
+        if return_info:
+            return self.get_state(), {}
         return self.get_state()
 
     def __str__(self):

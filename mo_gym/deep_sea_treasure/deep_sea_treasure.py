@@ -140,12 +140,14 @@ class DeepSeaTreasure(gym.Env):
             state = self.current_state.copy()
         return state
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0
         state = self.get_state()
+        if return_info:
+            return state, {}
         return state
 
     def step(self, action):
