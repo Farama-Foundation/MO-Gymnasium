@@ -38,3 +38,8 @@ def test_reacher():
     env = gym.make('mo-reacher-v0')
     env = LinearReward(env)
     check_env(env)
+
+def test_halfcheetah():
+    env = gym.make('mo-halfcheetah-v4')
+    env = LinearReward(env)
+    check_env(env)
