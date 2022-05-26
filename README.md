@@ -42,6 +42,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 |  `minecart-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/minecart.png" width="200px"> | Continuous or Image / Discrete |  `[ore1, ore2, fuel]`  | Agent must collect two types of ores and minimize fuel consumption. From [Abels et al. 2019](https://arxiv.org/abs/1809.07803v2). |
 |  `mo-supermario-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/mario.png" width="200px"> | Image / Discrete |  `[x_pos, time, death, coin, enemy]`  | Multi-objective version of [SuperMarioBrosEnv](https://github.com/Kautenja/gym-super-mario-bros). Objectives are defined similarly as in [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf). |
 |  `mo-halfcheetah-v4` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/cheetah.png" width="200px"> | Continuous / Continuous |  `[velocity, energy]`  | Multi-objective version of [HalfCheetah-v4](https://www.gymlibrary.ml/environments/mujoco/half_cheetah/) env. Similar to [Xu et al. 2020](https://github.com/mit-gfx/PGMORL). |
+|  `mo-hopper-v4` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/hopper.png" width="200px"> | Continuous / Continuous |  `[velocity, height, energy]`  | Multi-objective version of [Hopper-v4](https://www.gymlibrary.ml/environments/mujoco/hopper/) env. |
 
 ## Citing
 

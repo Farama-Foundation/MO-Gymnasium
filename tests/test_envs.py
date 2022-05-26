@@ -43,3 +43,8 @@ def test_halfcheetah():
     env = gym.make('mo-halfcheetah-v4')
     env = LinearReward(env)
     check_env(env)
+
+def test_hopper():
+    env = gym.make('mo-hopper-v4')
+    env = LinearReward(env)
+    check_env(env)
