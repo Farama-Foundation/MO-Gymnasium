@@ -91,6 +91,8 @@ class BreakableBottles(Env):
         observation = self._get_obs()
 
         # calculate potential-based low impact measure
+        #r2_t = phi(S_t) - phi(S_t-1)
+        #sum_t(r2_t) = 0 -> no impact
         reward[2] = self.potential(observation) - self.potential(observation_old)
         info = {}
         return observation, reward, terminal, info
