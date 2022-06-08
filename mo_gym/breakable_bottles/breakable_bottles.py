@@ -1,5 +1,5 @@
 from gym import Env
-from gym.spaces import Dict, Discrete, MultiBinary
+from gym.spaces import Dict, Discrete, MultiBinary, Box
 import numpy as np
 
 class BreakableBottles(Env):
@@ -40,6 +40,9 @@ class BreakableBottles(Env):
 
         self.action_space = Discrete(3) # LEFT, RIGHT, PICKUP
         self.num_actions = 3
+
+        # reward space
+        self.reward_space = Box(np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward*2, 0]))
 
     def step(self, action):
         observation_old = self._get_obs()
