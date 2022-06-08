@@ -59,10 +59,9 @@ class ReacherBulletEnv(BaseBulletEnv):
         y *= 0.5
         self.camera.move_and_look_at(0.3, 0.3, 0.3, x, y, z)
     
-    def reset(self, return_info=False, **kwargs):
-        if return_info:
-            return super().reset(), {}
-        return super().reset()
+    def reset(self, seed=None, return_info=False, **kwargs):
+        self.np_random.seed(seed)
+        return (super().reset(), {}) if return_info else super().reset()
 
 
 class ReacherRobot(MJCFBasedRobot):

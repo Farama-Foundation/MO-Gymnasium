@@ -7,8 +7,8 @@ from gym.envs.classic_control.mountain_car import MountainCarEnv
 
 class MOMountainCar(MountainCarEnv):
 
-    def __init__(self, goal_velocity=0):
-        super().__init__(goal_velocity)
+    def __init__(self, render_mode=None, goal_velocity=0):
+        super().__init__(render_mode, goal_velocity)
 
         self.reward_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
     

@@ -237,7 +237,7 @@ FRUITS = {'6':
 class FruitTreeEnv(gym.Env):
 
     def __init__(self, depth=6):
-        assert depth in [5,6,7], "Depth must be 5, 6 or 7."
+        assert depth in [5, 6, 7], "Depth must be 5, 6 or 7."
         self.reward_dim = 6
         self.tree_depth = depth # zero based depth
         branches = np.zeros((int(2 ** self.tree_depth - 1), self.reward_dim))
@@ -270,11 +270,11 @@ class FruitTreeEnv(gym.Env):
 
     def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
+        self.np_random.seed(seed)
+
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.terminal = False
-        if return_info:
-            return self.current_state.copy(), {}
-        return self.current_state.copy()
+        return (self.current_state.copy(), {}) if return_info else self.current_state.copy()
 
     def step(self, action):
         direction = {

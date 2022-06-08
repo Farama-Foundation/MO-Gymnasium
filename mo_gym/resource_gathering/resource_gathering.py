@@ -127,15 +127,14 @@ class ResourceGathering(gym.Env):
 
     def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
+        self.np_random.seed(seed)
 
         self.current_pos = self.initial_pos
         self.has_gem = 0
         self.has_gold = 0
         self.step_count = 0.0
         state = self.get_state()
-        if return_info:
-            return state, {}
-        return state
+        return (state, {}) if return_info else state
 
     def step(self, action):
         next_pos = self.current_pos + self.dir[action]

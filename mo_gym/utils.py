@@ -7,6 +7,11 @@ ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
 
+def make(env_name: str, disable_env_checker: bool = True, **kwargs) -> gym.Env:
+    """ Disable env checker, as it requires the reward to be a scalar."""
+    return gym.make(env_name, disable_env_checker=disable_env_checker, **kwargs)
+
+
 class LinearReward(gym.Wrapper):
     """Wrapper for Multi-Objective Envs
     Makes the env return a scalar reward, which is the the dot-product between the reward vector and the weight vector.

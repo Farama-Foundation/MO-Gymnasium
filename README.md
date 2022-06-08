@@ -21,7 +21,7 @@ pip install -e .
 import gym
 import mo_gym
 
-env = gym.make('minecart-v0') # It follows the original gym's API ...
+env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
 
 obs = env.reset()
 next_obs, vector_reward, done, info = env.step(your_agent.act(obs))  # but vector_reward is a numpy array!

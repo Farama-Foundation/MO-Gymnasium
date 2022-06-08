@@ -90,10 +90,10 @@ class FourRoom(gym.Env):
 
     def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
+        self.np_random.seed(seed)
+
         self.state = (random.choice(self.initial), tuple(0 for _ in range(len(self.shape_ids))))
-        if return_info:
-            return self.state_to_array(self.state), {}
-        return self.state_to_array(self.state)
+        return (self.state_to_array(self.state), {}) if return_info else self.state_to_array(self.state)
     
     def step(self, action): 
         old_state = self.state

@@ -570,6 +570,7 @@ class Minecart(gym.Env):
             [type] -- [description]
         """
         super().reset(seed=seed)
+        self.np_random.seed(seed)
 
         if self.screen is None and self.image_observation:
             self.render(mode='rgb_array') # init pygame
@@ -583,9 +584,7 @@ class Minecart(gym.Env):
         self.cart.angle = 45
         self.cart.departed = False
         self.end = False
-        if return_info:
-            return self.get_state(), {}
-        return self.get_state()
+        return (self.get_state(), {}) if return_info else self.get_state()
 
     def __str__(self):
         string = "Completed: {} ".format(self.end)
