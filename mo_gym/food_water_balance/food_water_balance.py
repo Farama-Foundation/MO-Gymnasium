@@ -9,12 +9,16 @@ class FoodWaterBalance(Env):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, num_states=3, gamma=0.9, gamma_past=0.99, max_steps=1e5, use_more=False):
+    def __init__(self, num_states=3, 
+                #gamma=0.9,
+                gamma_past=0.99,
+                max_steps=1e5, 
+                use_more=False):
         self.num_observations = num_states
         self.num_actions = 2
         self.num_objectives = 2
 
-        self.gamma = gamma
+        #self.gamma = gamma
         self.gamma_past = gamma_past
         self.max_steps = max_steps
         self.use_more = use_more
@@ -27,15 +31,16 @@ class FoodWaterBalance(Env):
             self.more_weights = 0.5*np.ones(self.num_objectives)
 
         # past cumulative reward
-        self.cum_reward = np.zeros(self.num_objectives)
+        #self.cum_reward = np.zeros(self.num_objectives)
 
         # define spaces
         self.reward_space = spaces.Box(np.array([-0.018, -0.09]), np.array([0.1, 0.02]))
-        self.min_cum_reward = self.reward_space.low/(1 - self.gamma)
-        self.max_cum_reward = self.reward_space.high/(1 - self.gamma)
+        #self.min_cum_reward = self.reward_space.low/(1 - self.gamma)
+        #self.max_cum_reward = self.reward_space.high/(1 - self.gamma)
         self.action_space = spaces.Discrete(2)
-        self.observation_space = spaces.Dict({"discrete_state": spaces.Discrete(3),
-                                            "cum_rewards": spaces.Box(self.min_cum_reward, self.max_cum_reward)})
+        self.observation_space = spaces.Discrete(3) 
+                                #spaces.Dict({"discrete_state": spaces.Discrete(3),
+                                #             "cum_rewards": spaces.Box(self.min_cum_reward, self.max_cum_reward)})
 
         self.step_counter = 0
 
@@ -44,7 +49,7 @@ class FoodWaterBalance(Env):
         self.cum_reward = np.zeros(self.num_objectives)
         if self.use_more:
             self.more_weights = 0.5*np.ones(self.num_objectives)
-        return 0, self.cum_reward
+        return 0#, self.cum_reward
 
     def step(self, action):
         # see figure 1 in Rolf, M. The Need for MORE: Need Systems as Non-Linear Multi-Objective Reinforcement Learning.
@@ -75,26 +80,28 @@ class FoodWaterBalance(Env):
 
         # update cumulative reward
         #self.cum_reward += self.gamma**self.step_counter*reward
-        self.cum_reward = self.gamma_past*self.cum_reward + reward
+        #self.cum_reward = self.gamma_past*self.cum_reward + reward
 
         terminal = False
         self.step_counter += 1
         if self.step_counter >= self.max_steps:
             terminal = True
 
-        return (self.state, self.cum_reward), reward, terminal, {}
+        #return (self.state, self.cum_reward), reward, terminal, {}
+        return self.state, reward, terminal, {}
 
     def _get_obs(self):
-        return {"discrete_state": self.state,
-                "cum_reward": self.cum_reward
-                }
+        return self.state 
+                #{"discrete_state": self.state,
+                #"cum_reward": self.cum_reward
+                #}
     
     def render(self, mode="human"):
         if mode == 'rgb_array':
-            return np.array([self.state, *self.cum_reward.tolist()]) # return RGB frame suitable for video
+            return np.array(self.state)#, *self.cum_reward.tolist()]) # return RGB frame suitable for video
         elif mode == 'human':
             print("-----")
-            print(f"step: {self.step_counter}, state: {self.state}\ncumulative food: {self.cum_reward[0]}\ncumulative water: {self.cum_reward[1]}")
+            print(f"step: {self.step_counter}, state: {self.state}")#\ncumulative food: {self.cum_reward[0]}\ncumulative water: {self.cum_reward[1]}")
             print("-----")
         else:
             super(FoodWaterBalance, self).render(mode=mode) # just raise an exception
@@ -107,10 +114,13 @@ class FoodWaterBalance(Env):
 
 
 if __name__ == '__main__':
+    import gym
+    import mo_gym
     from gym.spaces.utils import flatdim
-    env = FoodWaterBalance(max_steps=100)
+    #env = FoodWaterBalance(max_steps=100)
+    env = gym.make("food-water-balance-v0", max_steps=100)
     assert flatdim(env.action_space) == 2
-    assert flatdim(env.observation_space) == 5
+    assert flatdim(env.observation_space) == 3
 
     done = False
     obs = env.reset()
