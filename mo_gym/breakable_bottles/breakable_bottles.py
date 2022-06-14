@@ -46,6 +46,7 @@ class BreakableBottles(Env):
 
     def step(self, action):
         observation_old = self._get_obs()
+        old_potential = self.potential(observation_old)
         terminal = False
         reward = [self.time_penalty, 0, 0]
 
@@ -96,7 +97,7 @@ class BreakableBottles(Env):
         # calculate potential-based low impact measure
         #r2_t = phi(S_t) - phi(S_t-1)
         #sum_t(r2_t) = 0 -> no impact
-        reward[2] = self.potential(observation) - self.potential(observation_old)
+        reward[2] = self.potential(observation) - old_potential #self.potential(observation_old)
         info = {}
         return observation, reward, terminal, info
     
@@ -119,7 +120,7 @@ class BreakableBottles(Env):
         return {"location": self.location,
                 "bottles_carrying": self.bottles_carrying,
                 "bottles_delivered": self.bottles_delivered,
-                "bottles_dropped": self.bottles_dropped}
+                "bottles_dropped": self.bottles_dropped.copy()}
     
     def render(self, mode="human"):
         if mode == 'rgb_array':
