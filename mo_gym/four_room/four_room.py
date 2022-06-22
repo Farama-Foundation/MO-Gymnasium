@@ -174,6 +174,7 @@ class FourRoom(gym.Env):
         canvas = pygame.Surface((self.window_size, self.window_size))
         canvas.fill((255, 255, 255))
 
+        pygame.font.init()
         self.font = pygame.font.SysFont(None, 48)
         img = self.font.render('G', True, BLACK)
         canvas.blit(img, (np.array(self.goal)[::-1]+0.15) * pix_square_size)
