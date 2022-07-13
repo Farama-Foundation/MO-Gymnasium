@@ -21,7 +21,8 @@ setup(
         "gym",
         "numpy",
         "pygame",
-        "scipy"
+        "scipy",
+        "pymoo",
     ],
     extras_require=extras,
     tests_require=["pytest", "mock"],
