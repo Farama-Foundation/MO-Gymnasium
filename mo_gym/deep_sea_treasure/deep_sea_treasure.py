@@ -71,7 +71,7 @@ class DeepSeaTreasure(gym.Env):
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
-        self.reward_space = Box(low=np.array([0, -1]), high=np.array([23.7, -1]), dtype=np.float32)
+        self.reward_space = Box(low=np.array([0, -1]), high=np.array([np.max(self.sea_map), -1]), dtype=np.float32)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
 
@@ -162,7 +162,6 @@ class DeepSeaTreasure(gym.Env):
 
     def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0
