@@ -18,7 +18,7 @@ setup(
     license="MIT",
     packages=["mo_gym"],
     install_requires=[
-        "gym",
+        "gym==0.24.1", # 0.25 has breaking changes
         "numpy",
         "pygame",
         "scipy",
