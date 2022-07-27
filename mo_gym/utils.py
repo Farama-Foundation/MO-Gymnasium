@@ -60,7 +60,7 @@ class MONormalizeReward(gym.Wrapper):
         self.gamma = gamma
         self.epsilon = epsilon
 
-    def step(self, action):
+    def step(self, action: ActType):
         """Steps through the environment, normalizing the rewards returned."""
         obs, rews, dones, infos = self.env.step(action)
         to_normalize = rews[self.idx]
@@ -78,3 +78,17 @@ class MONormalizeReward(gym.Wrapper):
         """Normalizes the rewards with the running mean rewards and their variance."""
         self.return_rms.update(self.returns)
         return rews / np.sqrt(self.return_rms.var + self.epsilon)
+
+
+class MOClipReward(gym.RewardWrapper):
+    r""""Clip reward to [min, max]. """
+
+    def __init__(self, env: gym.Env, idx: int, min_r, max_r):
+        super().__init__(env)
+        self.idx = idx
+        self.min_r = min_r
+        self.max_r = max_r
+
+    def reward(self, reward):
+        reward[self.idx] = np.clip(reward[self.idx], self.min_r, self.max_r)
+        return reward
