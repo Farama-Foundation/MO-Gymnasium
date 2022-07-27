@@ -2,7 +2,6 @@ from typing import Tuple, TypeVar
 
 import gym
 import numpy as np
-from gym.wrappers import NormalizeReward
 from gym.wrappers.normalize import RunningMeanStd
 
 ObsType = TypeVar("ObsType")
@@ -40,6 +39,7 @@ class LinearReward(gym.Wrapper):
 class MONormalizeReward(gym.Wrapper):
     """
     Wrapper to normalize the reward component at index idx. Does not touch other reward components.
+    Based on Gym's implementation: https://github.com/openai/gym/blob/master/gym/wrappers/normalize.py#L113
     """
 
     def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
@@ -81,7 +81,7 @@ class MONormalizeReward(gym.Wrapper):
 
 
 class MOClipReward(gym.RewardWrapper):
-    r""""Clip reward to [min, max]. """
+    """"Clip reward[idx] to [min, max]. """
 
     def __init__(self, env: gym.Env, idx: int, min_r, max_r):
         super().__init__(env)

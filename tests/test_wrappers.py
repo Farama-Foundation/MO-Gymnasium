@@ -1,8 +1,6 @@
-import gym
 import numpy as np
 
 import mo_gym
-from gym.utils.env_checker import check_env
 from mo_gym import MONormalizeReward, MOClipReward
 
 
@@ -26,7 +24,7 @@ def test_normalization_wrapper():
     for i in range(30):
         go_to_8_3(both_norm_env)
     both_norm_env.reset()
-    _, rewards, _, _ = both_norm_env.step(1)
+    _, rewards, _, _ = both_norm_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.18, -1.24], rtol=0, atol=1e-2)
     rewards = go_to_8_3(both_norm_env)
     np.testing.assert_allclose(rewards, [2.13, -1.24], rtol=0, atol=1e-2)
@@ -35,8 +33,8 @@ def test_normalization_wrapper():
     for i in range(30):
         go_to_8_3(norm_treasure_env)
     norm_treasure_env.reset()
-    _, rewards, _, _ = norm_treasure_env.step(1)
-    # Steps are not normalized
+    _, rewards, _, _ = norm_treasure_env.step(1)  # down
+    # Time rewards are not normalized (-1)
     np.testing.assert_allclose(rewards, [0.18, -1.], rtol=0, atol=1e-2)
     rewards = go_to_8_3(norm_treasure_env)
     np.testing.assert_allclose(rewards, [2.13, -1.], rtol=0, atol=1e-2)
@@ -49,14 +47,15 @@ def test_clip_wrapper():
 
     # Tests for both rewards clipped
     both_clipped_env.reset()
-    _, rewards, _, _ = both_clipped_env.step(1)
+    _, rewards, _, _ = both_clipped_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
     rewards = go_to_8_3(both_clipped_env)
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
 
     # Tests for only treasure clipped
     clip_treasure_env.reset()
-    _, rewards, _, _ = clip_treasure_env.step(1)
+    _, rewards, _, _ = clip_treasure_env.step(1)  # down
+    # Time rewards are not clipped (-1)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
     rewards = go_to_8_3(clip_treasure_env)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
