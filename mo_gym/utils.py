@@ -1,10 +1,8 @@
-from typing import Tuple, TypeVar, Iterator, Optional, Union, Sequence
+from typing import Tuple, TypeVar, Iterator
 
 import gym
 import numpy as np
-from gym import Space
-from gym.vector import VectorEnv, SyncVectorEnv
-from gym.vector.utils import batch_space, create_empty_array
+from gym.vector import SyncVectorEnv
 from gym.wrappers.normalize import RunningMeanStd
 
 ObsType = TypeVar("ObsType")
