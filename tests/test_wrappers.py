@@ -1,7 +1,7 @@
 import numpy as np
 
 import mo_gym
-from mo_gym import MONormalizeReward, MOClipReward
+from mo_gym import MONormalizeReward, MOClipReward, MOSyncVectorEnv
 
 
 def go_to_8_3(env):
@@ -59,3 +59,23 @@ def test_clip_wrapper():
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
     rewards = go_to_8_3(clip_treasure_env)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
+
+
+def test_mo_sync_wrapper():
+    def make_env(env_id):
+        def thunk():
+            env = mo_gym.make(env_id)
+            return env
+
+        return thunk
+
+    num_envs = 2
+    envs = MOSyncVectorEnv([
+        make_env("deep-sea-treasure-v0") for _ in range(num_envs)
+    ])
+
+    envs.reset()
+    obs, rewards, dones, infos = envs.step(envs.action_space.sample())
+    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
+    assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
+    assert len(dones) == num_envs, "Number of dones do not match the number of envs"

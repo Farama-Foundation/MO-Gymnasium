@@ -1,7 +1,10 @@
-from typing import Tuple, TypeVar
+from typing import Tuple, TypeVar, Iterator, Optional, Union, Sequence
 
 import gym
 import numpy as np
+from gym import Space
+from gym.vector import VectorEnv, SyncVectorEnv
+from gym.vector.utils import batch_space, create_empty_array
 from gym.wrappers.normalize import RunningMeanStd
 
 ObsType = TypeVar("ObsType")
@@ -92,3 +95,21 @@ class MOClipReward(gym.RewardWrapper):
     def reward(self, reward):
         reward[self.idx] = np.clip(reward[self.idx], self.min_r, self.max_r)
         return reward
+
+
+class MOSyncVectorEnv(SyncVectorEnv):
+    """Vectorized environment that serially runs multiple environments.
+    """
+
+    def __init__(
+            self,
+            env_fns: Iterator[callable],
+            copy: bool = True,
+    ):
+        super().__init__(
+            env_fns,
+            copy=copy
+        )
+        # Just overrides the rewards memory to add the number of objectives
+        reward_space = self.envs[0].reward_space
+        self._rewards = np.zeros((self.num_envs, reward_space.shape[0],), dtype=np.float64)
