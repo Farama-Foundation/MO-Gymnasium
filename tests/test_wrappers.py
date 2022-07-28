@@ -69,7 +69,7 @@ def test_mo_sync_wrapper():
 
         return thunk
 
-    num_envs = 2
+    num_envs = 3
     envs = MOSyncVectorEnv([
         make_env("deep-sea-treasure-v0") for _ in range(num_envs)
     ])
