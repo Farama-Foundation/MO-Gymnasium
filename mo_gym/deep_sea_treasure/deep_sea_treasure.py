@@ -56,7 +56,7 @@ class DeepSeaTreasure(gym.Env):
 
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
-        assert self.sea_map.shape == DEFAULT_MAP.shape, "The map shape must be 11x11"
+        assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
         
         self.dir = {
             0: np.array([-1, 0], dtype=np.int32),  # up
@@ -67,7 +67,10 @@ class DeepSeaTreasure(gym.Env):
 
         # state space specification: 2-dimensional discrete box
         obs_type = np.float32 if self.float_state else np.int32
-        self.observation_space = Box(low=0.0, high=1.0, shape=(2,), dtype=obs_type)
+        if self.float_state:
+            self.observation_space = Box(low=0.0, high=1.0, shape=(2,), dtype=obs_type)
+        else:
+            self.observation_space = Box(low=0, high=10, shape=(2,), dtype=obs_type)
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
