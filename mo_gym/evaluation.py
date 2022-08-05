@@ -38,8 +38,8 @@ def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, flo
         if render:
             env.render(mode='human')
         obs, r, done, info = env.step(agent.eval(obs, w))
-        total_vec_reward += info["vector_reward"]
-        vec_return += gamma * info["vector_reward"]
+        total_vec_reward += r
+        vec_return += gamma * r
         gamma *= agent.gamma
     return (
         np.dot(w, total_vec_reward),
