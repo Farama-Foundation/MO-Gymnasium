@@ -7,6 +7,5 @@ import mo_gym.fruit_tree
 import mo_gym.mario
 import mo_gym.reacher
 import mo_gym.breakable_bottles
-import mo_gym.food_water_balance
 from mo_gym.utils import *
 from mo_gym.evaluation import *
