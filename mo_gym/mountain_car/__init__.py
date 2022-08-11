@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from gym.envs.registration import register
 
 register(

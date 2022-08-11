@@ -6,7 +6,7 @@
 
 Gym environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gym's API](https://github.com/openai/gym), but return vectorized rewards as numpy arrays.
 
-For details on multi-objective MPDS (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
+For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 
 ## Install
 ```bash
@@ -21,7 +21,7 @@ pip install -e .
 import gym
 import mo_gym
 
-env = gym.make('minecart-v0') # It follows the original gym's API ...
+env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
 
 obs = env.reset()
 next_obs, vector_reward, done, info = env.step(your_agent.act(obs))  # but vector_reward is a numpy array!
@@ -36,12 +36,14 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 | --- | --- | --- | --- |
 |  `deep-sea-treasure-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/dst.png" width="200px"> | Discrete / Discrete |  `[treasure, time_penalty]` | Agent is a submarine that must collect a treasure while taking into account a time penalty. Treasures values taken from [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf). |
 |  `resource-gathering-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/resource-gathering.png" width="200px"> | Discrete / Discrete |  `[enemy, gold, gem]` | Agent must collect gold or gem. Enemies have a 10% chance of killing the agent. From [Barret & Narayanan 2008](https://dl.acm.org/doi/10.1145/1390156.1390162). |
+|  `fruit-tree-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/fruit-tree.png" width="200px"> | Discrete / Discrete |  `[nutri1, ..., nutri6]` | Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water. From [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf). |
 |  `four-room-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/four-room.png" width="200px"> | Discrete / Discrete |  `[item1, item2, item3]` | Agent must collect three different types of items in the map and reach the goal.|
 |  `mo-mountaincar-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/mo-mountaincar.png" width="200px"> | Continuous / Discrete |  `[time_penalty, reverse_penalty, forward_penalty]` | Classic Mountain Car env, but with extra penalties for the forward and reverse actions. From [Vamplew et al. 2011](https://www.researchgate.net/publication/220343783_Empirical_evaluation_methods_for_multiobjective_reinforcement_learning_algorithms). |
 | `mo-reacher-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/reacher.png" width="200px">| Continuous / Discrete | `[target_1, target_2, target_3, target_4]` | Reacher robot from [PyBullet](https://github.com/benelot/pybullet-gym/blob/ec9e87459dd76d92fe3e59ee4417e5a665504f62/pybulletgym/envs/roboschool/robots/manipulators/reacher.py), but there are 4 different target positions. |
 |  `minecart-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/minecart.png" width="200px"> | Continuous or Image / Discrete |  `[ore1, ore2, fuel]`  | Agent must collect two types of ores and minimize fuel consumption. From [Abels et al. 2019](https://arxiv.org/abs/1809.07803v2). |
 |  `mo-supermario-v0` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/mario.png" width="200px"> | Image / Discrete |  `[x_pos, time, death, coin, enemy]`  | Multi-objective version of [SuperMarioBrosEnv](https://github.com/Kautenja/gym-super-mario-bros). Objectives are defined similarly as in [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf). |
-
+|  `mo-halfcheetah-v4` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/cheetah.png" width="200px"> | Continuous / Continuous |  `[velocity, energy]`  | Multi-objective version of [HalfCheetah-v4](https://www.gymlibrary.ml/environments/mujoco/half_cheetah/) env. Similar to [Xu et al. 2020](https://github.com/mit-gfx/PGMORL). |
+|  `mo-hopper-v4` <br><img src="https://raw.githubusercontent.com/LucasAlegre/mo-gym/main/screenshots/hopper.png" width="200px"> | Continuous / Continuous |  `[velocity, height, energy]`  | Multi-objective version of [Hopper-v4](https://www.gymlibrary.ml/environments/mujoco/hopper/) env. |
 
 ## Citing
 
@@ -61,5 +63,5 @@ If you use this repository in your work, please cite:
 ## Acknowledgments
 
 * The `minecart-v0` env is a refactor of https://github.com/axelabels/DynMORL.
-* The `deep-sea-treasure-v0` and `mo-supermario-v0` are based on https://github.com/RunzheYang/MORL.
-* The `four-room-v0` is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.
+* The `deep-sea-treasure-v0`, `fruit-tree-v0` and `mo-supermario-v0` envs are based on https://github.com/RunzheYang/MORL.
+* The `four-room-v0` env is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.

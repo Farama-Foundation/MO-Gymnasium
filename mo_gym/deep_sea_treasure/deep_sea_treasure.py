@@ -6,26 +6,8 @@ import pygame
 from gym.spaces import Box, Discrete
 
 
-class DeepSeaTreasure(gym.Env):
-    """Deep Sea Treasure environment
-
-    Adapted from: https://github.com/RunzheYang/MORL
-
-    CCS weights: [1,0], [0.7,0.3], [0.67,0.33], [0.6,0.4], [0.56,0.44], [0.52,0.48], [0.5,0.5], [0.4,0.6], [0.3,0.7], [0, 1]
-    """
-
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
-
-    def __init__(self, float_state=False):
-        self.size = 11
-        self.window_size = 512
-        self.window = None
-        self.clock = None
-
-        self.float_state = float_state
-
-        # The map of the deep sea treasure (convex version)
-        self.sea_map = np.array(
+# As in Yang et al. (2019):
+DEFAULT_MAP = np.array(
             [[0,    0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
              [0.7,  0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
              [-10,  8.2,  0,   0,   0,  0,   0,   0,   0,   0,   0],
@@ -38,6 +20,44 @@ class DeepSeaTreasure(gym.Env):
              [-10, -10, -10, -10, -10, -10, -10, -10, 22.4, 0,   0],
              [-10, -10, -10, -10, -10, -10, -10, -10, -10, 23.7, 0]]
         )
+
+# As in Vamplew et al. (2018):
+CONCAVE_MAP = np.array(
+            [[0,    0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
+             [1.0,  0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
+             [-10,  2.0,  0,   0,   0,  0,   0,   0,   0,   0,   0],
+             [-10, -10,  3.0,  0,   0,  0,   0,   0,   0,   0,   0],
+             [-10, -10, -10, 5.0,  8.0,16.0, 0 ,  0,   0,   0,   0],
+             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
+             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
+             [-10, -10, -10, -10, -10, -10, 24.0, 50.0,0,   0,   0],
+             [-10, -10, -10, -10, -10, -10, -10, -10,  0,   0,   0],
+             [-10, -10, -10, -10, -10, -10, -10, -10, 74.0, 0,   0],
+             [-10, -10, -10, -10, -10, -10, -10, -10, -10, 124.0,0]]
+        )
+
+class DeepSeaTreasure(gym.Env):
+    """Deep Sea Treasure environment
+
+    Adapted from: https://github.com/RunzheYang/MORL
+
+    CCS weights: [1,0], [0.7,0.3], [0.67,0.33], [0.6,0.4], [0.56,0.44], [0.52,0.48], [0.5,0.5], [0.4,0.6], [0.3,0.7], [0, 1]
+    """
+
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+
+    def __init__(self, dst_map=DEFAULT_MAP, float_state=False):
+        self.size = 11
+        self.window_size = 512
+        self.window = None
+        self.clock = None
+
+        self.float_state = float_state
+
+        # The map of the deep sea treasure (convex version)
+        self.sea_map = dst_map
+        assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
+        
         self.dir = {
             0: np.array([-1, 0], dtype=np.int32),  # up
             1: np.array([1, 0], dtype=np.int32),  # down
@@ -47,11 +67,14 @@ class DeepSeaTreasure(gym.Env):
 
         # state space specification: 2-dimensional discrete box
         obs_type = np.float32 if self.float_state else np.int32
-        self.observation_space = Box(low=0.0, high=1.0, shape=(2,), dtype=obs_type)
+        if self.float_state:
+            self.observation_space = Box(low=0.0, high=1.0, shape=(2,), dtype=obs_type)
+        else:
+            self.observation_space = Box(low=0, high=10, shape=(2,), dtype=obs_type)
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
-        self.reward_space = Box(low=np.array([0, -1]), high=np.array([23.7, -1]), dtype=np.float32)
+        self.reward_space = Box(low=np.array([0, -1]), high=np.array([np.max(self.sea_map), -1]), dtype=np.float32)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
 
@@ -141,7 +164,7 @@ class DeepSeaTreasure(gym.Env):
         return state
 
     def reset(self, seed=None, **kwargs):
-        #super().reset()#seed=seed)
+        super().reset(seed=seed)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0

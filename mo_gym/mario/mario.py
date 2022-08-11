@@ -2,6 +2,7 @@ import numpy as np
 import gym
 #from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
 from gym.wrappers import (FrameStack, GrayScaleObservation, ResizeObservation, TimeLimit)
+from gym.utils import seeding
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 from gym_super_mario_bros import SuperMarioBrosEnv
@@ -22,14 +23,15 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         self.single_stage = True
         self.done_when_dead = True
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
+        self._np_random, seed = seeding.np_random(seed) # this is not used
         self.coin = 0
         self.x_pos = 0
         self.time = 0
         self.score = 0
         self.stage_bonus = 0
         self.lives = 2
-        return super().reset()
+        return (super().reset(), {}) if return_info else super().reset()
 
     def step(self, action):
         obs, reward, done, info = super().step(action)

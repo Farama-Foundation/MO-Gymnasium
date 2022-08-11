@@ -21,7 +21,7 @@ class ResourceGathering(gym.Env):
         self.window = None
         self.clock = None
 
-        # The map of the resource gathering environment
+        # The map of resource gathering env
         self.map = np.array([
             [' ', ' ', 'R1', 'E2', ' '],
             [' ', ' ', 'E1', ' ', 'R2'],
@@ -39,7 +39,7 @@ class ResourceGathering(gym.Env):
             3: np.array([0, 1], dtype=np.int32)  # right
         }
 
-        # state space specification: 4-dimensional discrete box
+        # state space specification: 2-dimensional discrete box
         self.observation_space = Box(low=0.0, high=5.0, shape=(4,), dtype=np.int32)
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
@@ -125,15 +125,16 @@ class ResourceGathering(gym.Env):
         state = np.concatenate((pos, np.array([self.has_gold, self.has_gem], dtype=np.int32)))
         return state
 
-    def reset(self, seed=None, **kwargs):
-        #super().reset(seed=seed)
+    def reset(self, seed=None, return_info=False, **kwargs):
+        super().reset(seed=seed)
+        self.np_random.seed(seed)
 
         self.current_pos = self.initial_pos
         self.has_gem = 0
         self.has_gold = 0
         self.step_count = 0.0
         state = self.get_state()
-        return state
+        return (state, {}) if return_info else state
 
     def step(self, action):
         next_pos = self.current_pos + self.dir[action]

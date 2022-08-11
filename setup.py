@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 # Environment-specific dependencies.
 extras = {
@@ -18,10 +18,11 @@ setup(
     license="MIT",
     packages=["mo_gym"],
     install_requires=[
-        "gym",
+        "gym==0.24.1", # 0.25 has breaking changes
         "numpy",
         "pygame",
-        "scipy"
+        "scipy",
+        "pymoo",
     ],
     extras_require=extras,
     tests_require=["pytest", "mock"],

@@ -88,10 +88,12 @@ class FourRoom(gym.Env):
         s = [element for tupl in state for element in tupl]
         return np.array(s, dtype=np.int32)
 
-    def reset(self, seed=None, **kwargs):
+    def reset(self, seed=None, return_info=False, **kwargs):
         super().reset(seed=seed)
+        self.np_random.seed(seed)
+
         self.state = (random.choice(self.initial), tuple(0 for _ in range(len(self.shape_ids))))
-        return self.state_to_array(self.state)
+        return (self.state_to_array(self.state), {}) if return_info else self.state_to_array(self.state)
     
     def step(self, action): 
         old_state = self.state
@@ -172,6 +174,7 @@ class FourRoom(gym.Env):
         canvas = pygame.Surface((self.window_size, self.window_size))
         canvas.fill((255, 255, 255))
 
+        pygame.font.init()
         self.font = pygame.font.SysFont(None, 48)
         img = self.font.render('G', True, BLACK)
         canvas.blit(img, (np.array(self.goal)[::-1]+0.15) * pix_square_size)
