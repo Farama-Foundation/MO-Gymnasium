@@ -1,7 +1,7 @@
 import numpy as np
 
 import mo_gym
-from mo_gym import MONormalizeReward, MOClipReward, MOSyncVectorEnv
+from mo_gym import MONormalizeReward, MOClipReward, MOSyncVectorEnv, MORecordEpisodeStatistics
 
 
 def go_to_8_3(env):
@@ -11,8 +11,8 @@ def go_to_8_3(env):
     env.reset()
     env.step(3)  # right
     env.step(1)  # down
-    _, rewards, _, _ = env.step(1)
-    return rewards
+    _, rewards, _, infos = env.step(1)
+    return rewards, infos
 
 
 def test_normalization_wrapper():
@@ -26,7 +26,7 @@ def test_normalization_wrapper():
     both_norm_env.reset()
     _, rewards, _, _ = both_norm_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.18, -1.24], rtol=0, atol=1e-2)
-    rewards = go_to_8_3(both_norm_env)
+    rewards, _ = go_to_8_3(both_norm_env)
     np.testing.assert_allclose(rewards, [2.13, -1.24], rtol=0, atol=1e-2)
 
     # Tests for only treasure normalized
@@ -36,7 +36,7 @@ def test_normalization_wrapper():
     _, rewards, _, _ = norm_treasure_env.step(1)  # down
     # Time rewards are not normalized (-1)
     np.testing.assert_allclose(rewards, [0.18, -1.], rtol=0, atol=1e-2)
-    rewards = go_to_8_3(norm_treasure_env)
+    rewards, _ = go_to_8_3(norm_treasure_env)
     np.testing.assert_allclose(rewards, [2.13, -1.], rtol=0, atol=1e-2)
 
 
@@ -49,7 +49,7 @@ def test_clip_wrapper():
     both_clipped_env.reset()
     _, rewards, _, _ = both_clipped_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
-    rewards = go_to_8_3(both_clipped_env)
+    rewards, _ = go_to_8_3(both_clipped_env)
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
 
     # Tests for only treasure clipped
@@ -57,7 +57,7 @@ def test_clip_wrapper():
     _, rewards, _, _ = clip_treasure_env.step(1)  # down
     # Time rewards are not clipped (-1)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
-    rewards = go_to_8_3(clip_treasure_env)
+    rewards, _ = go_to_8_3(clip_treasure_env)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
 
 
@@ -79,3 +79,19 @@ def test_mo_sync_wrapper():
     assert len(obs) == num_envs, "Number of observations do not match the number of envs"
     assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
     assert len(dones) == num_envs, "Number of dones do not match the number of envs"
+
+def test_mo_record_ep_statistic():
+    env = mo_gym.make("deep-sea-treasure-v0")
+    env = MORecordEpisodeStatistics(env)
+
+    done = False
+    env.reset()
+    _, info = go_to_8_3(env)
+
+    print(info)
+    print(type(info["episode"]["l"]))
+    assert(isinstance(info["episode"]["r"], np.ndarray))
+    assert(info["episode"]["r"].shape == (2,))
+    assert(tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.)))
+    assert(isinstance(info["episode"]["l"], np.int32))
+    assert(isinstance(info["episode"]["t"], float))
