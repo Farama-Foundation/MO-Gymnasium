@@ -2,6 +2,7 @@ from gym import Env
 from gym.spaces import Dict, Discrete, MultiBinary, Box
 import numpy as np
 
+
 class BreakableBottles(Env):
     metadata = {"render_modes": ["human", "rgb_array"]}
 
@@ -102,13 +103,16 @@ class BreakableBottles(Env):
         info = {}
         return observation, reward, terminal, info
     
-    def reset(self):
+    def reset(self, seed=None, return_info=False, **kwargs):
+        super().reset(seed=seed)
+        self.np_random.seed(seed)
         self.r_star = 0
         self.location = self.size - 1
         self.bottles_carrying = 0
         self.bottles_delivered = 0
         self.bottles_dropped = [0]*(self.size - 2)
-        return self._get_obs()
+        state = self._get_obs()
+        return (state, {}) if return_info else state
     
     def get_obs_idx(self, obs):
         multi_index = np.array([[obs["location"]],
