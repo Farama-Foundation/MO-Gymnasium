@@ -3,9 +3,10 @@ from setuptools import setup
 # Environment-specific dependencies.
 extras = {
     "mario": ["nes-py", "gym-super-mario-bros"],
-    "minecart" : ["scipy"]
+    "minecart" : ["scipy"],
+    "highway-env": ["highway-env"]
 }
-extras["all"] = extras["mario"] + extras["minecart"]
+extras["all"] = extras["mario"] + extras["minecart"] + extras["highway-env"]
 
 
 setup(

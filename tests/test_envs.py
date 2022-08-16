@@ -54,6 +54,11 @@ def test_hopper():
     env = LinearReward(env)
     check_env(env)
 
+def test_highway():
+    env = mo_gym.make('mo-highway-v0')
+    env = LinearReward(env)
+    check_env(env)
+
 def test_breakable_bottles():
     env = gym.make('breakable-bottles-v0')
     env = LinearReward(env)
