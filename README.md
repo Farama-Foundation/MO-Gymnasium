@@ -9,6 +9,13 @@ Gym environments for multi-objective reinforcement learning (MORL). The environm
 For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 
 ## Install
+
+Via pip:
+```bash
+pip install mo-gym
+```
+
+Alternatively, you can install the newest unreleased version:
 ```bash
 git clone https://github.com/LucasAlegre/mo-gym.git
 cd mo-gym
