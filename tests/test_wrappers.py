@@ -84,12 +84,9 @@ def test_mo_record_ep_statistic():
     env = mo_gym.make("deep-sea-treasure-v0")
     env = MORecordEpisodeStatistics(env)
 
-    done = False
     env.reset()
     _, info = go_to_8_3(env)
 
-    print(info)
-    print(type(info["episode"]["l"]))
     assert(isinstance(info["episode"]["r"], np.ndarray))
     assert(info["episode"]["r"].shape == (2,))
     assert(tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.)))
