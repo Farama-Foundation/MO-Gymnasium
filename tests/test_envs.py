@@ -53,3 +53,9 @@ def test_hopper():
     env = mo_gym.make('mo-hopper-v4')
     env = LinearReward(env)
     check_env(env)
+
+def test_breakable_bottles():
+    env = gym.make('breakable-bottles-v0')
+    env = LinearReward(env)
+    # skip because of bug in gym (see https://github.com/openai/gym/issues/2956)
+    # check_env(env)

@@ -11,7 +11,7 @@ extras["all"] = extras["mario"] + extras["minecart"]
 setup(
     name="mo-gym",
     version="0.1",
-    description="MO-Gym: Environments for Multi-Objective RL.",
+    description="Environments for Multi-Objective RL.",
     url="https://www.github.com/LucasAlegre/mo-gym",
     author="LucasAlegre",
     author_email="lnalegre@inf.ufrgs.br",
@@ -35,3 +35,5 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
 )
+
+# https://towardsdatascience.com/create-your-own-python-package-and-publish-it-into-pypi-9306a29bc116
