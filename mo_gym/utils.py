@@ -7,7 +7,6 @@ import time
 from gym.vector import SyncVectorEnv
 from gym.wrappers.normalize import RunningMeanStd
 from gym.wrappers import RecordEpisodeStatistics
-from gym.wrappers.record_episode_statistics import add_vector_episode_statistics
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -113,8 +112,40 @@ class MOSyncVectorEnv(SyncVectorEnv):
             copy=copy
         )
         # Just overrides the rewards memory to add the number of objectives
-        reward_space = self.envs[0].reward_space
-        self._rewards = np.zeros((self.num_envs, reward_space.shape[0],), dtype=np.float64)
+        self.reward_space = self.envs[0].reward_space
+        self._rewards = np.zeros((self.num_envs, self.reward_space.shape[0],), dtype=np.float64)
+
+def add_vector_episode_statistics(
+    info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int
+):
+    """Add episode statistics.
+
+    Add statistics coming from the vectorized environment.
+
+    Args:
+        info (dict): info dict of the environment.
+        episode_info (dict): episode statistics data.
+        num_envs (int): number of environments.
+        num_envs (int): number of objectives.
+        env_num (int): env number of the vectorized environments.
+
+    Returns:
+        info (dict): the input info dict with the episode statistics.
+    """
+    info["episode"] = info.get("episode", {})
+
+    info["_episode"] = info.get("_episode", np.zeros(num_envs, dtype=bool))
+    info["_episode"][env_num] = True
+
+    for k in episode_info.keys():
+        if k == "r" or k == "dr":
+            info_array = info["episode"].get(k, np.zeros((num_envs, num_objs)))
+        else:
+            info_array = info["episode"].get(k, np.zeros(num_envs))
+        info_array[env_num] = deepcopy(episode_info[k])
+        info["episode"][k] = info_array
+
+    return info
 
 class MORecordEpisodeStatistics(RecordEpisodeStatistics):
     def __init__(self, env: gym.Env, gamma: float = 1., deque_size: int = 100):
@@ -144,7 +175,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
-        self.disc_episode_returns += rewards * self.gamma ** self.episode_lengths
+        self.disc_episode_returns += (rewards * np.repeat(self.gamma ** self.episode_lengths, 2).reshape(self.episode_returns.shape))
         self.episode_lengths += 1
         if not self.is_vector_env:
             dones = [dones]
@@ -165,7 +196,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
                 }
                 if self.is_vector_env:
                     infos = add_vector_episode_statistics(
-                        infos, episode_info["episode"], self.num_envs, i
+                        infos, episode_info["episode"], self.num_envs, self.reward_dim, i
                     )
                 else:
                     infos = {**infos, **episode_info}
