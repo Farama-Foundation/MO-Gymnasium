@@ -65,6 +65,7 @@ def test_mo_sync_wrapper():
     def make_env(env_id):
         def thunk():
             env = mo_gym.make(env_id)
+            env = MORecordEpisodeStatistics(env, gamma=0.97)
             return env
 
         return thunk
@@ -96,3 +97,31 @@ def test_mo_record_ep_statistic():
     assert(isinstance(info["episode"]["l"], np.int32))
     assert(info["episode"]["l"] == 3)
     assert(isinstance(info["episode"]["t"], float))
+
+def test_mo_record_ep_statistic_vector_env():
+    def make_env(env_id):
+        def thunk():
+            env = mo_gym.make(env_id)
+            return env
+
+        return thunk
+
+    num_envs = 3
+    envs = MOSyncVectorEnv([
+        make_env("deep-sea-treasure-v0") for _ in range(num_envs)
+    ])
+    envs = MORecordEpisodeStatistics(envs)
+
+    envs.reset()
+    dones = np.array([False] * num_envs)
+    while not np.any(dones):
+        obs, rewards, dones, info = envs.step(envs.action_space.sample())
+
+    print(info)
+    assert(isinstance(info["episode"]["r"], np.ndarray))
+    assert(isinstance(info["episode"]["dr"], np.ndarray))
+    # Episode records are vectorized because multiple environments
+    assert(info["episode"]["r"].shape == (num_envs, 2))
+    assert(info["episode"]["dr"].shape == (num_envs, 2))
+    assert(isinstance(info["episode"]["l"], np.ndarray))
+    assert(isinstance(info["episode"]["t"], np.ndarray))
