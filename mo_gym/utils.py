@@ -144,7 +144,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
-        self.disc_episode_returns = self.gamma * self.disc_episode_returns + rewards
+        self.disc_episode_returns += rewards * self.gamma ** self.episode_lengths
         self.episode_lengths += 1
         if not self.is_vector_env:
             dones = [dones]

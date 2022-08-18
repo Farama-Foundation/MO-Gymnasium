@@ -92,7 +92,7 @@ def test_mo_record_ep_statistic():
     assert(info["episode"]["r"].shape == (2,))
     assert(info["episode"]["dr"].shape == (2,))
     assert(tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.)))
-    assert(tuple(info["episode"]["dr"]) == (np.float32(8.2), np.float32(-2.9109)))
+    assert(tuple(np.round(info["episode"]["dr"], 4)) == (np.float32(7.7154), np.float32(-2.9109)))
     assert(isinstance(info["episode"]["l"], np.int32))
     assert(info["episode"]["l"] == 3)
     assert(isinstance(info["episode"]["t"], float))
