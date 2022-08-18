@@ -117,7 +117,7 @@ class MOSyncVectorEnv(SyncVectorEnv):
         self._rewards = np.zeros((self.num_envs, reward_space.shape[0],), dtype=np.float64)
 
 class MORecordEpisodeStatistics(RecordEpisodeStatistics):
-    def __init__(self, env: gym.Env, deque_size: int = 100):
+    def __init__(self, env: gym.Env, gamma: float = 1., deque_size: int = 100):
         """This wrapper will keep track of cumulative rewards and episode lengths.
 
         Args:
@@ -127,11 +127,13 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         super().__init__(env, deque_size)
         # Here we just override the standard implementation to extend to MO
         self.reward_dim = self.env.reward_space.shape[0]
+        self.gamma = gamma
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
         observations = super().reset(**kwargs)
         self.episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
+        self.disc_episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
         return observations
 
     def step(self, action):
@@ -142,6 +144,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
+        self.disc_episode_returns = self.gamma * self.disc_episode_returns + rewards
         self.episode_lengths += 1
         if not self.is_vector_env:
             dones = [dones]
@@ -150,10 +153,12 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         for i in range(len(dones)):
             if dones[i]:
                 episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
+                disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
                 episode_length = self.episode_lengths[i]
                 episode_info = {
                     "episode": {
                         "r": episode_return,
+                        "dr": disc_episode_return,
                         "l": episode_length,
                         "t": round(time.perf_counter() - self.t0, 6),
                     }
@@ -168,6 +173,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
                 self.length_queue.append(episode_length)
                 self.episode_count += 1
                 self.episode_returns[i] = 0
+                self.disc_episode_returns[i] = 0
                 self.episode_lengths[i] = 0
         return (
             observations,
