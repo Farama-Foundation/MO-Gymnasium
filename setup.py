@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Environment-specific dependencies.
 extras = {
@@ -16,7 +16,7 @@ setup(
     author="LucasAlegre",
     author_email="lnalegre@inf.ufrgs.br",
     license="MIT",
-    packages=["mo_gym"],
+    packages=[package for package in find_packages() if package.startswith("mo_gym")],
     install_requires=[
         "gym==0.24.1", # 0.25 has breaking changes
         "numpy",
