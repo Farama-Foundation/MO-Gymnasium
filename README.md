@@ -37,6 +37,9 @@ next_obs, vector_reward, done, info = env.step(your_agent.act(obs))  # but vecto
 env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 ```
 
+[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gym_demo.ipynb)
+You can also check more examples in this colab notebook! 
+
 ## Environments
 
 | Env | Obs/Action spaces | Objectives | Description |
