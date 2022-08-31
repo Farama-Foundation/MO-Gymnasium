@@ -5,6 +5,7 @@ import json
 import math
 from math import ceil
 from pathlib import Path
+from copy import deepcopy
 
 import gym
 import numpy as np
@@ -170,14 +171,14 @@ class Minecart(gym.Env):
     metadata = {'render_modes': ['rgb_array', 'human'], 'render_fps': FPS}
 
     def __init__(self,
-                 ore_colors=None,
                  image_observation=False,
                  config=str(Path(__file__).parent.absolute()) + '/mine_config.json'):
 
         self.screen = None
         self.last_render_mode_used = None
+        self.config = config
 
-        with open(config) as f:
+        with open(self.config) as f:
             data = json.load(f)
         
         self.ore_cnt = data['ore_cnt']
@@ -673,6 +674,13 @@ class Minecart(gym.Env):
         if self.screen is not None:
             pygame.display.quit()
             pygame.quit()
+
+    def __deepcopy__(self, memo):
+        this_copy = Minecart(self.image_observation, self.config)
+        this_copy.cart = deepcopy(self.cart)
+        this_copy.mines = deepcopy(self.mines)
+        this_copy.end = self.end
+        return this_copy
 
 def compute_angle(p0, p1, p2):
     v0 = np.array(p0) - np.array(p1)
