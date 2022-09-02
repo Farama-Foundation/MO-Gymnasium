@@ -18,7 +18,7 @@ setup(
     license="MIT",
     packages=[package for package in find_packages() if package.startswith("mo_gym")],
     install_requires=[
-        "gym==0.24.1", # 0.25 has breaking changes
+        "gym>=0.25", # 0.25 has breaking changes
         "numpy",
         "pygame",
         "scipy",
@@ -35,5 +35,11 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
 )
+
+# python setup.py sdist
+# python setup.py bdist_wheel
+# twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+# twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# twine upload dist/*
 
 # https://towardsdatascience.com/create-your-own-python-package-and-publish-it-into-pypi-9306a29bc116
