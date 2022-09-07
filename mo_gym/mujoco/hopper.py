@@ -39,5 +39,6 @@ class MOHopperEnv(HopperEnv):
             "energy_reward": -energy_cost,
         }
 
-        self.renderer.render_step()
+        if self.render_mode == "human":
+            self.render()
         return observation, vec_reward, terminated, False, info
