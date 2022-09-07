@@ -32,5 +32,6 @@ class MOMountainCar(MountainCarEnv):
         reward[2] = 0.0 if action != 2 else -1.0 # forward penalty
 
         self.state = (position, velocity)
-        self.renderer.render_step()
+        if self.render_mode == "human":
+            self.render()
         return np.array(self.state, dtype=np.float32), reward, terminated, False, {}
