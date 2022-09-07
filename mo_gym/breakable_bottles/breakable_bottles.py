@@ -1,17 +1,21 @@
+from os import terminal_size
+from typing import Optional
 from gym import Env
 from gym.spaces import Dict, Discrete, MultiBinary, Box
 import numpy as np
 
 
 class BreakableBottles(Env):
-    metadata = {"render_modes": ["human", "rgb_array"]}
+    metadata = {"render_modes": ["human"]}
 
     # actions
     LEFT = 0
     RIGHT = 1
     PICKUP = 2
 
-    def __init__(self, size=5, prob_drop=0.1, time_penalty=-1, bottle_reward=25, unbreakable_bottles=False, seed=None):
+    def __init__(self, render_mode: Optional[str] = None, size=5, prob_drop=0.1, time_penalty=-1, bottle_reward=25, unbreakable_bottles=False):
+        self.render_mode = render_mode
+        
         # settings
         self.prob_drop = prob_drop
         self.time_penalty = time_penalty
@@ -101,18 +105,21 @@ class BreakableBottles(Env):
         reward[2] = self.potential(observation) - old_potential
 
         info = {}
-        return observation, reward, terminal, info
+        if self.render_mode == "human":
+            self.render()
+        return observation, reward, terminal, False, info
     
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
         self.r_star = 0
         self.location = self.size - 1
         self.bottles_carrying = 0
         self.bottles_delivered = 0
         self.bottles_dropped = [0]*(self.size - 2)
         state = self._get_obs()
-        return (state, {}) if return_info else state
+        if self.render_mode == "human":
+            self.render()
+        return state, {}
     
     def get_obs_idx(self, obs):
         multi_index = np.array([[obs["location"]],
@@ -127,21 +134,14 @@ class BreakableBottles(Env):
                 "bottles_delivered": self.bottles_delivered,
                 "bottles_dropped": self.bottles_dropped.copy()}
     
-    def render(self, mode="human"):
-        if mode == 'rgb_array':
-            return np.array([self.state[:3], *self.state[3]]) # return RGB frame suitable for video
-        elif mode == 'human':
+    def render(self):
+        if self.render_mode == 'human':
             print("-----")
             print(f"Location: {self.location}\nCarrying {self.bottles_carrying} bottles.\nDelivered {self.bottles_delivered} so far.\nBottles have been dropped at tiles {'1' if self.bottles_dropped[0] > 0 else ''} {'2' if self.bottles_dropped[1] > 0 else ''} {'3' if self.bottles_dropped[2] > 0 else ''}")
             print("-----")
-        else:
-            super(BreakableBottles, self).render(mode=mode) # just raise an exception
 
     def close(self):
         pass
-
-    def seed(self, seed=None):
-        self.seed = seed if not seed is None else np.random.randint(2**32) 
 
     def potential(self, obs):
         if sum(obs["bottles_dropped"]) > 0:
