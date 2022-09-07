@@ -33,11 +33,11 @@ class LinearReward(gym.Wrapper):
         self.w = weight
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
-        observation, reward, done, info = self.env.step(action)
+        observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info['vector_reward'] = reward
 
-        return observation, scalar_reward, done, info
+        return observation, scalar_reward, terminated, truncated, info
 
 
 class MONormalizeReward(gym.Wrapper):
