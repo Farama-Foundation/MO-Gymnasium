@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import gym
 import numpy as np
@@ -24,6 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
 
+
 class FourRoom(gym.Env):
     """
     A discretized version of the gridworld environment introduced in [1]. Here, an agent learns to 
@@ -41,7 +43,7 @@ class FourRoom(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
  
-    def __init__(self, maze=MAZE):
+    def __init__(self, render_mode: Optional[str] = None, maze=MAZE):
         """
         Creates a new instance of the shapes environment.
         
@@ -56,6 +58,7 @@ class FourRoom(gym.Env):
                 0, 1, .... 9 indicates the type of shape to be placed in the corresponding cell
                 entries containing other characters are treated as regular empty cells
         """
+        self.render_mode = render_mode
         self.window_size = 512
         self.window = None
         self.clock = None
@@ -88,12 +91,13 @@ class FourRoom(gym.Env):
         s = [element for tupl in state for element in tupl]
         return np.array(s, dtype=np.int32)
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         self.state = (random.choice(self.initial), tuple(0 for _ in range(len(self.shape_ids))))
-        return (self.state_to_array(self.state), {}) if return_info else self.state_to_array(self.state)
+        if self.render_mode == 'human':
+            self.render()
+        return self.state_to_array(self.state), {}
     
     def step(self, action): 
         old_state = self.state
@@ -111,14 +115,16 @@ class FourRoom(gym.Env):
         else:
             raise Exception('bad action {}'.format(action))
         
+        terminated = False
+        
         # out of bounds, cannot move
         if col < 0 or col >= self.width or row < 0 or row >= self.height:
-            return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), False, {}
+            return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), terminated, False, {}
 
         # into a blocked cell, cannot move
         s1 = (row, col)
         if s1 in self.occupied:
-            return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), False, {}
+            return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), terminated, False, {}
         
         # can now move
         self.state = (s1, collected)
@@ -126,14 +132,15 @@ class FourRoom(gym.Env):
         # into a goal cell
         if s1 == self.goal:
             phi = np.ones(len(self.all_shapes), dtype=np.float32)
-            return self.state_to_array(self.state), phi, True, {}
+            terminated = True
+            return self.state_to_array(self.state), phi, terminated, False, {}
         
         # into a shape cell
         if s1 in self.shape_ids:
             shape_id = self.shape_ids[s1]
             if collected[shape_id] == 1:
                 # already collected this flag
-                return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), False, {}
+                return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), terminated, False, {}
             else:
                 # collect the new flag
                 collected = list(collected)
@@ -141,10 +148,10 @@ class FourRoom(gym.Env):
                 collected = tuple(collected)
                 self.state = (s1, collected)
                 phi = self.features(old_state, action, self.state)
-                return self.state_to_array(self.state), phi, False, {}
+                return self.state_to_array(self.state), phi, terminated, False, {}
         
         # into an empty cell
-        return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), False, {}
+        return self.state_to_array(self.state), np.zeros(len(self.all_shapes), dtype=np.float32), terminated, False, {}
 
     def features(self, state, action, next_state):
         s1, _ = next_state
@@ -160,15 +167,15 @@ class FourRoom(gym.Env):
             phi[nc] = np.ones(nc, dtype=np.float32)
         return phi
 
-    def render(self, mode='human'):
+    def render(self):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / 13
 
-        if self.window is None and mode == "human":
+        if self.window is None and self.render_mode == "human":
             pygame.init()
             pygame.display.init()
             self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and mode == "human":
+        if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
         canvas = pygame.Surface((self.window_size, self.window_size))
@@ -232,7 +239,7 @@ class FourRoom(gym.Env):
                 width=1,
             )
 
-        if mode == "human":
+        if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
             self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
@@ -241,7 +248,7 @@ class FourRoom(gym.Env):
             # We need to ensure that human-rendering occurs at the predefined framerate.
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
-        else:  # rgb_array
+        elif self.render_mode == 'rgb_array':
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
             )
