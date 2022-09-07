@@ -23,7 +23,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         self.single_stage = True
         self.done_when_dead = True
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         self._np_random, seed = seeding.np_random(seed) # this is not used
         self.coin = 0
         self.x_pos = 0
@@ -31,7 +31,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         self.score = 0
         self.stage_bonus = 0
         self.lives = 2
-        return (super().reset(), {}) if return_info else super().reset()
+        return super().reset(), {}
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
@@ -97,7 +97,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
 
         info['score'] = info['score'] + self.stage_bonus
 
-        return obs, mor, bool(done), info
+        return obs, mor, bool(done), False, info
 
 
 if __name__ == '__main__':
