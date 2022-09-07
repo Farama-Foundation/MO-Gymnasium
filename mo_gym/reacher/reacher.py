@@ -51,7 +51,7 @@ class ReacherBulletEnv(BaseBulletEnv):
 
         self.HUD(state, real_action, False)
         
-        return state, phi, False, {}
+        return state, phi, False, False, {}
 
     def camera_adjust(self):
         x, y, z = self.robot.fingertip.pose().xyz()
@@ -59,9 +59,9 @@ class ReacherBulletEnv(BaseBulletEnv):
         y *= 0.5
         self.camera.move_and_look_at(0.3, 0.3, 0.3, x, y, z)
     
-    def reset(self, seed=None, return_info=False, **kwargs):
-        self.np_random.seed(seed)
-        return (super().reset(), {}) if return_info else super().reset()
+    def reset(self, seed=None, **kwargs):
+        self._seed(seed)
+        return super().reset(), {}
 
 
 class ReacherRobot(MJCFBasedRobot):
