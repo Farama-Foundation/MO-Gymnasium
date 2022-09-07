@@ -6,6 +6,7 @@ import math
 from math import ceil
 from pathlib import Path
 from copy import deepcopy
+from typing import Optional
 
 import gym
 import numpy as np
@@ -171,9 +172,10 @@ class Minecart(gym.Env):
     metadata = {'render_modes': ['rgb_array', 'human'], 'render_fps': FPS}
 
     def __init__(self,
+                 render_mode: Optional[str] = None,
                  image_observation=False,
                  config=str(Path(__file__).parent.absolute()) + '/mine_config.json'):
-
+        self.render_mode = render_mode
         self.screen = None
         self.last_render_mode_used = None
         self.config = config
@@ -495,8 +497,10 @@ class Minecart(gym.Env):
 
         if change and self.image_observation:
             self.render_pygame()
+        if self.render_mode == 'human':
+            self.render()
 
-        return self.get_state(change), reward, self.end, {}
+        return self.get_state(change), reward, self.end, False, {}
 
     def mine(self):
         """Perform the MINE action
@@ -564,14 +568,13 @@ class Minecart(gym.Env):
             "pixels": self.get_pixels(update)
         } """
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         """Resets the environment to the start state
 
         Returns:
             [type] -- [description]
         """
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         if self.screen is None and self.image_observation:
             self.render(mode='rgb_array') # init pygame
@@ -585,7 +588,9 @@ class Minecart(gym.Env):
         self.cart.angle = 45
         self.cart.departed = False
         self.end = False
-        return (self.get_state(), {}) if return_info else self.get_state()
+        if self.render_mode == 'human':
+            self.render()
+        return self.get_state(), {}
 
     def __str__(self):
         string = "Completed: {} ".format(self.end)
@@ -596,11 +601,11 @@ class Minecart(gym.Env):
         string += "Position: {} ".format(self.cart.pos)
         return string
 
-    def render(self, mode='human'):
-        if self.screen is None or self.last_render_mode_used != mode:
-            self.last_render_mode_used = mode
+    def render(self):
+        if self.screen is None or self.last_render_mode_used != self.render_mode:
+            self.last_render_mode_used = self.render_mode
             pygame.init()
-            self.screen = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN if mode=='rgb_array' else 0)
+            self.screen = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN if self.render_mode=='rgb_array' else 0)
             self.clock = pygame.time.Clock()
 
             self.initialize_mines()
@@ -615,10 +620,10 @@ class Minecart(gym.Env):
         if not self.image_observation:
             self.render_pygame()  # if the obs is not an image, then step would not have rendered the screen
 
-        if mode == 'human':
+        if self.render_mode == 'human':
             self.clock.tick(FPS)
             pygame.display.update()
-        elif mode == 'rgb_array':
+        elif self.render_mode == 'rgb_array':
             string_image = pygame.image.tostring(self.screen, 'RGB')
             temp_surf = pygame.image.fromstring(string_image, (WIDTH, HEIGHT), 'RGB')
             tmp_arr = pygame.surfarray.array3d(temp_surf)
@@ -754,11 +759,11 @@ def pareto_filter(costs, minimize=True):
 
 
 if __name__ == '__main__':
-    env = Minecart(image_observation=True)
+    env = Minecart(render_mode='human', image_observation=True)
     done = False
     env.reset()
     while True:
-        env.render(mode='human')
+        env.render()
         obs, r, done, info = env.step(env.action_space.sample())
         #print(str(env))
         if done:
