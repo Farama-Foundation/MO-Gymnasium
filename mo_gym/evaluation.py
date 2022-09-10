@@ -14,7 +14,7 @@ def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:
     Returns:
         float: Hypervolume metric
     """    
-    return HV(ref_point=ref_point * - 1)(points * - 1)
+    return HV(ref_point=ref_point * - 1)(np.array(points) * - 1)
 
 
 def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
