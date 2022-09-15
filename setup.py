@@ -10,7 +10,7 @@ extras["all"] = extras["mario"] + extras["minecart"]
 
 setup(
     name="mo-gym",
-    version="0.1.1",
+    version="0.2.0",
     description="Environments for Multi-Objective RL.",
     url="https://www.github.com/LucasAlegre/mo-gym",
     author="LucasAlegre",
