@@ -28,4 +28,4 @@ jobs:
         pip install -e .[all]
     - name: Full Python tests
       run: |
-        pytest
+        pytest tests/
