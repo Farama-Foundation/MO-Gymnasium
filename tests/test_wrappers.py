@@ -11,7 +11,7 @@ def go_to_8_3(env):
     env.reset()
     env.step(3)  # right
     env.step(1)  # down
-    _, rewards, _, infos = env.step(1)
+    _, rewards, _, _, infos = env.step(1)
     return rewards, infos
 
 
@@ -24,7 +24,7 @@ def test_normalization_wrapper():
     for i in range(30):
         go_to_8_3(both_norm_env)
     both_norm_env.reset()
-    _, rewards, _, _ = both_norm_env.step(1)  # down
+    _, rewards, _, _, _ = both_norm_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.18, -1.24], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(both_norm_env)
     np.testing.assert_allclose(rewards, [2.13, -1.24], rtol=0, atol=1e-2)
@@ -33,7 +33,7 @@ def test_normalization_wrapper():
     for i in range(30):
         go_to_8_3(norm_treasure_env)
     norm_treasure_env.reset()
-    _, rewards, _, _ = norm_treasure_env.step(1)  # down
+    _, rewards, _, _, _ = norm_treasure_env.step(1)  # down
     # Time rewards are not normalized (-1)
     np.testing.assert_allclose(rewards, [0.18, -1.], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(norm_treasure_env)
@@ -47,14 +47,14 @@ def test_clip_wrapper():
 
     # Tests for both rewards clipped
     both_clipped_env.reset()
-    _, rewards, _, _ = both_clipped_env.step(1)  # down
+    _, rewards, _, _, _ = both_clipped_env.step(1)  # down
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(both_clipped_env)
     np.testing.assert_allclose(rewards, [0.5, -0.5], rtol=0, atol=1e-2)
 
     # Tests for only treasure clipped
     clip_treasure_env.reset()
-    _, rewards, _, _ = clip_treasure_env.step(1)  # down
+    _, rewards, _, _, _ = clip_treasure_env.step(1)  # down
     # Time rewards are not clipped (-1)
     np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(clip_treasure_env)
@@ -76,10 +76,11 @@ def test_mo_sync_wrapper():
     ])
 
     envs.reset()
-    obs, rewards, dones, infos = envs.step(envs.action_space.sample())
+    obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
     assert len(obs) == num_envs, "Number of observations do not match the number of envs"
     assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
-    assert len(dones) == num_envs, "Number of dones do not match the number of envs"
+    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
+    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
 
 def test_mo_record_ep_statistic():
     env = mo_gym.make("deep-sea-treasure-v0")
@@ -113,9 +114,9 @@ def test_mo_record_ep_statistic_vector_env():
     envs = MORecordEpisodeStatistics(envs)
 
     envs.reset()
-    dones = np.array([False] * num_envs)
-    while not np.any(dones):
-        obs, rewards, dones, info = envs.step(envs.action_space.sample())
+    terminateds = np.array([False] * num_envs)
+    while not np.any(terminateds):
+        obs, rewards, terminateds, _, info = envs.step(envs.action_space.sample())
 
     print(info)
     assert(isinstance(info["episode"]["r"], np.ndarray))
