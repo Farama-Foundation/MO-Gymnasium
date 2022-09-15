@@ -18,7 +18,7 @@ setup(
     license="MIT",
     packages=[package for package in find_packages() if package.startswith("mo_gym")],
     install_requires=[
-        "gym>=0.26", # 0.26 has breaking changes
+        "gym>=0.26",
         "numpy",
         "pygame",
         "scipy",
