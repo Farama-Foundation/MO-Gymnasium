@@ -1,6 +1,6 @@
 from typing import Tuple, List, Union
 
-from pymoo.factory import get_performance_indicator
+from pymoo.indicators.hv import HV
 import numpy as np
 
 
@@ -14,8 +14,7 @@ def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:
     Returns:
         float: Hypervolume metric
     """    
-    hv = get_performance_indicator("hv", ref_point=ref_point * -1)
-    return hv.do(np.array(points) * -1)
+    return HV(ref_point=ref_point * - 1)(np.array(points) * - 1)
 
 
 def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
