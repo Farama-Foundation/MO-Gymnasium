@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import gym
 import numpy as np
@@ -46,7 +47,8 @@ class DeepSeaTreasure(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, dst_map=DEFAULT_MAP, float_state=False):
+    def __init__(self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False):
+        self.render_mode = render_mode
         self.size = 11
         self.window_size = 512
         self.window = None
@@ -87,7 +89,7 @@ class DeepSeaTreasure(gym.Env):
                 return True
         return False
     
-    def render(self, mode='human'):
+    def render(self):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / self.size
         if self.window is None:
@@ -97,11 +99,11 @@ class DeepSeaTreasure(gym.Env):
             self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/treasure.png')
             self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
 
-        if self.window is None and mode == "human":
+        if self.window is None and self.render_mode == "human":
             pygame.init()
             pygame.display.init()
             self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and mode == "human":
+        if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
         self.font = pygame.font.SysFont(None, 30)
@@ -142,7 +144,7 @@ class DeepSeaTreasure(gym.Env):
                 width=1,
             )
 
-        if mode == "human":
+        if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
             self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
@@ -151,7 +153,7 @@ class DeepSeaTreasure(gym.Env):
             # We need to ensure that human-rendering occurs at the predefined framerate.
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
-        else:  # rgb_array
+        elif self.render_mode == 'rgb_array':
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
             )
@@ -163,14 +165,15 @@ class DeepSeaTreasure(gym.Env):
             state = self.current_state.copy()
         return state
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0
         state = self.get_state()
-        return (state, {}) if return_info else state
+        if self.render_mode == "human":
+            self.render()
+        return state, {}
 
     def step(self, action):
         next_state = self.current_state + self.dir[action]
@@ -188,8 +191,9 @@ class DeepSeaTreasure(gym.Env):
         vec_reward = np.array([treasure_value, time_penalty], dtype=np.float32)
 
         state = self.get_state()
-
-        return state, vec_reward, terminal, {}
+        if self.render_mode == "human":
+            self.render()
+        return state, vec_reward, terminal, False, {}
 
     def close(self):
         if self.window is not None:

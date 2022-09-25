@@ -24,7 +24,7 @@ class MOHopperEnv(HopperEnv):
 
         observation = self._get_obs()
         #reward = rewards - costs
-        done = self.done
+        terminated = self.terminated
         
         z = self.data.qpos[1]
         height = 10*(z - self.init_qpos[1])
@@ -39,4 +39,6 @@ class MOHopperEnv(HopperEnv):
             "energy_reward": -energy_cost,
         }
 
-        return observation, vec_reward, done, info
+        if self.render_mode == "human":
+            self.render()
+        return observation, vec_reward, terminated, False, info

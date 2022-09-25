@@ -268,13 +268,12 @@ class FruitTreeEnv(gym.Env):
     def get_tree_value(self, pos):
         return self.tree[self.get_ind(pos)]
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.terminal = False
-        return (self.current_state.copy(), {}) if return_info else self.current_state.copy()
+        return self.current_state.copy(), {}
 
     def step(self, action):
         direction = {
@@ -288,4 +287,4 @@ class FruitTreeEnv(gym.Env):
         if self.current_state[0] == self.tree_depth:
             self.terminal = True
 
-        return self.current_state.copy(), reward, self.terminal, {}
+        return self.current_state.copy(), reward, self.terminal, False, {}

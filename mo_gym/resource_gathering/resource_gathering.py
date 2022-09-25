@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import gym
 import numpy as np
@@ -15,7 +16,8 @@ class ResourceGathering(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self):
+    def __init__(self, render_mode: Optional[str] = None):
+        self.render_mode = render_mode
         self.size = 5
         self.window_size = 512
         self.window = None
@@ -52,7 +54,7 @@ class ResourceGathering(gym.Env):
     def is_valid_state(self, state):
         return state[0] >= 0 and state[0] < self.size and state[1] >= 0 and state[1] < self.size
     
-    def render(self, mode='human'):
+    def render(self):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / self.size
         if self.window is None:
@@ -67,11 +69,11 @@ class ResourceGathering(gym.Env):
             self.agent_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/stickerman.png')
             self.agent_img = pygame.transform.scale(self.agent_img, (pix_square_size, pix_square_size))
 
-        if self.window is None and mode == "human":
+        if self.window is None and self.render_mode == "human":
             pygame.init()
             pygame.display.init()
             self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and mode == "human":
+        if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
         canvas = pygame.Surface((self.window_size, self.window_size))
@@ -106,7 +108,7 @@ class ResourceGathering(gym.Env):
                 width=2,
             )
 
-        if mode == "human":
+        if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
             self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
@@ -115,7 +117,7 @@ class ResourceGathering(gym.Env):
             # We need to ensure that human-rendering occurs at the predefined framerate.
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
-        else:  # rgb_array
+        elif self.render_mode == 'rgb_array':  # rgb_array
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
             )
@@ -125,16 +127,17 @@ class ResourceGathering(gym.Env):
         state = np.concatenate((pos, np.array([self.has_gold, self.has_gem], dtype=np.int32)))
         return state
 
-    def reset(self, seed=None, return_info=False, **kwargs):
+    def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
-        self.np_random.seed(seed)
 
         self.current_pos = self.initial_pos
         self.has_gem = 0
         self.has_gold = 0
         self.step_count = 0.0
         state = self.get_state()
-        return (state, {}) if return_info else state
+        if self.render_mode == 'human':
+            self.render()
+        return state, {}
 
     def step(self, action):
         next_pos = self.current_pos + self.dir[action]
@@ -160,8 +163,9 @@ class ResourceGathering(gym.Env):
             vec_reward[2] = self.has_gem
 
         state = self.get_state()
-
-        return state, vec_reward, done, {}
+        if self.render_mode == 'human':
+            self.render()
+        return state, vec_reward, done, False, {}
 
     def close(self):
         if self.window is not None:

@@ -32,12 +32,12 @@ class LinearReward(gym.Wrapper):
         assert weight.shape == self.env.reward_space.shape, "Reward weight has different shape than reward vector."
         self.w = weight
 
-    def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
-        observation, reward, done, info = self.env.step(action)
+    def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
+        observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info['vector_reward'] = reward
 
-        return observation, scalar_reward, done, info
+        return observation, scalar_reward, terminated, truncated, info
 
 
 class MONormalizeReward(gym.Wrapper):
@@ -66,17 +66,20 @@ class MONormalizeReward(gym.Wrapper):
 
     def step(self, action: ActType):
         """Steps through the environment, normalizing the rewards returned."""
-        obs, rews, dones, infos = self.env.step(action)
+        obs, rews, terminated, truncated, infos = self.env.step(action)
+        # Extracts the objective value to normalize
         to_normalize = rews[self.idx]
         if not self.is_vector_env:
             to_normalize = np.array([to_normalize])
         self.returns = self.returns * self.gamma + to_normalize
+        # Defer normalization to gym implementation
         to_normalize = self.normalize(to_normalize)
-        self.returns[dones] = 0.0
+        self.returns[terminated] = 0.0
         if not self.is_vector_env:
             to_normalize = to_normalize[0]
+        # Injecting the normalized objective value back into the reward vector
         rews[self.idx] = to_normalize
-        return obs, rews, dones, infos
+        return obs, rews, terminated, truncated, infos
 
     def normalize(self, rews):
         """Normalizes the rewards with the running mean rewards and their variance."""
@@ -126,7 +129,7 @@ def add_vector_episode_statistics(
         info (dict): info dict of the environment.
         episode_info (dict): episode statistics data.
         num_envs (int): number of environments.
-        num_envs (int): number of objectives.
+        num_objs (int): number of objectives.
         env_num (int): env number of the vectorized environments.
 
     Returns:
@@ -170,19 +173,28 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
     def step(self, action):
         """Steps through the environment, recording the episode statistics."""
         # This is the code from the RecordEpisodeStatistics wrapper from gym.
-        observations, rewards, dones, infos = self.env.step(action)
+        (
+            observations,
+            rewards,
+            terminateds,
+            truncateds,
+            infos,
+        ) = self.env.step(action)
         assert isinstance(
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
+        # The discounted returns are also computed here
         self.disc_episode_returns += (rewards * np.repeat(self.gamma ** self.episode_lengths, self.reward_dim).reshape(self.episode_returns.shape))
         self.episode_lengths += 1
         if not self.is_vector_env:
-            dones = [dones]
-        dones = list(dones)
+            terminateds = [terminateds]
+            truncateds = [truncateds]
+        terminateds = list(terminateds)
+        truncateds = list(truncateds)
 
-        for i in range(len(dones)):
-            if dones[i]:
+        for i in range(len(terminateds)):
+            if terminateds[i] or truncateds[i]:
                 episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
                 disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
                 episode_length = self.episode_lengths[i]
@@ -209,7 +221,8 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         return (
             observations,
             rewards,
-            dones if self.is_vector_env else dones[0],
+            terminateds if self.is_vector_env else terminateds[0],
+            truncateds if self.is_vector_env else truncateds[0],
             infos,
         )
 
