@@ -36,7 +36,8 @@ def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, flo
     while not done:
         if render:
             env.render(mode='human')
-        obs, r, done, info = env.step(agent.eval(obs, w))
+        obs, r, terminated, truncated, info = env.step(agent.eval(obs, w))
+        done = terminated or truncated
         total_vec_reward += r
         vec_return += gamma * r
         gamma *= agent.gamma
