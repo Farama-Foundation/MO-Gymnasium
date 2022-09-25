@@ -29,7 +29,7 @@ def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, flo
     Returns:
         (float, float, np.ndarray, np.ndarray): Scalarized total reward, scalarized return, vectorized total reward, vectorized return
     """    
-    obs = env.reset()
+    obs, _ = env.reset()
     done = False
     total_vec_reward, vec_return = np.zeros_like(w), np.zeros_like(w)
     gamma = 1.0
