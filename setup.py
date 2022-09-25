@@ -7,6 +7,8 @@ extras = {
 }
 extras["all"] = extras["mario"] + extras["minecart"]
 
+packages = [package for package in find_packages() if package.startswith("mo_gym")]
+package_data = {package: ["*.json", "assets/*"] for package in packages}
 
 setup(
     name="mo-gym",
@@ -16,7 +18,8 @@ setup(
     author="LucasAlegre",
     author_email="lnalegre@inf.ufrgs.br",
     license="MIT",
-    packages=[package for package in find_packages() if package.startswith("mo_gym")],
+    packages=packages,
+    package_data=package_data,
     install_requires=[
         "gym>=0.26",
         "numpy",

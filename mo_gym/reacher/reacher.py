@@ -10,8 +10,8 @@ target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (
 
 class ReacherBulletEnv(BaseBulletEnv):
 
-    def __init__(self, target=(0.14, 0.0)):
-        self.robot = ReacherRobot(target)
+    def __init__(self, target=(0.14, 0.0), fixed_initial_state=False):
+        self.robot = ReacherRobot(target, fixed_initial_state=fixed_initial_state)
         BaseBulletEnv.__init__(self, self.robot)
         self._cam_dist = 0.75
 
@@ -67,9 +67,10 @@ class ReacherBulletEnv(BaseBulletEnv):
 class ReacherRobot(MJCFBasedRobot):
     TARG_LIMIT = 0.27
 
-    def __init__(self, target):
+    def __init__(self, target, fixed_initial_state=False):
         MJCFBasedRobot.__init__(self, 'reacher.xml', 'body0', action_dim=2, obs_dim=4)
         self.target_pos = target
+        self.fixed_initial_state = fixed_initial_state
 
     def robot_specific_reset(self, bullet_client):
         self.jdict["target_x"].reset_current_position(target_positions[0][0], 0)
@@ -86,10 +87,12 @@ class ReacherRobot(MJCFBasedRobot):
         self.target = self.parts["target"]
         self.central_joint = self.jdict["joint0"]
         self.elbow_joint = self.jdict["joint1"]
-        self.central_joint.reset_current_position(self.np_random.uniform(low=-3.14, high=3.14), 0)
-        #self.central_joint.reset_current_position(0, 0)
-        self.elbow_joint.reset_current_position(self.np_random.uniform(low=-3.14 / 2, high=3.14 / 2), 0)
-        #self.elbow_joint.reset_current_position(3.1415/2, 0)
+        if not self.fixed_initial_state:
+            self.central_joint.reset_current_position(self.np_random.uniform(low=-3.14, high=3.14), 0)
+            self.elbow_joint.reset_current_position(self.np_random.uniform(low=-3.14 / 2, high=3.14 / 2), 0)
+        else:
+            self.central_joint.reset_current_position(0, 0)
+            self.elbow_joint.reset_current_position(3.1415/2, 0)
 
     def apply_action(self, a):
         assert (np.isfinite(a).all())
