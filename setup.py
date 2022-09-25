@@ -7,16 +7,19 @@ extras = {
 }
 extras["all"] = extras["mario"] + extras["minecart"]
 
+packages = [package for package in find_packages() if package.startswith("mo_gym")]
+package_data = {package: ["*.json", "assets/*"] for package in packages}
 
 setup(
     name="mo-gym",
-    version="0.1.1",
+    version="0.1.2",
     description="Environments for Multi-Objective RL.",
     url="https://www.github.com/LucasAlegre/mo-gym",
     author="LucasAlegre",
     author_email="lnalegre@inf.ufrgs.br",
     license="MIT",
-    packages=[package for package in find_packages() if package.startswith("mo_gym")],
+    packages=packages,
+    package_data=package_data,
     install_requires=[
         "gym==0.24.1", # 0.25 has breaking changes
         "numpy",
