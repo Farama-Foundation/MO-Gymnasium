@@ -44,6 +44,17 @@ def test_reacher():
     env = LinearReward(env)
     check_env(env)
 
+# TODO: failing because of highway_env original code
+""" def test_highway():
+    env = mo_gym.make('mo-highway-v0')
+    env = LinearReward(env)
+    check_env(env)
+
+def test_highway_fast():
+    env = mo_gym.make('mo-highway-fast-v0')
+    env = LinearReward(env)
+    check_env(env) """
+
 def test_halfcheetah():
     env = mo_gym.make('mo-halfcheetah-v4')
     env = LinearReward(env)
