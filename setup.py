@@ -3,9 +3,11 @@ from setuptools import setup, find_packages
 # Environment-specific dependencies.
 extras = {
     "mario": ["nes-py", "gym-super-mario-bros"],
-    "minecart" : ["scipy"]
+    "minecart" : ["scipy"],
+    "mujoco": ["mujoco"],
+    "highway": ["highway-env"],
 }
-extras["all"] = extras["mario"] + extras["minecart"]
+extras["all"] = extras["mario"] + extras["minecart"] + extras["mujoco"] + extras["highway"]
 
 packages = [package for package in find_packages() if package.startswith("mo_gym")]
 package_data = {package: ["*.json", "assets/*"] for package in packages}
