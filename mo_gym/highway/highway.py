@@ -15,7 +15,7 @@ class MOHighwayEnv(HighwayEnv):
         rewards = info['rewards']
         vec_reward = np.array([rewards['high_speed_reward'], 
                               rewards['right_lane_reward'], 
-                              rewards['collision_reward']], dtype=np.float32)
+                              -rewards['collision_reward']], dtype=np.float32)
         vec_reward *= rewards['on_road_reward']
         info['original_reward'] = reward
         return obs, vec_reward, terminated, truncated, info
@@ -33,7 +33,7 @@ class MOHighwayEnvFast(HighwayEnvFast):
         rewards = info['rewards']
         vec_reward = np.array([rewards['high_speed_reward'], 
                                rewards['right_lane_reward'], 
-                               rewards['collision_reward']], dtype=np.float32)
+                               -rewards['collision_reward']], dtype=np.float32)
         vec_reward *= rewards['on_road_reward']
         info['original_reward'] = reward
         return obs, vec_reward, terminated, truncated, info
