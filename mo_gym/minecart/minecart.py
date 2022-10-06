@@ -760,11 +760,11 @@ def pareto_filter(costs, minimize=True):
 
 if __name__ == '__main__':
     env = Minecart(render_mode='human', image_observation=True)
-    done = False
+    terminated = False
     env.reset()
     while True:
         env.render()
-        obs, r, done, info = env.step(env.action_space.sample())
+        obs, r, terminated, truncated, info = env.step(env.action_space.sample())
         #print(str(env))
-        if done:
+        if terminated:
             env.reset()

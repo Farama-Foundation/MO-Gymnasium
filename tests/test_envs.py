@@ -9,6 +9,11 @@ def test_deep_sea_treasure():
     env = LinearReward(env)
     check_env(env)
 
+def test_fishwood():
+    env = mo_gym.make('fishwood-v0')
+    env = LinearReward(env)
+    check_env(env)
+
 def test_four_room():
     env = mo_gym.make('four-room-v0')
     env = LinearReward(env)
