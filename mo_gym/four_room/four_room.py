@@ -262,8 +262,8 @@ class FourRoom(gym.Env):
 if __name__ == '__main__':
 
     env = FourRoom()
-    done = False
+    terminated = False
     env.reset()
-    while not done:
+    while not terminated:
         env.render()
-        obs, r, done, info = env.step(env.action_space.sample())
+        obs, r, terminated, truncated, info = env.step(env.action_space.sample())

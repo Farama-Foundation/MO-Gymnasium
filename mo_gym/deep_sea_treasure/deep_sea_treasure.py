@@ -204,10 +204,10 @@ class DeepSeaTreasure(gym.Env):
 if __name__ == '__main__':
 
     env = DeepSeaTreasure()
-    done = False
+    terminated = False
     env.reset()
     while True:
         env.render()
-        obs, r, done, info = env.step(env.action_space.sample())
-        if done:
+        obs, r, terminated, truncated, info = env.step(env.action_space.sample())
+        if terminated:
             env.reset()

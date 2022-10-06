@@ -9,5 +9,6 @@ import mo_gym.mario
 import mo_gym.reacher
 import mo_gym.highway
 import mo_gym.mujoco
+import mo_gym.fishwood
 from mo_gym.utils import *
 from mo_gym.evaluation import *

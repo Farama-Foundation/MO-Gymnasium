@@ -110,14 +110,14 @@ if __name__ == '__main__':
     #env = FrameStack(env, 4)
     env = mo_gym.LinearReward(env)
 
-    done = False
+    terminated = False
     env.reset()
     while True:
-        obs, r, done, info = env.step(env.action_space.sample())
-        print(r, info['vector_reward'], done, info['time'])
+        obs, r, terminated, truncated, info = env.step(env.action_space.sample())
+        print(r, info['vector_reward'], terminated, info['time'])
         """ plt.figure()
         plt.imshow(obs, cmap='gray', vmin=0, vmax=255)
         plt.show() """
         env.render()
-        if done:
+        if terminated:
             env.reset()
