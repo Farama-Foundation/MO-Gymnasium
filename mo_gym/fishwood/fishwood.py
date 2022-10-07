@@ -7,6 +7,7 @@ from gym import spaces
 
 
 class FishWood(gym.Env):
+    metadata = {"render_modes": ["ansi"]}
     FISH = 0
     WOOD = 1
     MAX_TS = 200
@@ -35,9 +36,9 @@ class FishWood(gym.Env):
 
     def render(self):
         if self._state == self.WOOD:
-            print(f"t={self._timestep}, in wood.")
+            return f"t={self._timestep}, in wood."
         else:
-            print(f"t={self._timestep}, fishing")
+            return f"t={self._timestep}, fishing"
 
     def step(self, action):
         # Obtain a resource from the current state
@@ -52,7 +53,7 @@ class FishWood(gym.Env):
         self._state = action
         self._timestep += 1
 
-        return self._state, rewards, self._timestep == 200, False, {}
+        return self._state, rewards, self._timestep == self.MAX_TS, False, {}
 
 
 if __name__ == '__main__':
