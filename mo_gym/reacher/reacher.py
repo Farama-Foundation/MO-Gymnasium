@@ -1,3 +1,4 @@
+from typing import Optional
 import gym
 from gym import spaces
 import numpy as np
@@ -10,9 +11,12 @@ target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (
 
 class ReacherBulletEnv(BaseBulletEnv):
 
-    def __init__(self, target=(0.14, 0.0), fixed_initial_state=False):
+    metadata = {'render.modes': ['human', 'rgb_array']}
+
+    def __init__(self, render_mode: Optional[str] = None, target=(0.14, 0.0), fixed_initial_state: Optional[tuple]=(3.14, 0)):
         self.robot = ReacherRobot(target, fixed_initial_state=fixed_initial_state)
-        BaseBulletEnv.__init__(self, self.robot)
+        self.render_mode = render_mode
+        BaseBulletEnv.__init__(self, self.robot, render=render_mode == 'human')
         self._cam_dist = 0.75
 
         #self.target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (0.0, 0.14), (0.0, -0.14), (0.22, 0.0), (-0.22, 0.0), (0.0, 0.22), (0.0, -0.22), (0.1, 0.1), (0.1, -0.1), (-0.1, 0.1), (-0.1, -0.1)]))
@@ -50,8 +54,17 @@ class ReacherBulletEnv(BaseBulletEnv):
             phi[index] = (1. - 4*delta) # 1 - 4
 
         self.HUD(state, real_action, False)
+
+        if self.render_mode == 'human':
+            self._render(mode='human')
         
         return state, phi, False, False, {}
+    
+    def render(self):
+        if self.render_mode == 'human':
+            self._render(mode='human')
+        else:
+            return self._render(mode='rgb_array')
 
     def camera_adjust(self):
         x, y, z = self.robot.fingertip.pose().xyz()
@@ -61,7 +74,10 @@ class ReacherBulletEnv(BaseBulletEnv):
     
     def reset(self, seed=None, **kwargs):
         self._seed(seed)
-        return super().reset(), {}
+        obs = super().reset()
+        if self.render_mode == 'human':
+            self._render(mode='human')
+        return obs, {}
 
 
 class ReacherRobot(MJCFBasedRobot):
@@ -87,12 +103,12 @@ class ReacherRobot(MJCFBasedRobot):
         self.target = self.parts["target"]
         self.central_joint = self.jdict["joint0"]
         self.elbow_joint = self.jdict["joint1"]
-        if not self.fixed_initial_state:
+        if self.fixed_initial_state is None:
             self.central_joint.reset_current_position(self.np_random.uniform(low=-3.14, high=3.14), 0)
             self.elbow_joint.reset_current_position(self.np_random.uniform(low=-3.14 / 2, high=3.14 / 2), 0)
         else:
             self.central_joint.reset_current_position(0, 0)
-            self.elbow_joint.reset_current_position(3.1415/2, 0)
+            self.elbow_joint.reset_current_position(self.fixed_initial_state[0], self.fixed_initial_state[1])
 
     def apply_action(self, a):
         assert (np.isfinite(a).all())
