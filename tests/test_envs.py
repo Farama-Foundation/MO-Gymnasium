@@ -75,3 +75,8 @@ def test_breakable_bottles():
     env = LinearReward(env)
     # skip because of bug in gym (see https://github.com/openai/gym/issues/2956)
     # check_env(env)
+
+def test_water_reservoir():
+    env = gym.make('water-reservoir-v0')
+    env = LinearReward(env)
+    check_env(env)
