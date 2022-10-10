@@ -49,12 +49,13 @@ def eval_mo(agent, env, w: np.ndarray, render: bool = False) -> Tuple[float, flo
     )
 
 
-def eval_mo_esr(agent, env, scalarization, render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
-    """Evaluates one episode of the agent in the environment.
+def eval_mo_reward_conditioned(agent, env, scalarization, render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
+    """Evaluates one episode of the agent in the environment. This makes the assumption that the agent is conditioned on the
+    accrued reward i.e. for ESR agent.
 
     Args:
         agent: Agent
-        env: MO-Gym environment with LinearReward wrapper
+        env: MO-Gym environment
         scalarization: Scalarization function
         render (bool, optional): Whether to render the environment. Defaults to False.
 
