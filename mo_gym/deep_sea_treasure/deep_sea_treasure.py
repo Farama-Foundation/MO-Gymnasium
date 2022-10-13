@@ -99,10 +99,11 @@ class DeepSeaTreasure(gym.Env):
             self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/treasure.png')
             self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
 
-        if self.window is None and self.render_mode == "human":
+        if self.window is None and self.render_mode is not None:
             pygame.init()
-            pygame.display.init()
-            self.window = pygame.display.set_mode((self.window_size, self.window_size))
+            if self.render_mode == "human":
+                pygame.display.init()
+                self.window = pygame.display.set_mode((self.window_size, self.window_size))
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
