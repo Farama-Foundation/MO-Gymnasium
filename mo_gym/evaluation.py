@@ -17,7 +17,13 @@ def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:
     return HV(ref_point=ref_point * - 1)(np.array(points) * - 1)
 
 
-def eval_mo(agent, env, scalarization, w: Optional[np.ndarray] = None,  render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
+def eval_mo(
+        agent,
+        env,
+        scalarization=np.dot,
+        w: Optional[np.ndarray] = None,
+        render: bool = False
+) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment.
 
     Args:
@@ -58,7 +64,13 @@ def eval_mo(agent, env, scalarization, w: Optional[np.ndarray] = None,  render: 
     )
 
 
-def eval_mo_reward_conditioned(agent, env, scalarization, w: Optional[np.ndarray] = None, render: bool = False) -> Tuple[float, float, np.ndarray, np.ndarray]:
+def eval_mo_reward_conditioned(
+        agent,
+        env,
+        scalarization=np.dot,
+        w: Optional[np.ndarray] = None,
+        render: bool = False
+) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment. This makes the assumption that the agent is conditioned on the
     accrued reward i.e. for ESR agent.
 
