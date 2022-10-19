@@ -4,9 +4,11 @@ from gym.spaces import Box
 
 
 class MOHopperEnv(HopperEnv):
-    def __init__(self, **kwargs):
+    def __init__(self, cost_objective=True, **kwargs):
         super(MOHopperEnv, self).__init__(**kwargs)
-        self.reward_space = Box(low=-np.inf, high=np.inf, shape=(3,))
+        self.cost_objetive = cost_objective
+        self.rew_dim = 3 if cost_objective else 2
+        self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.rew_dim,))
     
     def step(self, action):
         x_position_before = self.data.qpos[0]
@@ -29,7 +31,13 @@ class MOHopperEnv(HopperEnv):
         z = self.data.qpos[1]
         height = 10*(z - self.init_qpos[1])
         energy_cost = np.sum(np.square(action))
-        vec_reward = np.array([x_velocity, height, -energy_cost], dtype=np.float32)
+
+        if self.cost_objetive:
+            vec_reward = np.array([x_velocity, height, -energy_cost], dtype=np.float32)
+        else:
+            vec_reward = np.array([x_velocity, height], dtype=np.float32)
+            vec_reward -= self._ctrl_cost_weight * energy_cost
+
         vec_reward += healthy_reward
 
         info = {
