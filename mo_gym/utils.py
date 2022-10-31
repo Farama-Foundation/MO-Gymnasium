@@ -13,7 +13,7 @@ ActType = TypeVar("ActType")
 
 
 def make(env_name: str, disable_env_checker: bool = True, **kwargs) -> gym.Env:
-    """ Disable env checker, as it requires the reward to be a scalar."""
+    """Disable env checker, as it requires the reward to be a scalar."""
     return gym.make(env_name, disable_env_checker=disable_env_checker, **kwargs)
 
 
@@ -29,13 +29,15 @@ class LinearReward(gym.Wrapper):
         self.set_weight(weight)
 
     def set_weight(self, weight):
-        assert weight.shape == self.env.reward_space.shape, "Reward weight has different shape than reward vector."
+        assert (
+            weight.shape == self.env.reward_space.shape
+        ), "Reward weight has different shape than reward vector."
         self.w = weight
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
         observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
-        info['vector_reward'] = reward
+        info["vector_reward"] = reward
 
         return observation, scalar_reward, terminated, truncated, info
 
@@ -46,15 +48,17 @@ class MONormalizeReward(gym.Wrapper):
     Based on Gym's implementation: https://github.com/openai/gym/blob/master/gym/wrappers/normalize.py#L113
     """
 
-    def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
+    def __init__(
+        self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8
+    ):
         """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
 
-             Args:
-                 env (env): The environment to apply the wrapper
-                 idx (int): the index of the reward to normalize
-                 epsilon (float): A stability parameter
-                 gamma (float): The discount factor that is used in the exponential moving average.
-             """
+        Args:
+            env (env): The environment to apply the wrapper
+            idx (int): the index of the reward to normalize
+            epsilon (float): A stability parameter
+            gamma (float): The discount factor that is used in the exponential moving average.
+        """
         super().__init__(env)
         self.idx = idx
         self.num_envs = getattr(env, "num_envs", 1)
@@ -88,7 +92,7 @@ class MONormalizeReward(gym.Wrapper):
 
 
 class MOClipReward(gym.RewardWrapper):
-    """"Clip reward[idx] to [min, max]. """
+    """ "Clip reward[idx] to [min, max]."""
 
     def __init__(self, env: gym.Env, idx: int, min_r, max_r):
         super().__init__(env)
@@ -102,21 +106,24 @@ class MOClipReward(gym.RewardWrapper):
 
 
 class MOSyncVectorEnv(SyncVectorEnv):
-    """Vectorized environment that serially runs multiple environments.
-    """
+    """Vectorized environment that serially runs multiple environments."""
 
     def __init__(
-            self,
-            env_fns: Iterator[callable],
-            copy: bool = True,
+        self,
+        env_fns: Iterator[callable],
+        copy: bool = True,
     ):
-        super().__init__(
-            env_fns,
-            copy=copy
-        )
+        super().__init__(env_fns, copy=copy)
         # Just overrides the rewards memory to add the number of objectives
         self.reward_space = self.envs[0].reward_space
-        self._rewards = np.zeros((self.num_envs, self.reward_space.shape[0],), dtype=np.float64)
+        self._rewards = np.zeros(
+            (
+                self.num_envs,
+                self.reward_space.shape[0],
+            ),
+            dtype=np.float64,
+        )
+
 
 def add_vector_episode_statistics(
     info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int
@@ -150,8 +157,9 @@ def add_vector_episode_statistics(
 
     return info
 
+
 class MORecordEpisodeStatistics(RecordEpisodeStatistics):
-    def __init__(self, env: gym.Env, gamma: float = 1., deque_size: int = 100):
+    def __init__(self, env: gym.Env, gamma: float = 1.0, deque_size: int = 100):
         """This wrapper will keep track of cumulative rewards and episode lengths.
 
         Args:
@@ -166,8 +174,12 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
         observations = super().reset(**kwargs)
-        self.episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
-        self.disc_episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
+        self.episode_returns = np.zeros(
+            (self.num_envs, self.reward_dim), dtype=np.float32
+        )
+        self.disc_episode_returns = np.zeros(
+            (self.num_envs, self.reward_dim), dtype=np.float32
+        )
         return observations
 
     def step(self, action):
@@ -185,7 +197,9 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
         # The discounted returns are also computed here
-        self.disc_episode_returns += (rewards * np.repeat(self.gamma ** self.episode_lengths, self.reward_dim).reshape(self.episode_returns.shape))
+        self.disc_episode_returns += rewards * np.repeat(
+            self.gamma**self.episode_lengths, self.reward_dim
+        ).reshape(self.episode_returns.shape)
         self.episode_lengths += 1
         if not self.is_vector_env:
             terminateds = [terminateds]
@@ -195,8 +209,12 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
         for i in range(len(terminateds)):
             if terminateds[i] or truncateds[i]:
-                episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
-                disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
+                episode_return = deepcopy(
+                    self.episode_returns[i]
+                )  # Makes a deepcopy to avoid subsequent mutations
+                disc_episode_return = deepcopy(
+                    self.disc_episode_returns[i]
+                )  # Makes a deepcopy to avoid subsequent mutations
                 episode_length = self.episode_lengths[i]
                 episode_info = {
                     "episode": {
@@ -208,7 +226,11 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
                 }
                 if self.is_vector_env:
                     infos = add_vector_episode_statistics(
-                        infos, episode_info["episode"], self.num_envs, self.reward_dim, i
+                        infos,
+                        episode_info["episode"],
+                        self.num_envs,
+                        self.reward_dim,
+                        i,
                     )
                 else:
                     infos = {**infos, **episode_info}
@@ -225,4 +247,3 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             truncateds if self.is_vector_env else truncateds[0],
             infos,
         )
-
