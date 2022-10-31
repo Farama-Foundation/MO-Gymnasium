@@ -1,7 +1,12 @@
 import numpy as np
 
 import mo_gym
-from mo_gym import MONormalizeReward, MOClipReward, MOSyncVectorEnv, MORecordEpisodeStatistics
+from mo_gym import (
+    MONormalizeReward,
+    MOClipReward,
+    MOSyncVectorEnv,
+    MORecordEpisodeStatistics,
+)
 
 
 def go_to_8_3(env):
@@ -16,7 +21,7 @@ def go_to_8_3(env):
 
 
 def test_normalization_wrapper():
-    env = mo_gym.make('deep-sea-treasure-v0')
+    env = mo_gym.make("deep-sea-treasure-v0")
     norm_treasure_env = MONormalizeReward(env, idx=0)
     both_norm_env = MONormalizeReward(norm_treasure_env, idx=1)
 
@@ -35,13 +40,13 @@ def test_normalization_wrapper():
     norm_treasure_env.reset()
     _, rewards, _, _, _ = norm_treasure_env.step(1)  # down
     # Time rewards are not normalized (-1)
-    np.testing.assert_allclose(rewards, [0.18, -1.], rtol=0, atol=1e-2)
+    np.testing.assert_allclose(rewards, [0.18, -1.0], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(norm_treasure_env)
-    np.testing.assert_allclose(rewards, [2.13, -1.], rtol=0, atol=1e-2)
+    np.testing.assert_allclose(rewards, [2.13, -1.0], rtol=0, atol=1e-2)
 
 
 def test_clip_wrapper():
-    env = mo_gym.make('deep-sea-treasure-v0')
+    env = mo_gym.make("deep-sea-treasure-v0")
     clip_treasure_env = MOClipReward(env, idx=0, min_r=0, max_r=0.5)
     both_clipped_env = MOClipReward(clip_treasure_env, idx=1, min_r=-0.5, max_r=0)
 
@@ -56,9 +61,9 @@ def test_clip_wrapper():
     clip_treasure_env.reset()
     _, rewards, _, _, _ = clip_treasure_env.step(1)  # down
     # Time rewards are not clipped (-1)
-    np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
+    np.testing.assert_allclose(rewards, [0.5, -1.0], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(clip_treasure_env)
-    np.testing.assert_allclose(rewards, [0.5, -1.], rtol=0, atol=1e-2)
+    np.testing.assert_allclose(rewards, [0.5, -1.0], rtol=0, atol=1e-2)
 
 
 def test_mo_sync_wrapper():
@@ -71,16 +76,21 @@ def test_mo_sync_wrapper():
         return thunk
 
     num_envs = 3
-    envs = MOSyncVectorEnv([
-        make_env("deep-sea-treasure-v0") for _ in range(num_envs)
-    ])
+    envs = MOSyncVectorEnv([make_env("deep-sea-treasure-v0") for _ in range(num_envs)])
 
     envs.reset()
     obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
-    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
+    assert (
+        len(obs) == num_envs
+    ), "Number of observations do not match the number of envs"
     assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
-    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
-    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
+    assert (
+        len(terminateds) == num_envs
+    ), "Number of terminateds do not match the number of envs"
+    assert (
+        len(truncateds) == num_envs
+    ), "Number of truncateds do not match the number of envs"
+
 
 def test_mo_record_ep_statistic():
     env = mo_gym.make("deep-sea-treasure-v0")
@@ -89,15 +99,19 @@ def test_mo_record_ep_statistic():
     env.reset()
     _, info = go_to_8_3(env)
 
-    assert(isinstance(info["episode"]["r"], np.ndarray))
-    assert(isinstance(info["episode"]["dr"], np.ndarray))
-    assert(info["episode"]["r"].shape == (2,))
-    assert(info["episode"]["dr"].shape == (2,))
-    assert(tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.)))
-    assert(tuple(np.round(info["episode"]["dr"], 4)) == (np.float32(7.7154), np.float32(-2.9109)))
-    assert(isinstance(info["episode"]["l"], np.int32))
-    assert(info["episode"]["l"] == 3)
-    assert(isinstance(info["episode"]["t"], float))
+    assert isinstance(info["episode"]["r"], np.ndarray)
+    assert isinstance(info["episode"]["dr"], np.ndarray)
+    assert info["episode"]["r"].shape == (2,)
+    assert info["episode"]["dr"].shape == (2,)
+    assert tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.0))
+    assert tuple(np.round(info["episode"]["dr"], 4)) == (
+        np.float32(7.7154),
+        np.float32(-2.9109),
+    )
+    assert isinstance(info["episode"]["l"], np.int32)
+    assert info["episode"]["l"] == 3
+    assert isinstance(info["episode"]["t"], float)
+
 
 def test_mo_record_ep_statistic_vector_env():
     def make_env(env_id):
@@ -108,9 +122,7 @@ def test_mo_record_ep_statistic_vector_env():
         return thunk
 
     num_envs = 3
-    envs = MOSyncVectorEnv([
-        make_env("deep-sea-treasure-v0") for _ in range(num_envs)
-    ])
+    envs = MOSyncVectorEnv([make_env("deep-sea-treasure-v0") for _ in range(num_envs)])
     envs = MORecordEpisodeStatistics(envs)
 
     envs.reset()
@@ -119,10 +131,10 @@ def test_mo_record_ep_statistic_vector_env():
         obs, rewards, terminateds, _, info = envs.step(envs.action_space.sample())
 
     print(info)
-    assert(isinstance(info["episode"]["r"], np.ndarray))
-    assert(isinstance(info["episode"]["dr"], np.ndarray))
+    assert isinstance(info["episode"]["r"], np.ndarray)
+    assert isinstance(info["episode"]["dr"], np.ndarray)
     # Episode records are vectorized because multiple environments
-    assert(info["episode"]["r"].shape == (num_envs, 2))
-    assert(info["episode"]["dr"].shape == (num_envs, 2))
-    assert(isinstance(info["episode"]["l"], np.ndarray))
-    assert(isinstance(info["episode"]["t"], np.ndarray))
+    assert info["episode"]["r"].shape == (num_envs, 2)
+    assert info["episode"]["dr"].shape == (num_envs, 2)
+    assert isinstance(info["episode"]["l"], np.ndarray)
+    assert isinstance(info["episode"]["t"], np.ndarray)

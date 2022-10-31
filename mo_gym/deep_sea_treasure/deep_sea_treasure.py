@@ -9,33 +9,38 @@ from gym.spaces import Box, Discrete
 
 # As in Yang et al. (2019):
 DEFAULT_MAP = np.array(
-            [[0,    0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [0.7,  0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [-10,  8.2,  0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [-10, -10, 11.5,  0,   0,  0,   0,   0,   0,   0,   0],
-             [-10, -10, -10, 14.0, 15.1,16.1,0,   0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, 19.6, 20.3,0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10,  0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10, 22.4, 0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10, -10, 23.7, 0]]
-        )
+    [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0.7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 8.2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, -10, 11.5, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, -10, -10, 14.0, 15.1, 16.1, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 19.6, 20.3, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, 22.4, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, -10, 23.7, 0],
+    ]
+)
 
 # As in Vamplew et al. (2018):
 CONCAVE_MAP = np.array(
-            [[0,    0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [1.0,  0,    0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [-10,  2.0,  0,   0,   0,  0,   0,   0,   0,   0,   0],
-             [-10, -10,  3.0,  0,   0,  0,   0,   0,   0,   0,   0],
-             [-10, -10, -10, 5.0,  8.0,16.0, 0 ,  0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10,  0,   0,   0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, 24.0, 50.0,0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10,  0,   0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10, 74.0, 0,   0],
-             [-10, -10, -10, -10, -10, -10, -10, -10, -10, 124.0,0]]
-        )
+    [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 2.0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, -10, 3.0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, -10, -10, 5.0, 8.0, 16.0, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 0, 0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, 24.0, 50.0, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, 74.0, 0, 0],
+        [-10, -10, -10, -10, -10, -10, -10, -10, -10, 124.0, 0],
+    ]
+)
+
 
 class DeepSeaTreasure(gym.Env):
     """Deep Sea Treasure environment
@@ -47,7 +52,9 @@ class DeepSeaTreasure(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False):
+    def __init__(
+        self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False
+    ):
         self.render_mode = render_mode
         self.size = 11
         self.window_size = 512
@@ -59,12 +66,12 @@ class DeepSeaTreasure(gym.Env):
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
         assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
-        
+
         self.dir = {
             0: np.array([-1, 0], dtype=np.int32),  # up
             1: np.array([1, 0], dtype=np.int32),  # down
             2: np.array([0, -1], dtype=np.int32),  # left
-            3: np.array([0, 1], dtype=np.int32)  # right
+            3: np.array([0, 1], dtype=np.int32),  # right
         }
 
         # state space specification: 2-dimensional discrete box
@@ -76,7 +83,11 @@ class DeepSeaTreasure(gym.Env):
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
-        self.reward_space = Box(low=np.array([0, -1]), high=np.array([np.max(self.sea_map), -1]), dtype=np.float32)
+        self.reward_space = Box(
+            low=np.array([0, -1]),
+            high=np.array([np.max(self.sea_map), -1]),
+            dtype=np.float32,
+        )
 
         self.current_state = np.array([0, 0], dtype=np.int32)
 
@@ -88,22 +99,34 @@ class DeepSeaTreasure(gym.Env):
             if self.get_map_value(state) != -10:
                 return True
         return False
-    
+
     def render(self):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / self.size
         if self.window is None:
-            self.submarine_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/submarine.png')
-            self.submarine_img = pygame.transform.scale(self.submarine_img, (pix_square_size, pix_square_size))
-            self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
-            self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + '/assets/treasure.png')
-            self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
+            self.submarine_img = pygame.image.load(
+                str(Path(__file__).parent.absolute()) + "/assets/submarine.png"
+            )
+            self.submarine_img = pygame.transform.scale(
+                self.submarine_img, (pix_square_size, pix_square_size)
+            )
+            self.submarine_img = pygame.transform.flip(
+                self.submarine_img, flip_x=True, flip_y=False
+            )
+            self.treasure_img = pygame.image.load(
+                str(Path(__file__).parent.absolute()) + "/assets/treasure.png"
+            )
+            self.treasure_img = pygame.transform.scale(
+                self.treasure_img, (pix_square_size, pix_square_size)
+            )
 
         if self.window is None and self.render_mode is not None:
             pygame.init()
             if self.render_mode == "human":
                 pygame.display.init()
-                self.window = pygame.display.set_mode((self.window_size, self.window_size))
+                self.window = pygame.display.set_mode(
+                    (self.window_size, self.window_size)
+                )
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
@@ -113,20 +136,24 @@ class DeepSeaTreasure(gym.Env):
 
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):
-                if self.sea_map[i,j] == -10:
+                if self.sea_map[i, j] == -10:
                     pygame.draw.rect(
                         canvas,
                         (0, 0, 0),
                         pygame.Rect(
-                            pix_square_size * np.array([j,i]) + 0.6,
+                            pix_square_size * np.array([j, i]) + 0.6,
                             (pix_square_size, pix_square_size),
                         ),
                     )
-                elif self.sea_map[i,j] != 0:
-                   canvas.blit(self.treasure_img, np.array([j,i]) * pix_square_size)
-                   img = self.font.render(str(self.sea_map[i,j]), True, (255, 255, 255))
-                   canvas.blit(img, np.array([j,i]) * pix_square_size + np.array([5, 20]))
- 
+                elif self.sea_map[i, j] != 0:
+                    canvas.blit(self.treasure_img, np.array([j, i]) * pix_square_size)
+                    img = self.font.render(
+                        str(self.sea_map[i, j]), True, (255, 255, 255)
+                    )
+                    canvas.blit(
+                        img, np.array([j, i]) * pix_square_size + np.array([5, 20])
+                    )
+
         canvas.blit(self.submarine_img, self.current_state[::-1] * pix_square_size)
 
         for x in range(self.size + 1):
@@ -154,7 +181,7 @@ class DeepSeaTreasure(gym.Env):
             # We need to ensure that human-rendering occurs at the predefined framerate.
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
-        elif self.render_mode == 'rgb_array':
+        elif self.render_mode == "rgb_array":
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
             )
@@ -202,7 +229,7 @@ class DeepSeaTreasure(gym.Env):
             pygame.quit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     env = DeepSeaTreasure()
     terminated = False

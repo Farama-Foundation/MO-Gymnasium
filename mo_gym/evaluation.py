@@ -14,15 +14,15 @@ def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:
     Returns:
         float: Hypervolume metric
     """
-    return HV(ref_point=ref_point * - 1)(np.array(points) * - 1)
+    return HV(ref_point=ref_point * -1)(np.array(points) * -1)
 
 
 def eval_mo(
-        agent,
-        env,
-        scalarization=np.dot,
-        w: Optional[np.ndarray] = None,
-        render: bool = False
+    agent,
+    env,
+    scalarization=np.dot,
+    w: Optional[np.ndarray] = None,
+    render: bool = False,
 ) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment.
 
@@ -42,7 +42,7 @@ def eval_mo(
     gamma = 1.0
     while not done:
         if render:
-            env.render(mode='human')
+            env.render(mode="human")
         obs, r, terminated, truncated, info = env.step(agent.eval(obs, w))
         done = terminated or truncated
         vec_return += r
@@ -65,11 +65,11 @@ def eval_mo(
 
 
 def eval_mo_reward_conditioned(
-        agent,
-        env,
-        scalarization=np.dot,
-        w: Optional[np.ndarray] = None,
-        render: bool = False
+    agent,
+    env,
+    scalarization=np.dot,
+    w: Optional[np.ndarray] = None,
+    render: bool = False,
 ) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment. This makes the assumption that the agent is conditioned on the
     accrued reward i.e. for ESR agent.
@@ -86,11 +86,13 @@ def eval_mo_reward_conditioned(
     """
     obs, _ = env.reset()
     done = False
-    vec_return, disc_vec_return = np.zeros(env.reward_space.shape[0]), np.zeros(env.reward_space.shape[0])
+    vec_return, disc_vec_return = np.zeros(env.reward_space.shape[0]), np.zeros(
+        env.reward_space.shape[0]
+    )
     gamma = 1.0
     while not done:
         if render:
-            env.render(mode='human')
+            env.render(mode="human")
         obs, r, terminated, truncated, info = env.step(agent.eval(obs, disc_vec_return))
         done = terminated or truncated
         vec_return += r
@@ -111,8 +113,9 @@ def eval_mo_reward_conditioned(
     )
 
 
-def policy_evaluation_mo(agent, env, w: np.ndarray, rep: int = 5, return_scalarized_value: bool = False) -> Union[
-    np.ndarray, float]:
+def policy_evaluation_mo(
+    agent, env, w: np.ndarray, rep: int = 5, return_scalarized_value: bool = False
+) -> Union[np.ndarray, float]:
     """Evaluates the value of a policy by runnning the policy for multiple episodes.
 
     Args:
