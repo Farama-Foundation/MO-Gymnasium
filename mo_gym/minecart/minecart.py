@@ -269,8 +269,8 @@ class Minecart(gym.Env):
         # Empty mine just outside the base
         virtual_mine = Mine(
             self.ore_cnt,
-            (base_perimeter ** 2 / 2) ** (1 / 2),
-            (base_perimeter ** 2 / 2) ** (1 / 2),
+            (base_perimeter**2 / 2) ** (1 / 2),
+            (base_perimeter**2 / 2) ** (1 / 2),
         )
         virtual_mine.distributions = [scipy.stats.norm(0, 0) for _ in range(self.ore_cnt)]
         for mine in self.mines + [virtual_mine]:
