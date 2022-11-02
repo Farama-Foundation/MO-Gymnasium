@@ -80,16 +80,10 @@ def test_mo_sync_wrapper():
 
     envs.reset()
     obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
-    assert (
-        len(obs) == num_envs
-    ), "Number of observations do not match the number of envs"
+    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
     assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
-    assert (
-        len(terminateds) == num_envs
-    ), "Number of terminateds do not match the number of envs"
-    assert (
-        len(truncateds) == num_envs
-    ), "Number of truncateds do not match the number of envs"
+    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
+    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
 
 
 def test_mo_record_ep_statistic():

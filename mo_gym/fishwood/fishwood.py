@@ -21,9 +21,7 @@ class FishWood(gym.Env):
         # 2 states, fishing and in the woods
         self.observation_space = spaces.Discrete(2)
         # 2 objectives, amount of fish and amount of wood
-        self.reward_space = spaces.Box(
-            low=np.array([0, 0]), high=np.array([1.0, 1.0]), dtype=np.float32
-        )
+        self.reward_space = spaces.Box(low=np.array([0, 0]), high=np.array([1.0, 1.0]), dtype=np.float32)
 
         self._state = self.reset()
 

@@ -29,9 +29,7 @@ class LinearReward(gym.Wrapper):
         self.set_weight(weight)
 
     def set_weight(self, weight):
-        assert (
-            weight.shape == self.env.reward_space.shape
-        ), "Reward weight has different shape than reward vector."
+        assert weight.shape == self.env.reward_space.shape, "Reward weight has different shape than reward vector."
         self.w = weight
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
@@ -48,9 +46,7 @@ class MONormalizeReward(gym.Wrapper):
     Based on Gym's implementation: https://github.com/openai/gym/blob/master/gym/wrappers/normalize.py#L113
     """
 
-    def __init__(
-        self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8
-    ):
+    def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
         """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
 
         Args:
@@ -125,9 +121,7 @@ class MOSyncVectorEnv(SyncVectorEnv):
         )
 
 
-def add_vector_episode_statistics(
-    info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int
-):
+def add_vector_episode_statistics(info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int):
     """Add episode statistics.
 
     Add statistics coming from the vectorized environment.
@@ -174,12 +168,8 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
         observations = super().reset(**kwargs)
-        self.episode_returns = np.zeros(
-            (self.num_envs, self.reward_dim), dtype=np.float32
-        )
-        self.disc_episode_returns = np.zeros(
-            (self.num_envs, self.reward_dim), dtype=np.float32
-        )
+        self.episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
+        self.disc_episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
         return observations
 
     def step(self, action):
@@ -197,9 +187,9 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
         # The discounted returns are also computed here
-        self.disc_episode_returns += rewards * np.repeat(
-            self.gamma**self.episode_lengths, self.reward_dim
-        ).reshape(self.episode_returns.shape)
+        self.disc_episode_returns += rewards * np.repeat(self.gamma ** self.episode_lengths, self.reward_dim).reshape(
+            self.episode_returns.shape
+        )
         self.episode_lengths += 1
         if not self.is_vector_env:
             terminateds = [terminateds]
@@ -209,12 +199,8 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
         for i in range(len(terminateds)):
             if terminateds[i] or truncateds[i]:
-                episode_return = deepcopy(
-                    self.episode_returns[i]
-                )  # Makes a deepcopy to avoid subsequent mutations
-                disc_episode_return = deepcopy(
-                    self.disc_episode_returns[i]
-                )  # Makes a deepcopy to avoid subsequent mutations
+                episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
+                disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
                 episode_length = self.episode_lengths[i]
                 episode_info = {
                     "episode": {

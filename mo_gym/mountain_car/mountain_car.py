@@ -13,9 +13,7 @@ class MOMountainCar(MountainCarEnv):
         self.reward_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
 
     def step(self, action: int):
-        assert self.action_space.contains(
-            action
-        ), f"{action!r} ({type(action)}) invalid"
+        assert self.action_space.contains(action), f"{action!r} ({type(action)}) invalid"
 
         position, velocity = self.state
         velocity += (action - 1) * self.force + math.cos(3 * position) * (-self.gravity)
@@ -25,9 +23,7 @@ class MOMountainCar(MountainCarEnv):
         if position == self.min_position and velocity < 0:
             velocity = 0
 
-        terminated = bool(
-            position >= self.goal_position and velocity >= self.goal_velocity
-        )
+        terminated = bool(position >= self.goal_position and velocity >= self.goal_velocity)
         # reward = -1.0
         reward = np.zeros(3, dtype=np.float32)
         reward[0] = 0.0 if terminated else -1.0  # time penalty

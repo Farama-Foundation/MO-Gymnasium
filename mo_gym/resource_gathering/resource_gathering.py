@@ -53,55 +53,28 @@ class ResourceGathering(gym.Env):
         return self.map[pos[0]][pos[1]]
 
     def is_valid_state(self, state):
-        return (
-            state[0] >= 0
-            and state[0] < self.size
-            and state[1] >= 0
-            and state[1] < self.size
-        )
+        return state[0] >= 0 and state[0] < self.size and state[1] >= 0 and state[1] < self.size
 
     def render(self):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / self.size
         if self.window is None:
-            self.gold_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/gold.png"
-            )
-            self.gold_img = pygame.transform.scale(
-                self.gold_img, (pix_square_size, pix_square_size)
-            )
-            self.gem_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/gem.png"
-            )
-            self.gem_img = pygame.transform.scale(
-                self.gem_img, (pix_square_size, pix_square_size)
-            )
-            self.enemy_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/sword.png"
-            )
-            self.enemy_img = pygame.transform.scale(
-                self.enemy_img, (pix_square_size, pix_square_size)
-            )
-            self.home_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/home.png"
-            )
-            self.home_img = pygame.transform.scale(
-                self.home_img, (pix_square_size, pix_square_size)
-            )
-            self.agent_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/stickerman.png"
-            )
-            self.agent_img = pygame.transform.scale(
-                self.agent_img, (pix_square_size, pix_square_size)
-            )
+            self.gold_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/gold.png")
+            self.gold_img = pygame.transform.scale(self.gold_img, (pix_square_size, pix_square_size))
+            self.gem_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/gem.png")
+            self.gem_img = pygame.transform.scale(self.gem_img, (pix_square_size, pix_square_size))
+            self.enemy_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/sword.png")
+            self.enemy_img = pygame.transform.scale(self.enemy_img, (pix_square_size, pix_square_size))
+            self.home_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/home.png")
+            self.home_img = pygame.transform.scale(self.home_img, (pix_square_size, pix_square_size))
+            self.agent_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/stickerman.png")
+            self.agent_img = pygame.transform.scale(self.agent_img, (pix_square_size, pix_square_size))
 
         if self.window is None and self.render_mode is not None:
             pygame.init()
             if self.render_mode == "human":
                 pygame.display.init()
-                self.window = pygame.display.set_mode(
-                    (self.window_size, self.window_size)
-                )
+                self.window = pygame.display.set_mode((self.window_size, self.window_size))
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
@@ -147,15 +120,11 @@ class ResourceGathering(gym.Env):
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
         elif self.render_mode == "rgb_array":  # rgb_array
-            return np.transpose(
-                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            )
+            return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
 
     def get_state(self):
         pos = self.current_pos.copy()
-        state = np.concatenate(
-            (pos, np.array([self.has_gold, self.has_gem], dtype=np.int32))
-        )
+        state = np.concatenate((pos, np.array([self.has_gold, self.has_gem], dtype=np.int32)))
         return state
 
     def reset(self, seed=None, **kwargs):

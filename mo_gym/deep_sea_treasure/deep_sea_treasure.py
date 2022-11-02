@@ -52,9 +52,7 @@ class DeepSeaTreasure(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(
-        self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False
-    ):
+    def __init__(self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False):
         self.render_mode = render_mode
         self.size = 11
         self.window_size = 512
@@ -104,29 +102,17 @@ class DeepSeaTreasure(gym.Env):
         # The size of a single grid square in pixels
         pix_square_size = self.window_size / self.size
         if self.window is None:
-            self.submarine_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/submarine.png"
-            )
-            self.submarine_img = pygame.transform.scale(
-                self.submarine_img, (pix_square_size, pix_square_size)
-            )
-            self.submarine_img = pygame.transform.flip(
-                self.submarine_img, flip_x=True, flip_y=False
-            )
-            self.treasure_img = pygame.image.load(
-                str(Path(__file__).parent.absolute()) + "/assets/treasure.png"
-            )
-            self.treasure_img = pygame.transform.scale(
-                self.treasure_img, (pix_square_size, pix_square_size)
-            )
+            self.submarine_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/submarine.png")
+            self.submarine_img = pygame.transform.scale(self.submarine_img, (pix_square_size, pix_square_size))
+            self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
+            self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/treasure.png")
+            self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
 
         if self.window is None and self.render_mode is not None:
             pygame.init()
             if self.render_mode == "human":
                 pygame.display.init()
-                self.window = pygame.display.set_mode(
-                    (self.window_size, self.window_size)
-                )
+                self.window = pygame.display.set_mode((self.window_size, self.window_size))
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
@@ -147,12 +133,8 @@ class DeepSeaTreasure(gym.Env):
                     )
                 elif self.sea_map[i, j] != 0:
                     canvas.blit(self.treasure_img, np.array([j, i]) * pix_square_size)
-                    img = self.font.render(
-                        str(self.sea_map[i, j]), True, (255, 255, 255)
-                    )
-                    canvas.blit(
-                        img, np.array([j, i]) * pix_square_size + np.array([5, 20])
-                    )
+                    img = self.font.render(str(self.sea_map[i, j]), True, (255, 255, 255))
+                    canvas.blit(img, np.array([j, i]) * pix_square_size + np.array([5, 20]))
 
         canvas.blit(self.submarine_img, self.current_state[::-1] * pix_square_size)
 
@@ -182,9 +164,7 @@ class DeepSeaTreasure(gym.Env):
             # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
         elif self.render_mode == "rgb_array":
-            return np.transpose(
-                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            )
+            return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
 
     def get_state(self):
         if self.float_state:

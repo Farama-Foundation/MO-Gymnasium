@@ -55,9 +55,7 @@ class BreakableBottles(Env):
         self.num_actions = 3
 
         # reward space
-        self.reward_space = Box(
-            np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward * 2, 0])
-        )
+        self.reward_space = Box(np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward * 2, 0]))
 
     def step(self, action):
         observation_old = self._get_obs()
@@ -67,11 +65,7 @@ class BreakableBottles(Env):
 
         if action == self.LEFT and self.location > 0:
             # execute bottle drop, if agent is carrying at least two and current location is 1, 2 or 3
-            if (
-                self.location in range(1, self.size - 1)
-                and self.bottles_carrying > 1
-                and np.random.random() < self.prob_drop
-            ):
+            if self.location in range(1, self.size - 1) and self.bottles_carrying > 1 and np.random.random() < self.prob_drop:
                 self.bottles_carrying -= 1
                 self.bottles_dropped[self.location - 1] += 1
 
@@ -80,11 +74,7 @@ class BreakableBottles(Env):
 
         elif action == self.RIGHT and self.location < self.size - 1:
             # execute bottle drop, if agent is carrying at least two and current location is 1, 2 or 3
-            if (
-                self.location in range(1, self.size - 1)
-                and self.bottles_carrying > 1
-                and np.random.random() < self.prob_drop
-            ):
+            if self.location in range(1, self.size - 1) and self.bottles_carrying > 1 and np.random.random() < self.prob_drop:
                 self.bottles_carrying -= 1
                 self.bottles_dropped[self.location - 1] += 1
 
@@ -153,9 +143,7 @@ class BreakableBottles(Env):
                 *[[bd > 0] for bd in obs["bottles_dropped"]],
             ]
         )
-        return np.ravel_multi_index(
-            multi_index, tuple([self.size, 3, 2, *([2] * (self.size - 2))])
-        )
+        return np.ravel_multi_index(multi_index, tuple([self.size, 3, 2, *([2] * (self.size - 2))]))
 
     def _get_obs(self):
         return {

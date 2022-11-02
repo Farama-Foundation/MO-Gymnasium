@@ -70,9 +70,7 @@ class DamEnv(gym.Env):
 
         low = -np.ones(nO) * np.inf  # DamEnv.antiutopia[nO]
         high = np.zeros(nO)  # DamEnv.utopia[nO]
-        self.reward_space = Box(
-            low=np.array(low), high=np.array(high), dtype=np.float32
-        )
+        self.reward_space = Box(low=np.array(low), high=np.array(high), dtype=np.float32)
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
@@ -96,9 +94,7 @@ class DamEnv(gym.Env):
 
         # transition dynamic
         action = bounded_action
-        dam_inflow = self.np_random.normal(
-            DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state)
-        )
+        dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))
         # small chance dam_inflow < 0
         n_state = np.clip(self.state + dam_inflow - action, 0, None)
 
@@ -108,9 +104,7 @@ class DamEnv(gym.Env):
         r1 = -np.clip(DamEnv.W_IRR - action, 0, None) + penalty
 
         q = np.clip(action - DamEnv.Q_MEF, 0, None)
-        p_hyd = (
-            DamEnv.ETA * DamEnv.G * DamEnv.GAMMA_H2O * n_state / DamEnv.S * q / 3.6e6
-        )
+        p_hyd = DamEnv.ETA * DamEnv.G * DamEnv.GAMMA_H2O * n_state / DamEnv.S * q / 3.6e6
 
         # deficit in hydroelectric supply wrt hydroelectric demand
         r2 = -np.clip(DamEnv.W_HYD - p_hyd, 0, None) + penalty

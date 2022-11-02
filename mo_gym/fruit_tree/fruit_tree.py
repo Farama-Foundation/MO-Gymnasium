@@ -243,7 +243,7 @@ class FruitTreeEnv(gym.Env):
         assert depth in [5, 6, 7], "Depth must be 5, 6 or 7."
         self.reward_dim = 6
         self.tree_depth = depth  # zero based depth
-        branches = np.zeros((int(2**self.tree_depth - 1), self.reward_dim))
+        branches = np.zeros((int(2 ** self.tree_depth - 1), self.reward_dim))
         # fruits = np.random.randn(2**self.tree_depth, self.reward_dim)
         # fruits = np.abs(fruits) / np.linalg.norm(fruits, 2, 1, True)
         # print(fruits*10)
@@ -251,13 +251,9 @@ class FruitTreeEnv(gym.Env):
         self.tree = np.concatenate([branches, fruits])
 
         self.max_reward = 10.0
-        self.reward_space = spaces.Box(
-            low=0.0, high=self.max_reward, shape=(self.reward_dim,), dtype=np.float32
-        )
+        self.reward_space = spaces.Box(low=0.0, high=self.max_reward, shape=(self.reward_dim,), dtype=np.float32)
 
-        self.observation_space = spaces.Box(
-            low=0, high=2**self.tree_depth - 1, shape=(2,), dtype=np.int32
-        )
+        self.observation_space = spaces.Box(low=0, high=2 ** self.tree_depth - 1, shape=(2,), dtype=np.int32)
 
         # action space specification: 0 left, 1 right
         self.action_space = spaces.Discrete(2)

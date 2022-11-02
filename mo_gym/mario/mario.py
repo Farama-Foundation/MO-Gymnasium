@@ -25,9 +25,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         super().__init__(rom_mode, lost_levels, target)
 
         self.objectives = set(objectives)
-        self.reward_space = gym.spaces.Box(
-            high=np.inf, low=-np.inf, shape=(len(objectives),)
-        )
+        self.reward_space = gym.spaces.Box(high=np.inf, low=-np.inf, shape=(len(objectives),))
 
         self.single_stage = True
         self.done_when_dead = True

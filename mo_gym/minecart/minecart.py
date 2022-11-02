@@ -92,10 +92,7 @@ class Mine:
     """Class representing an individual Mine"""
 
     def __init__(self, ore_cnt, x, y):
-        self.distributions = [
-            scipy.stats.norm(np.random.random(), np.random.random())
-            for _ in range(ore_cnt)
-        ]
+        self.distributions = [scipy.stats.norm(np.random.random(), np.random.random()) for _ in range(ore_cnt)]
         self.pos = np.array((x, y))
 
     def distance(self, cart):
@@ -156,20 +153,12 @@ class Cart:
         x_velocity = self.speed * math.cos(self.angle * math.pi / 180)
         y_velocity = self.speed * math.sin(self.angle * math.pi / 180)
         x, y = self.pos
-        if (
-            y != 0
-            and y != 1
-            and (y_velocity > 0 + EPS_SPEED or y_velocity < 0 - EPS_SPEED)
-        ):
+        if y != 0 and y != 1 and (y_velocity > 0 + EPS_SPEED or y_velocity < 0 - EPS_SPEED):
             if x == 1 and x_velocity > 0:
                 self.angle += math.copysign(ROTATION, y_velocity)
             if x == 0 and x_velocity < 0:
                 self.angle -= math.copysign(ROTATION, y_velocity)
-        if (
-            x != 0
-            and x != 1
-            and (x_velocity > 0 + EPS_SPEED or x_velocity < 0 - EPS_SPEED)
-        ):
+        if x != 0 and x != 1 and (x_velocity > 0 + EPS_SPEED or x_velocity < 0 - EPS_SPEED):
             if y == 1 and y_velocity > 0:
                 self.angle -= math.copysign(ROTATION, x_velocity)
 
@@ -220,10 +209,7 @@ class Minecart(gym.Env):
             for mine_data, mine in zip(data["mines"], self.mines):
                 mine.pos = np.array([mine_data["x"], mine_data["y"]])
                 if "distributions" in mine_data:
-                    mine.distributions = [
-                        scipy.stats.norm(dist[0], dist[1])
-                        for dist in mine_data["distributions"]
-                    ]
+                    mine.distributions = [scipy.stats.norm(dist[0], dist[1]) for dist in mine_data["distributions"]]
 
         self.cart = Cart(self.ore_cnt)
 
@@ -246,9 +232,7 @@ class Minecart(gym.Env):
     def obj_cnt(self):
         return self.ore_cnt + 1
 
-    def convex_coverage_set(
-        self, frame_skip=1, discount=0.98, incremental_frame_skip=True, symmetric=True
-    ):
+    def convex_coverage_set(self, frame_skip=1, discount=0.98, incremental_frame_skip=True, symmetric=True):
         """
         Computes an approximate convex coverage set
 
@@ -261,20 +245,12 @@ class Minecart(gym.Env):
         Returns:
             The convex coverage set
         """
-        policies = self.pareto_coverage_set(
-            frame_skip, discount, incremental_frame_skip, symmetric
-        )
+        policies = self.pareto_coverage_set(frame_skip, discount, incremental_frame_skip, symmetric)
         origin = np.min(policies, axis=0)
         extended_policies = [origin] + policies
-        return [
-            policies[idx - 1]
-            for idx in ConvexHull(extended_policies).vertices
-            if idx != 0
-        ]
+        return [policies[idx - 1] for idx in ConvexHull(extended_policies).vertices if idx != 0]
 
-    def pareto_coverage_set(
-        self, frame_skip=1, discount=0.98, incremental_frame_skip=True, symmetric=True
-    ):
+    def pareto_coverage_set(self, frame_skip=1, discount=0.98, incremental_frame_skip=True, symmetric=True):
         """
         Computes an approximate pareto coverage set
 
@@ -293,18 +269,12 @@ class Minecart(gym.Env):
         # Empty mine just outside the base
         virtual_mine = Mine(
             self.ore_cnt,
-            (base_perimeter**2 / 2) ** (1 / 2),
-            (base_perimeter**2 / 2) ** (1 / 2),
+            (base_perimeter ** 2 / 2) ** (1 / 2),
+            (base_perimeter ** 2 / 2) ** (1 / 2),
         )
-        virtual_mine.distributions = [
-            scipy.stats.norm(0, 0) for _ in range(self.ore_cnt)
-        ]
+        virtual_mine.distributions = [scipy.stats.norm(0, 0) for _ in range(self.ore_cnt)]
         for mine in self.mines + [virtual_mine]:
-            mine_distance = (
-                mag(mine.pos - HOME_POS)
-                - MINE_RADIUS * MINE_SCALE
-                - BASE_RADIUS * BASE_SCALE / 2
-            )
+            mine_distance = mag(mine.pos - HOME_POS) - MINE_RADIUS * MINE_SCALE - BASE_RADIUS * BASE_SCALE / 2
 
             # Number of rotations required to face the mine
             angle = compute_angle(mine.pos, HOME_POS, [1, 1])
@@ -315,8 +285,7 @@ class Minecart(gym.Env):
             queue = [
                 {
                     "speed": ACCELERATION * frame_skip,
-                    "dist": mine_distance
-                    - frame_skip * (frame_skip + 1) / 2 * ACCELERATION
+                    "dist": mine_distance - frame_skip * (frame_skip + 1) / 2 * ACCELERATION
                     if incremental_frame_skip
                     else mine_distance - ACCELERATION * frame_skip * frame_skip,
                     "seq": [ACT_ACCEL],
@@ -331,19 +300,14 @@ class Minecart(gym.Env):
                 accelerations = new_speed / ACCELERATION
                 movement = (
                     accelerations * (accelerations + 1) / 2 * ACCELERATION
-                    - (accelerations - frame_skip)
-                    * ((accelerations - frame_skip) + 1)
-                    / 2
-                    * ACCELERATION
+                    - (accelerations - frame_skip) * ((accelerations - frame_skip) + 1) / 2 * ACCELERATION
                 )
                 dist = seq["dist"] - movement
                 speed = new_speed
                 if dist <= 0:
                     trimmed_sequences.append(seq["seq"] + [ACT_ACCEL])
                 else:
-                    queue.append(
-                        {"speed": speed, "dist": dist, "seq": seq["seq"] + [ACT_ACCEL]}
-                    )
+                    queue.append({"speed": speed, "dist": dist, "seq": seq["seq"] + [ACT_ACCEL]})
                 # idle
                 dist = seq["dist"] - seq["speed"] * frame_skip
 
@@ -379,10 +343,7 @@ class Minecart(gym.Env):
                         itertools.product(
                             [[ACT_LEFT] * rotations],
                             trimmed_sequences,
-                            [
-                                [ACT_BRAKE]
-                                + [ACT_LEFT] * (180 // (ROTATION * frame_skip))
-                            ],
+                            [[ACT_BRAKE] + [ACT_LEFT] * (180 // (ROTATION * frame_skip))],
                             mine_sequences,
                             trimmed_sequences,
                         ),
@@ -398,10 +359,7 @@ class Minecart(gym.Env):
                         itertools.product(
                             [[ACT_LEFT] * rotations],
                             trimmed_sequences,
-                            [
-                                [ACT_BRAKE]
-                                + [ACT_LEFT] * (180 // (ROTATION * frame_skip))
-                            ],
+                            [[ACT_BRAKE] + [ACT_LEFT] * (180 // (ROTATION * frame_skip))],
                             mine_sequences,
                         ),
                     )
@@ -450,23 +408,14 @@ class Minecart(gym.Env):
 
             longest_pattern = maxlen(trimmed_sequences)
             max_len = (
-                rotations
-                + longest_pattern
-                + 1
-                + (180 // (ROTATION * frame_skip))
-                + maxlen(mine_sequences)
-                + longest_pattern
+                rotations + longest_pattern + 1 + (180 // (ROTATION * frame_skip)) + maxlen(mine_sequences) + longest_pattern
             )
             discount_map = discount ** np.arange(max_len)
             for s in all_sequences:
                 reward = np.zeros((len(s), self.obj_cnt()))
                 reward[:, -1] = fuel_costs[s]
                 mine_actions = s.count(ACT_MINE)
-                reward[-1, :-1] = (
-                    mine_means
-                    * mine_actions
-                    / max(1, (mn_sum * mine_actions) / self.capacity)
-                )
+                reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)
 
                 reward = np.dot(discount_map[: len(s)], reward)
                 all_rewards.append(reward)
@@ -485,9 +434,7 @@ class Minecart(gym.Env):
             pos = np.array((np.random.random(), np.random.random()))
 
             tries = 0
-            while (mag(pos - HOME_POS) < BASE_RADIUS * BASE_SCALE + MARGIN) and (
-                tries < MINE_LOCATION_TRIES
-            ):
+            while (mag(pos - HOME_POS) < BASE_RADIUS * BASE_SCALE + MARGIN) and (tries < MINE_LOCATION_TRIES):
                 pos[0] = np.random.random()
                 pos[1] = np.random.random()
                 tries += 1
@@ -513,12 +460,8 @@ class Minecart(gym.Env):
             ).convert_alpha()
             self.mine_sprites.add(mine_sprite)
             mine_sprite.rect = mine_sprite.image.get_rect()
-            mine_sprite.rect.centerx = (
-                mine.pos[0] * (1 - 2 * MARGIN)
-            ) * WIDTH + MARGIN * WIDTH
-            mine_sprite.rect.centery = (
-                mine.pos[1] * (1 - 2 * MARGIN)
-            ) * HEIGHT + MARGIN * HEIGHT
+            mine_sprite.rect.centerx = (mine.pos[0] * (1 - 2 * MARGIN)) * WIDTH + MARGIN * WIDTH
+            mine_sprite.rect.centery = (mine.pos[1] * (1 - 2 * MARGIN)) * HEIGHT + MARGIN * HEIGHT
             self.mine_rects.append(mine_sprite.rect)
 
     def step(self, action, frame_skip=4, incremental_frame_skip=True):
@@ -553,23 +496,15 @@ class Minecart(gym.Env):
         for _ in range(frame_skip if incremental_frame_skip else 1):
 
             if action == ACT_LEFT:
-                self.cart.rotate(
-                    -ROTATION * (1 if incremental_frame_skip else frame_skip)
-                )
+                self.cart.rotate(-ROTATION * (1 if incremental_frame_skip else frame_skip))
                 change = True
             elif action == ACT_RIGHT:
-                self.cart.rotate(
-                    ROTATION * (1 if incremental_frame_skip else frame_skip)
-                )
+                self.cart.rotate(ROTATION * (1 if incremental_frame_skip else frame_skip))
                 change = True
             elif action == ACT_ACCEL:
-                self.cart.accelerate(
-                    ACCELERATION * (1 if incremental_frame_skip else frame_skip)
-                )
+                self.cart.accelerate(ACCELERATION * (1 if incremental_frame_skip else frame_skip))
             elif action == ACT_BRAKE:
-                self.cart.accelerate(
-                    -DECELERATION * (1 if incremental_frame_skip else frame_skip)
-                )
+                self.cart.accelerate(-DECELERATION * (1 if incremental_frame_skip else frame_skip))
             elif action == ACT_MINE:
                 for _ in range(1 if incremental_frame_skip else frame_skip):
                     change = self.mine() or change
@@ -702,9 +637,7 @@ class Minecart(gym.Env):
         string += "Departed: {} ".format(self.cart.departed)
         string += "Content: {} ".format(self.cart.content)
         string += "Speed: {} ".format(self.cart.speed)
-        string += "Direction: {} ({}) ".format(
-            self.cart.angle, self.cart.angle * math.pi / 180
-        )
+        string += "Direction: {} ({}) ".format(self.cart.angle, self.cart.angle * math.pi / 180)
         string += "Position: {} ".format(self.cart.pos)
         return string
 
@@ -723,9 +656,7 @@ class Minecart(gym.Env):
             self.cart_sprite = pygame.sprite.Sprite()
             self.cart_sprites = pygame.sprite.Group()
             self.cart_sprites.add(self.cart_sprite)
-            self.cart_image = pygame.transform.rotozoom(
-                pygame.image.load(CART_IMG).convert_alpha(), 0, CART_SCALE
-            )
+            self.cart_image = pygame.transform.rotozoom(pygame.image.load(CART_IMG).convert_alpha(), 0, CART_SCALE)
 
         if not self.image_observation:
             self.render_pygame()  # if the obs is not an image, then step would not have rendered the screen
@@ -763,12 +694,8 @@ class Minecart(gym.Env):
 
         self.cart_sprite.rect = self.cart_sprite.image.get_rect(center=(200, 200))
 
-        self.cart_sprite.rect.centerx = (
-            self.cart.pos[0] * (1 - 2 * MARGIN) * WIDTH + MARGIN * WIDTH
-        )
-        self.cart_sprite.rect.centery = (
-            self.cart.pos[1] * (1 - 2 * MARGIN) * HEIGHT + MARGIN * HEIGHT
-        )
+        self.cart_sprite.rect.centerx = self.cart.pos[0] * (1 - 2 * MARGIN) * WIDTH + MARGIN * WIDTH
+        self.cart_sprite.rect.centery = self.cart.pos[1] * (1 - 2 * MARGIN) * HEIGHT + MARGIN * HEIGHT
 
         self.cart_sprites.update()
 
@@ -869,9 +796,7 @@ def pareto_filter(costs, minimize=True):
     n_points = costs_copy.shape[0]
     next_point_index = 0  # Next index in the is_efficient array to search for
     while next_point_index < len(costs_copy):
-        nondominated_point_mask = np.any(
-            costs_copy < costs_copy[next_point_index], axis=1
-        )
+        nondominated_point_mask = np.any(costs_copy < costs_copy[next_point_index], axis=1)
         nondominated_point_mask[next_point_index] = True
         # Remove dominated points
         is_efficient = is_efficient[nondominated_point_mask]

@@ -6,9 +6,7 @@ from pybulletgym.envs.roboschool.robots.robot_bases import MJCFBasedRobot
 from pybulletgym.envs.roboschool.envs.env_bases import BaseBulletEnv
 from pybulletgym.envs.roboschool.scenes.scene_bases import SingleRobotEmptyScene
 
-target_positions = list(
-    map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (0.0, 0.14), (0.0, -0.14)])
-)
+target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (0.0, 0.14), (0.0, -0.14)]))
 
 
 class ReacherBulletEnv(BaseBulletEnv):
@@ -42,17 +40,11 @@ class ReacherBulletEnv(BaseBulletEnv):
                 self.action_dict[len(self.action_dict)] = (a1, a2)
 
         self.action_space = spaces.Discrete(9)
-        self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=(5,), dtype=np.float32
-        )
-        self.reward_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=(4,), dtype=np.float32
-        )
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(5,), dtype=np.float32)
+        self.reward_space = spaces.Box(low=-np.inf, high=np.inf, shape=(4,), dtype=np.float32)
 
     def create_single_player_scene(self, bullet_client):
-        return SingleRobotEmptyScene(
-            bullet_client, gravity=0.0, timestep=0.0165, frame_skip=1
-        )
+        return SingleRobotEmptyScene(bullet_client, gravity=0.0, timestep=0.0165, frame_skip=1)
 
     def step(self, a):
         real_action = self.action_dict[a]
@@ -68,9 +60,7 @@ class ReacherBulletEnv(BaseBulletEnv):
 
         phi = np.zeros(len(self.target_positions))
         for index, target in enumerate(self.target_positions):
-            delta = np.linalg.norm(
-                np.array(self.robot.fingertip.pose().xyz()[:2]) - target
-            )
+            delta = np.linalg.norm(np.array(self.robot.fingertip.pose().xyz()[:2]) - target)
             phi[index] = 1.0 - 4 * delta  # 1 - 4
 
         self.HUD(state, real_action, False)
@@ -124,17 +114,11 @@ class ReacherRobot(MJCFBasedRobot):
         self.central_joint = self.jdict["joint0"]
         self.elbow_joint = self.jdict["joint1"]
         if self.fixed_initial_state is None:
-            self.central_joint.reset_current_position(
-                self.np_random.uniform(low=-3.14, high=3.14), 0
-            )
-            self.elbow_joint.reset_current_position(
-                self.np_random.uniform(low=-3.14 / 2, high=3.14 / 2), 0
-            )
+            self.central_joint.reset_current_position(self.np_random.uniform(low=-3.14, high=3.14), 0)
+            self.elbow_joint.reset_current_position(self.np_random.uniform(low=-3.14 / 2, high=3.14 / 2), 0)
         else:
             self.central_joint.reset_current_position(0, 0)
-            self.elbow_joint.reset_current_position(
-                self.fixed_initial_state[0], self.fixed_initial_state[1]
-            )
+            self.elbow_joint.reset_current_position(self.fixed_initial_state[0], self.fixed_initial_state[1])
 
     def apply_action(self, a):
         assert np.isfinite(a).all()
@@ -146,9 +130,7 @@ class ReacherRobot(MJCFBasedRobot):
         self.gamma, self.gamma_dot = self.elbow_joint.current_relative_position()
         # target_x, _ = self.jdict["target_x"].current_position()
         # target_y, _ = self.jdict["target_y"].current_position()
-        self.to_target_vec = np.array(self.fingertip.pose().xyz()) - np.array(
-            self.target.pose().xyz()
-        )
+        self.to_target_vec = np.array(self.fingertip.pose().xyz()) - np.array(self.target.pose().xyz())
         return np.array(
             [
                 np.cos(theta),
