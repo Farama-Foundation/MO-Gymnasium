@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: jamescurtin/isort-action@master
+        with:
+          configuration: "-l 127"
       - uses: psf/black@stable
         with:
           options: "--line-length 127"
