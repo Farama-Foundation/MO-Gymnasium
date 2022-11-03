@@ -1,6 +1,6 @@
+import numpy as np
 from gym.spaces import Box
 from highway_env.envs import HighwayEnv, HighwayEnvFast
-import numpy as np
 
 
 class MOHighwayEnv(HighwayEnv):

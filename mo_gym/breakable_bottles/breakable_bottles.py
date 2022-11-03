@@ -1,8 +1,9 @@
 from os import terminal_size
 from typing import Optional
-from gym import Env
-from gym.spaces import Dict, Discrete, MultiBinary, Box
+
 import numpy as np
+from gym import Env
+from gym.spaces import Box, Dict, Discrete, MultiBinary
 
 
 class BreakableBottles(Env):

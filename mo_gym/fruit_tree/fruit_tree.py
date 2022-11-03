@@ -1,8 +1,7 @@
 # Environment from https://github.com/RunzheYang/MORL/blob/master/synthetic/envs/fruit_tree.py
 import gym
-from gym import spaces
 import numpy as np
-
+from gym import spaces
 
 FRUITS = {
     "6": [

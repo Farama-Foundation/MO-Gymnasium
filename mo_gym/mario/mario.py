@@ -1,17 +1,18 @@
-import numpy as np
 import gym
-
-# from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
-from gym.wrappers import FrameStack, GrayScaleObservation, ResizeObservation, TimeLimit
-from gym.utils import seeding
-from nes_py.wrappers import JoypadSpace
-from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from gym_super_mario_bros import SuperMarioBrosEnv
 import gym_super_mario_bros
+import numpy as np
+from gym.utils import seeding
+# from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
+from gym.wrappers import (FrameStack, GrayScaleObservation, ResizeObservation,
+                          TimeLimit)
+from gym_super_mario_bros import SuperMarioBrosEnv
+from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
+from nes_py.wrappers import JoypadSpace
+
+import mo_gym
 
 # import matplotlib.pyplot as plt
 
-import mo_gym
 
 
 class MOSuperMarioBros(SuperMarioBrosEnv):

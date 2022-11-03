@@ -6,7 +6,6 @@ import numpy as np
 import pygame
 from gym.spaces import Box, Discrete
 
-
 # As in Yang et al. (2019):
 DEFAULT_MAP = np.array(
     [

@@ -3,9 +3,9 @@ from __future__ import print_function
 import itertools
 import json
 import math
+from copy import deepcopy
 from math import ceil
 from pathlib import Path
-from copy import deepcopy
 from typing import Optional
 
 import gym

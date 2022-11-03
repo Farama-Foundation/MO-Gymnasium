@@ -1,7 +1,7 @@
-from typing import Tuple, List, Union, Optional
+from typing import List, Optional, Tuple, Union
 
-from pymoo.indicators.hv import HV
 import numpy as np
+from pymoo.indicators.hv import HV
 
 
 def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:

@@ -1,7 +1,8 @@
 from typing import Optional
+
 import gym
-from gym.spaces.box import Box
 import numpy as np
+from gym.spaces.box import Box
 
 
 class DamEnv(gym.Env):
