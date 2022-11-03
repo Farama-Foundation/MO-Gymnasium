@@ -1,12 +1,7 @@
 import numpy as np
 
 import mo_gym
-from mo_gym import (
-    MONormalizeReward,
-    MOClipReward,
-    MOSyncVectorEnv,
-    MORecordEpisodeStatistics,
-)
+from mo_gym import MOClipReward, MONormalizeReward, MORecordEpisodeStatistics, MOSyncVectorEnv
 
 
 def go_to_8_3(env):

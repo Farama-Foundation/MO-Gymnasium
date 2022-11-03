@@ -5,8 +5,7 @@ import numpy as np
 from gym import spaces
 from pybulletgym.envs.roboschool.envs.env_bases import BaseBulletEnv
 from pybulletgym.envs.roboschool.robots.robot_bases import MJCFBasedRobot
-from pybulletgym.envs.roboschool.scenes.scene_bases import \
-    SingleRobotEmptyScene
+from pybulletgym.envs.roboschool.scenes.scene_bases import SingleRobotEmptyScene
 
 target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (0.0, 0.14), (0.0, -0.14)]))
 
