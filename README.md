@@ -8,7 +8,7 @@
 
 # MO-Gym: Multi-Objective Reinforcement Learning Environments
 
-Gym environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gym's API](https://github.com/openai/gym), but return vectorized rewards as numpy arrays.
+Gymnasium environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gymnasium's API](https://github.com/Farama-Foundation/Gymnasium), but return vectorized rewards as numpy arrays.
 
 For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 
@@ -29,7 +29,7 @@ pip install -e .
 ## Usage
 
 ```python
-import gym
+import gymnasium as gym
 import mo_gym
 
 env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
