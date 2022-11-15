@@ -14,7 +14,7 @@ package_data = {package: ["*.json", "assets/*"] for package in packages}
 
 setup(
     name="mo-gym",
-    version="0.2.0",
+    version="0.2.1",
     description="Environments for Multi-Objective RL.",
     url="https://www.github.com/LucasAlegre/mo-gym",
     author="LucasAlegre",
@@ -23,7 +23,7 @@ setup(
     packages=packages,
     package_data=package_data,
     install_requires=[
-        "gym>=0.26",
+        "gymnasium>=0.26",
         "numpy",
         "pygame",
         "scipy",
