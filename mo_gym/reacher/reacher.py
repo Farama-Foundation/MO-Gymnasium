@@ -1,8 +1,8 @@
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from pybulletgym.envs.roboschool.envs.env_bases import BaseBulletEnv
 from pybulletgym.envs.roboschool.robots.robot_bases import MJCFBasedRobot
 from pybulletgym.envs.roboschool.scenes.scene_bases import SingleRobotEmptyScene

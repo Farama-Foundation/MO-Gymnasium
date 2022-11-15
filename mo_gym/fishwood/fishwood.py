@@ -1,9 +1,9 @@
 import random
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 
 class FishWood(gym.Env):

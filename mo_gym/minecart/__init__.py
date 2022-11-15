@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gym.envs.registration import register
+from gymnasium.envs.registration import register
 
 register(
     id="minecart-v0",

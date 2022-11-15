@@ -1,6 +1,6 @@
 import numpy as np
-from gym.envs.mujoco.hopper_v4 import HopperEnv
-from gym.spaces import Box
+from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
+from gymnasium.spaces import Box
 
 
 class MOHopperEnv(HopperEnv):

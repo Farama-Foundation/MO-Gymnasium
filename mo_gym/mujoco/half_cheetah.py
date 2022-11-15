@@ -1,6 +1,6 @@
 import numpy as np
-from gym.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv
-from gym.spaces import Box
+from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv
+from gymnasium.spaces import Box
 
 
 class MOHalfCheehtahEnv(HalfCheetahEnv):

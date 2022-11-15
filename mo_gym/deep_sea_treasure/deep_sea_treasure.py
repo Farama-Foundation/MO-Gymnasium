@@ -1,10 +1,10 @@
 from pathlib import Path
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 import pygame
-from gym.spaces import Box, Discrete
+from gymnasium.spaces import Box, Discrete
 
 # As in Yang et al. (2019):
 DEFAULT_MAP = np.array(

@@ -2,8 +2,8 @@ from os import terminal_size
 from typing import Optional
 
 import numpy as np
-from gym import Env
-from gym.spaces import Box, Dict, Discrete, MultiBinary
+from gymnasium import Env
+from gymnasium.spaces import Box, Dict, Discrete, MultiBinary
 
 
 class BreakableBottles(Env):
@@ -172,7 +172,7 @@ class BreakableBottles(Env):
 
 
 if __name__ == "__main__":
-    from gym.spaces.utils import flatdim
+    from gymnasium.spaces.utils import flatdim
 
     env = BreakableBottles(size=5, prob_drop=0.1)
     assert flatdim(env.action_space) == 3

@@ -1,10 +1,10 @@
 import random
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 import pygame
-from gym.spaces import Box, Discrete
+from gymnasium.spaces import Box, Discrete
 
 MAZE = np.array(
     [

@@ -8,11 +8,11 @@ from math import ceil
 from pathlib import Path
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 import pygame
 import scipy.stats
-from gym.spaces import Box, Discrete
+from gymnasium.spaces import Box, Discrete
 from scipy.spatial import ConvexHull
 from scipy.stats import norm
 

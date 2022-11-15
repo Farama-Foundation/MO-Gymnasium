@@ -1,7 +1,7 @@
-import gym
+import gymnasium as gym
 import gym_super_mario_bros
 import numpy as np
-from gym.utils import seeding
+from gymnasium.utils import seeding
 
 # from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
 from gym.wrappers import FrameStack, GrayScaleObservation, ResizeObservation, TimeLimit

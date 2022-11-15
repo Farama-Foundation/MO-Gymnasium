@@ -2,8 +2,8 @@ import math
 from typing import Optional
 
 import numpy as np
-from gym import spaces
-from gym.envs.classic_control.mountain_car import MountainCarEnv
+from gymnasium import spaces
+from gymnasium.envs.classic_control.mountain_car import MountainCarEnv
 
 
 class MOMountainCar(MountainCarEnv):
