@@ -2,11 +2,11 @@ import time
 from copy import deepcopy
 from typing import Iterator, Tuple, TypeVar
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym.vector import SyncVectorEnv
-from gym.wrappers import RecordEpisodeStatistics
-from gym.wrappers.normalize import RunningMeanStd
+from gymnasium.vector import SyncVectorEnv
+from gymnasium.wrappers import RecordEpisodeStatistics
+from gymnasium.wrappers.normalize import RunningMeanStd
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
