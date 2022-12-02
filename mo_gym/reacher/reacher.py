@@ -48,7 +48,7 @@ class ReacherBulletEnv(BaseBulletEnv):
         return SingleRobotEmptyScene(bullet_client, gravity=0.0, timestep=0.0165, frame_skip=1)
 
     def step(self, a):
-        real_action = self.action_dict[a]
+        real_action = self.action_dict[int(a)]
 
         assert not self.scene.multiplayer
         self.robot.apply_action(real_action)
