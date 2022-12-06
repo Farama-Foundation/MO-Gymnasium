@@ -36,7 +36,7 @@ def test_mountaincar():
 
 
 def test_continuous_mountaincar():
-    env = mo_gym.make("mo-MountainCarContinuous-v0", render_mode="human")
+    env = mo_gym.make("mo-MountainCarContinuous-v0")
     env = LinearReward(env)
     check_env(env)
 
