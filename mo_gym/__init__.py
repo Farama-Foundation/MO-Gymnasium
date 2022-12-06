@@ -11,5 +11,6 @@ import mo_gym.mujoco
 import mo_gym.reacher
 import mo_gym.resource_gathering
 import mo_gym.water_reservoir
+import mo_gym.continuous_mountain_car
 from mo_gym.evaluation import *
 from mo_gym.utils import *
