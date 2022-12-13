@@ -158,9 +158,9 @@ class MOLunarLander(LunarLander):
         reward -= (
             m_power * 0.30
         )  # less fuel spent is better, about -30 for heuristic landing
-        vector_reward[2] = -m_power * 0.30
+        vector_reward[2] = -m_power
         reward -= s_power * 0.03
-        vector_reward[3] = -s_power * 0.03
+        vector_reward[3] = -s_power
 
         terminated = False
         if self.game_over or abs(state[0]) >= 1.0:
