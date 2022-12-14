@@ -12,5 +12,6 @@ import mo_gym.reacher
 import mo_gym.resource_gathering
 import mo_gym.water_reservoir
 import mo_gym.continuous_mountain_car
+import mo_gym.lunar_lander
 from mo_gym.evaluation import *
 from mo_gym.utils import *
