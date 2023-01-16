@@ -6,9 +6,9 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 
-# MO-Gym: Multi-Objective Reinforcement Learning Environments
+# MO-Gymnasium: Multi-Objective Reinforcement Learning Environments
 
-Gym environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gym's API](https://github.com/openai/gym), but return vectorized rewards as numpy arrays.
+Gymnasium environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gymnasium's API](https://github.com/Farama-Foundation/Gymnasium), but return vectorized rewards as numpy arrays.
 
 For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 
@@ -21,8 +21,8 @@ pip install mo-gym
 
 Alternatively, you can install the newest unreleased version:
 ```bash
-git clone https://github.com/LucasAlegre/mo-gym.git
-cd mo-gym
+git clone https://github.com/Farama-Foundation/MO-Gymnasium
+cd MO-Gymnasium
 pip install -e .
 ```
 
