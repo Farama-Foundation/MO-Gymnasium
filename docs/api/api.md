@@ -10,7 +10,7 @@ Here is a minimal example of how to create an environment and interact with it.
 import gym
 import mo_gym
 
-env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
+env = mo_gym.make('minecart-v0') # It follows the original Gymnasium API ...
 
 obs = env.reset()
 next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))  # but vector_reward is a numpy array!

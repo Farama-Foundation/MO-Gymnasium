@@ -23,7 +23,7 @@ copyright = "2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-release = "0.3.0"  # minari.__version__
+release = "0.3.0"
 
 
 # -- General configuration ---------------------------------------------------

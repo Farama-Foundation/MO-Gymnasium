@@ -45,6 +45,8 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 [![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gym_demo.ipynb)
 You can also check more examples in this colab notebook!
 
+[MORL-Baselines](https://github.com/LucasAlegre/morl-baselines) is a repository containing various implementations of multi-objective reinforcement learning algorithms. It relies on the MO-Gymnasium API and shows various examples of the usage of wrappers and environments.
+
 ## Environments
 
 | Env                                                                                                                                                      | Obs/Action spaces                   | Objectives                                                    | Description                                                                                                                                                                                                                                                                                                |
