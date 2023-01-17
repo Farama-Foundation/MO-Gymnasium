@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -21,10 +21,11 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pytest
+        pip install mujoco
         git clone https://github.com/benelot/pybullet-gym.git
         pip install -e pybullet-gym
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
-        pip install gym[mujoco]
+        pip install gym
         pip install -e .[all]
     - name: Full Python tests
       run: |

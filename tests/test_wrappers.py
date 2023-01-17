@@ -1,7 +1,12 @@
 import numpy as np
 
 import mo_gym
-from mo_gym import MOClipReward, MONormalizeReward, MORecordEpisodeStatistics, MOSyncVectorEnv
+from mo_gym import (
+    MOClipReward,
+    MONormalizeReward,
+    MORecordEpisodeStatistics,
+    MOSyncVectorEnv,
+)
 
 
 def go_to_8_3(env):
@@ -116,6 +121,7 @@ def test_mo_record_ep_statistic_vector_env():
 
     envs.reset()
     terminateds = np.array([False] * num_envs)
+    info = {}
     while not np.any(terminateds):
         obs, rewards, terminateds, _, info = envs.step(envs.action_space.sample())
 

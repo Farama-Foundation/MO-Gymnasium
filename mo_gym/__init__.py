@@ -1,17 +1,19 @@
-import mo_gym.breakable_bottles
-import mo_gym.deep_sea_treasure
-import mo_gym.fishwood
-import mo_gym.four_room
-import mo_gym.fruit_tree
-import mo_gym.highway
-import mo_gym.mario
-import mo_gym.minecart
-import mo_gym.mountain_car
-import mo_gym.mujoco
-import mo_gym.reacher
-import mo_gym.resource_gathering
-import mo_gym.water_reservoir
-import mo_gym.continuous_mountain_car
-import mo_gym.lunar_lander
-from mo_gym.evaluation import *
-from mo_gym.utils import *
+"""Exports everything that is relevant in the repo."""
+
+# Envs
+import mo_gym.envs
+
+# Utils
+# TODO this might be disgusting in the long run
+from mo_gym.evaluation import (
+    hypervolume,  # TODO we might consider removing HV from the repo, depends more on the algos than the environments
+)
+from mo_gym.evaluation import eval_mo, eval_mo_reward_conditioned, policy_evaluation_mo
+from mo_gym.utils import (
+    LinearReward,
+    MOClipReward,
+    MONormalizeReward,
+    MORecordEpisodeStatistics,
+    MOSyncVectorEnv,
+    make,
+)
