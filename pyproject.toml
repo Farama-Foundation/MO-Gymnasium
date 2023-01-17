@@ -1,7 +1,127 @@
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mo-gymnasium"
+description="Environments for Multi-Objective RL."
+readme = "README.md"
+requires-python = ">= 3.7"
+authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
+license = { text = "MIT License" }
+keywords = ["Reinforcement Learning", "Multi-Objective", "RL", "AI", "gymnasium"]
+classifiers = [
+    "Development Status :: 4 - Beta",  # change to `5 - Production/Stable` when ready
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+]
+dependencies = [
+    "gym >=0.26",
+    "numpy >=1.21.0",
+    "pygame >=2.1.0",
+    "scipy >=1.9.1",
+    "pymoo >=0.6.0"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+# Update dependencies in `all` if any are added or removed
+mario = ["nes-py", "gym-super-mario-bros"]
+minecart = ["scipy >=1.9.1"]
+mujoco = ["mujoco >=2.3.0"]
+highway = ["highway-env"]
+all = [
+    # All dependencies above except accept-rom-license
+    # NOTE: No need to manually remove the duplicates, setuptools automatically does that.
+    # Mario
+    "nes-py",
+    "gym-super-mario-bros",
+    # minecart
+    "scipy >=1.9.1",
+    # mujoco
+    "mujoco >=2.3.0",
+    # mujoco-py
+    "mujoco-py >=2.1,<2.2",
+    # highway
+    "highway-env",
+]
+testing = ["pytest ==7.1.3"]
+
+[project.urls]
+Homepage = "https://farama.org"
+Repository = "TODO"
+Documentation = "https://gymnasium.farama.org"
+"Bug Report" = "https://github.com/Farama-Foundation/MO-Gymnasium/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["mo_gym", "mo_gym.*"] # TODO replace this with mo_gymnasium
+
+[tool.setuptools.package-data]
+mo_gymnasium = [
+    "*.json",
+    "assets/*",
+]
+
+# Linters and Test tools #######################################################
+
 [tool.black]
+safe = true
 line-length = 127
-target-version = ['py37', 'py38', 'py39']
+target-version = ['py37', 'py38', 'py39', 'py310']
 include = '\.pyi?$'
 
 [tool.isort]
+atomic = true
 profile = "black"
+src_paths = ["mo_gym", "tests", "docs/scripts"] # TODO replace with mo_gymnasium
+extra_standard_library = ["typing_extensions"]
+indent = 4
+lines_after_imports = 2
+multi_line_output = 3
+
+[tool.pyright]
+include = ["mo_gym/**", "tests/**"] # TODO here also
+exclude = ["**/node_modules", "**/__pycache__"]
+strict = []
+
+typeCheckingMode = "basic"
+pythonVersion = "3.7"
+pythonPlatform = "All"
+typeshedPath = "typeshed"
+enableTypeIgnoreComments = true
+
+# This is required as the CI pre-commit does not download the module (i.e. numpy, pygame)
+#   Therefore, we have to ignore missing imports
+reportMissingImports = "none"
+# Some modules are missing type stubs, which is an issue when running pyright locally
+reportMissingTypeStubs = false
+# For warning and error, will raise an error when
+reportInvalidTypeVarUse = "none"
+
+# reportUnknownMemberType = "warning"  # -> raises warnings
+# reportUnknownParameterType = "warning"  # -> raises warnings
+# reportUnknownVariableType = "warning"  # -> raises warnings
+# reportUnknownArgumentType = "warning"  # -> raises warnings
+reportGeneralTypeIssues = "none"  # -> commented out raises 489 errors
+reportUntypedFunctionDecorator = "none"  # -> pytest.mark.parameterize issues
+
+# TODO != from Gymnasium
+reportOptionalMemberAccess = "none" # -> commented out raises warnings
+reportPrivateImportUsage = "warning" # -> this raises warnings because we use not exported modules from gym (wrappers)
+
+reportPrivateUsage = "warning"
+reportUnboundVariable = "warning"
+
+[tool.pytest.ini_options]
+filterwarnings = ['ignore:.*The environment .* is out of date.*']
+# filterwarnings = ['ignore:.*step API.*:DeprecationWarning']
