@@ -47,8 +47,6 @@ all = [
     "scipy >=1.7.3",
     # mujoco
     "mujoco >=2.3.0",
-    # mujoco-py
-    "mujoco-py >=2.1,<2.2",
     # highway
     "highway-env",
 ]
