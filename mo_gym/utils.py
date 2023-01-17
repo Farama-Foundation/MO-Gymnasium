@@ -1,3 +1,5 @@
+"""Utilities function such as wrappers."""
+
 import time
 from copy import deepcopy
 from typing import Iterator, Tuple, TypeVar
@@ -8,31 +10,52 @@ from gymnasium.vector import SyncVectorEnv
 from gymnasium.wrappers import RecordEpisodeStatistics
 from gymnasium.wrappers.normalize import RunningMeanStd
 
+
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
 
 def make(env_name: str, disable_env_checker: bool = True, **kwargs) -> gym.Env:
+    """Overrides Gymnasium's make method to disable env_checker by default.
+    Args:
+        env_name: name of the environment to create
+        disable_env_checker: disables environment checker
+        **kwargs: forwards arguments to the environment constructor
+    Returns: a newly created environment.
+    """
     """Disable env checker, as it requires the reward to be a scalar."""
     return gym.make(env_name, disable_env_checker=disable_env_checker, **kwargs)
 
 
 class LinearReward(gym.Wrapper):
-    """Wrapper for Multi-Objective Envs
-    Makes the env return a scalar reward, which is the the dot-product between the reward vector and the weight vector.
-    """
+    """Makes the env return a scalar reward, which is the dot-product between the reward vector and the weight vector."""
 
     def __init__(self, env: gym.Env, weight: np.ndarray = None):
+        """Makes the env return a scalar reward, which is the dot-product between the reward vector and the weight vector.
+        Args:
+            env: env to wrap
+            weight: weight vector to use in the dot product
+        """
         super().__init__(env)
         if weight is None:
             weight = np.ones(shape=env.reward_space.shape)
         self.set_weight(weight)
 
-    def set_weight(self, weight):
+    def set_weight(self, weight: np.ndarray):
+        """Changes weights for the scalarization.
+        Args:
+            weight: new weights to set
+        Returns: nothing
+        """
         assert weight.shape == self.env.reward_space.shape, "Reward weight has different shape than reward vector."
         self.w = weight
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
+        """Steps in the environment.
+        Args:
+            action: action to perform
+        Returns: obs, scalarized_reward, terminated, truncated, info
+        """
         observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info["vector_reward"] = reward
@@ -41,14 +64,10 @@ class LinearReward(gym.Wrapper):
 
 
 class MONormalizeReward(gym.Wrapper):
-    """
-    Wrapper to normalize the reward component at index idx. Does not touch other reward components.
-    Based on Gym's implementation: https://github.com/openai/gym/blob/master/gym/wrappers/normalize.py#L113
-    """
+    """Wrapper to normalize the reward component at index idx. Does not touch other reward components."""
 
     def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
         """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
-
         Args:
             env (env): The environment to apply the wrapper
             idx (int): the index of the reward to normalize
@@ -65,7 +84,11 @@ class MONormalizeReward(gym.Wrapper):
         self.epsilon = epsilon
 
     def step(self, action: ActType):
-        """Steps through the environment, normalizing the rewards returned."""
+        """Steps through the environment, normalizing the rewards returned.
+        Args:
+            action: action to perform
+        Returns: obs, normalized_rewards, terminated, truncated, infos
+        """
         obs, rews, terminated, truncated, infos = self.env.step(action)
         # Extracts the objective value to normalize
         to_normalize = rews[self.idx]
@@ -82,21 +105,37 @@ class MONormalizeReward(gym.Wrapper):
         return obs, rews, terminated, truncated, infos
 
     def normalize(self, rews):
-        """Normalizes the rewards with the running mean rewards and their variance."""
+        """Normalizes the rewards with the running mean rewards and their variance.
+        Args:
+            rews: rewards
+        Returns: the normalized reward
+        """
         self.return_rms.update(self.returns)
         return rews / np.sqrt(self.return_rms.var + self.epsilon)
 
 
 class MOClipReward(gym.RewardWrapper):
-    """ "Clip reward[idx] to [min, max]."""
+    """Clip reward[idx] to [min, max]."""
 
     def __init__(self, env: gym.Env, idx: int, min_r, max_r):
+        """Clip reward[idx] to [min, max].
+        Args:
+            env: environment to wrap
+            idx: index of the MO reward to clip
+            min_r: min reward
+            max_r: max reward
+        """
         super().__init__(env)
         self.idx = idx
         self.min_r = min_r
         self.max_r = max_r
 
     def reward(self, reward):
+        """Clips the reward at the given index.
+        Args:
+            reward: reward to clip.
+        Returns: the clipped reward.
+        """
         reward[self.idx] = np.clip(reward[self.idx], self.min_r, self.max_r)
         return reward
 
@@ -109,6 +148,11 @@ class MOSyncVectorEnv(SyncVectorEnv):
         env_fns: Iterator[callable],
         copy: bool = True,
     ):
+        """Vectorized environment that serially runs multiple environments.
+        Args:
+            env_fns: env constructors
+            copy: If ``True``, then the :meth:`reset` and :meth:`step` methods return a copy of the observations.
+        """
         super().__init__(env_fns, copy=copy)
         # Just overrides the rewards memory to add the number of objectives
         self.reward_space = self.envs[0].reward_space
@@ -121,37 +165,64 @@ class MOSyncVectorEnv(SyncVectorEnv):
         )
 
 
+def _add_vector_episode_statistics(info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int):
+    """Add episode statistics.
+    Add statistics coming from the vectorized environment.
+    Args:
+        info (dict): info dict of the environment.
+        episode_info (dict): episode statistics data.
+        num_envs (int): number of environments.
+        num_objs (int): number of objectives.
+        env_num (int): env number of the vectorized environments.
+    Returns:
+        info (dict): the input info dict with the episode statistics.
+    """
+    info["episode"] = info.get("episode", {})
+
+    info["_episode"] = info.get("_episode", np.zeros(num_envs, dtype=bool))
+    info["_episode"][env_num] = True
+
+    for k in episode_info.keys():
+        if k == "r" or k == "dr":
+            info_array = info["episode"].get(k, np.zeros((num_envs, num_objs)))
+        else:
+            info_array = info["episode"].get(k, np.zeros(num_envs))
+        info_array[env_num] = deepcopy(episode_info[k])
+        info["episode"][k] = info_array
+
+    return info
+
+
 class MORecordEpisodeStatistics(RecordEpisodeStatistics):
+    """This wrapper will keep track of cumulative rewards and episode lengths."""
+
     def __init__(self, env: gym.Env, gamma: float = 1.0, deque_size: int = 100):
         """This wrapper will keep track of cumulative rewards and episode lengths.
         Args:
             env (Env): The environment to apply the wrapper
+            gamma (float): Discounting factor
             deque_size: The size of the buffers :attr:`return_queue` and :attr:`length_queue`
         """
         super().__init__(env, deque_size)
         # Here we just override the standard implementation to extend to MO
         self.reward_dim = self.env.reward_space.shape[0]
-        self.multi_env_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
-        obs, info = super().reset(**kwargs)
-        self.episode_start_times = np.full(self.num_envs, time.perf_counter(), dtype=np.float32)
-
-        self.episode_returns = np.zeros(self.multi_env_shape, dtype=np.float32)
-        self.disc_episode_returns = np.zeros(self.multi_env_shape, dtype=np.float32)
-
-        self.episode_lengths = np.zeros(self.num_envs, dtype=np.int32)
-        return obs, info
+        observations = super().reset(**kwargs)
+        self.episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
+        self.disc_episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
+        return observations
 
     def step(self, action):
         """Steps through the environment, recording the episode statistics."""
+        # This is the code from the RecordEpisodeStatistics wrapper from gym.
         (
             observations,
             rewards,
-            terminations,
-            truncations,
+            terminateds,
+            truncateds,
             infos,
         ) = self.env.step(action)
         assert isinstance(
@@ -163,45 +234,45 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             self.episode_returns.shape
         )
         self.episode_lengths += 1
-        dones = np.logical_or(terminations, truncations)
-        if np.isscalar(dones):
-            dones = np.array([dones])
-        num_dones = np.sum(dones)
-        if num_dones:
-            if "episode" in infos or "_episode" in infos:
-                raise ValueError("Attempted to add episode stats when they already exist")
-            else:
-                episode_return = np.zeros(self.multi_env_shape, dtype=np.float32)
-                disc_episode_return = np.zeros(self.multi_env_shape, dtype=np.float32)
-                for i in range(self.num_envs):
-                    if dones[i]:
-                        # Makes a deepcopy to avoid subsequent mutations
-                        episode_return[i] = deepcopy(self.episode_returns[i])
-                        disc_episode_return[i] = deepcopy(self.disc_episode_returns[i])
+        if not self.is_vector_env:
+            terminateds = [terminateds]
+            truncateds = [truncateds]
+        terminateds = list(terminateds)
+        truncateds = list(truncateds)
 
-                infos["episode"] = {
-                    "r": episode_return,
-                    "dr": disc_episode_return,
-                    "l": np.where(dones, self.episode_lengths, 0),
-                    "t": np.where(
-                        dones,
-                        np.round(time.perf_counter() - self.episode_start_times, 6),
-                        0.0,
-                    ),
+        for i in range(len(terminateds)):
+            if terminateds[i] or truncateds[i]:
+                episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
+                disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
+                episode_length = self.episode_lengths[i]
+                episode_info = {
+                    "episode": {
+                        "r": episode_return,
+                        "dr": disc_episode_return,
+                        "l": episode_length,
+                        "t": round(time.perf_counter() - self.t0, 6),
+                    }
                 }
                 if self.is_vector_env:
-                    infos["_episode"] = np.where(dones, True, False)
-            self.return_queue.extend(self.episode_returns[dones])
-            self.length_queue.extend(self.episode_lengths[dones])
-            self.episode_count += num_dones
-            self.episode_lengths[dones] = 0
-            self.episode_returns[dones] = np.zeros(self.reward_dim, dtype=np.float32)
-            self.disc_episode_returns[dones] = np.zeros(self.reward_dim, dtype=np.float32)
-            self.episode_start_times[dones] = time.perf_counter()
+                    infos = _add_vector_episode_statistics(
+                        infos,
+                        episode_info["episode"],
+                        self.num_envs,
+                        self.reward_dim,
+                        i,
+                    )
+                else:
+                    infos = {**infos, **episode_info}
+                self.return_queue.append(episode_return)
+                self.length_queue.append(episode_length)
+                self.episode_count += 1
+                self.episode_returns[i] = 0
+                self.disc_episode_returns[i] = 0
+                self.episode_lengths[i] = 0
         return (
             observations,
             rewards,
-            terminations,
-            truncations,
+            terminateds if self.is_vector_env else terminateds[0],
+            truncateds if self.is_vector_env else truncateds[0],
             infos,
         )

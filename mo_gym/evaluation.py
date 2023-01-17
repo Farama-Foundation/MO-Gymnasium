@@ -1,3 +1,5 @@
+"""Utilities related to evaluation."""
+
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
@@ -71,8 +73,7 @@ def eval_mo_reward_conditioned(
     w: Optional[np.ndarray] = None,
     render: bool = False,
 ) -> Tuple[float, float, np.ndarray, np.ndarray]:
-    """Evaluates one episode of the agent in the environment. This makes the assumption that the agent is conditioned on the
-    accrued reward i.e. for ESR agent.
+    """Evaluates one episode of the agent in the environment. This makes the assumption that the agent is conditioned on the accrued reward i.e. for ESR agent.
 
     Args:
         agent: Agent
@@ -114,7 +115,7 @@ def eval_mo_reward_conditioned(
 def policy_evaluation_mo(
     agent, env, w: np.ndarray, rep: int = 5, return_scalarized_value: bool = False
 ) -> Union[np.ndarray, float]:
-    """Evaluates the value of a policy by runnning the policy for multiple episodes.
+    """Evaluates the value of a policy by running the policy for multiple episodes.
 
     Args:
         agent: Agent

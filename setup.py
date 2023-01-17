@@ -1,45 +1,7 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
-# Environment-specific dependencies.
-extras = {
-    "mario": ["nes-py", "gym-super-mario-bros"],
-    "minecart": ["scipy"],
-    "mujoco": ["mujoco"],
-    "highway": ["highway-env"],
-}
-extras["all"] = extras["mario"] + extras["minecart"] + extras["mujoco"] + extras["highway"]
 
-packages = [package for package in find_packages() if package.startswith("mo_gym")]
-package_data = {package: ["*.json", "assets/*"] for package in packages}
-
-setup(
-    name="mo-gym",
-    version="0.2.1",
-    description="Environments for Multi-Objective RL.",
-    url="https://www.github.com/LucasAlegre/mo-gym",
-    author="LucasAlegre",
-    author_email="lnalegre@inf.ufrgs.br",
-    license="MIT",
-    packages=packages,
-    package_data=package_data,
-    install_requires=[
-        "gymnasium>=0.26",
-        "numpy",
-        "pygame",
-        "scipy",
-        "pymoo",
-    ],
-    extras_require=extras,
-    tests_require=["pytest", "mock"],
-    python_requires=">=3.7",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-    ],
-)
+setup(name="mo-gym", version="0.3.0", description="Environments for Multi-Objective RL.")  # TODO rename this to mo-gymnasium
 
 # python setup.py sdist
 # python setup.py bdist_wheel
