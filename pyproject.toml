@@ -26,7 +26,7 @@ dependencies = [
     "gym >=0.26",
     "numpy >=1.21.0",
     "pygame >=2.1.0",
-    "scipy >=1.9.1",
+    "scipy >=1.7.3",
     "pymoo >=0.6.0"
 ]
 dynamic = ["version"]
@@ -34,7 +34,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 # Update dependencies in `all` if any are added or removed
 mario = ["nes-py", "gym-super-mario-bros"]
-minecart = ["scipy >=1.9.1"]
+minecart = ["scipy >=1.7.3  "]
 mujoco = ["mujoco >=2.3.0"]
 highway = ["highway-env"]
 all = [
@@ -44,7 +44,7 @@ all = [
     "nes-py",
     "gym-super-mario-bros",
     # minecart
-    "scipy >=1.9.1",
+    "scipy >=1.7.3",
     # mujoco
     "mujoco >=2.3.0",
     # mujoco-py
