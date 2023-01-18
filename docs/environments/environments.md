@@ -1,53 +1,8 @@
-![tests](https://github.com/LucasAlegre/mo-gym/workflows/Python%20tests/badge.svg)
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/LucasAlegre/mo-gym/blob/main/LICENSE)
-[![Discord](https://img.shields.io/discord/999693014618362036?label=discord)](https://discord.gg/ygmkfnBvKA)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+---
+title: "Environments"
+---
 
-
-# MO-Gymnasium: Multi-Objective Reinforcement Learning Environments
-
-Gymnasium environments for multi-objective reinforcement learning (MORL). The environments follow the standard [gymnasium's API](https://github.com/Farama-Foundation/Gymnasium), but return vectorized rewards as numpy arrays.
-
-For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
-
-## Install
-
-Via pip:
-```bash
-pip install mo-gym
-```
-
-Alternatively, you can install the newest unreleased version:
-```bash
-git clone https://github.com/Farama-Foundation/MO-Gymnasium
-cd MO-Gymnasium
-pip install -e .
-```
-
-## Usage
-
-```python
-import gym
-import mo_gym
-
-env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
-
-obs = env.reset()
-next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))  # but vector_reward is a numpy array!
-
-# Optionally, you can scalarize the reward function with the LinearReward wrapper
-env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
-```
-
-[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/MO-Gymnasium/blob/main/mo_gym_demo.ipynb)
-You can also check more examples in this colab notebook!
-
-[MORL-Baselines](https://github.com/LucasAlegre/morl-baselines) is a repository containing various implementations of multi-objective reinforcement learning algorithms. It relies on the MO-Gymnasium API and shows various examples of the usage of wrappers and environments.
-
-## Environments
+# Available environments
 
 | Env                                                                                                                                                      | Obs/Action spaces                   | Objectives                                                    | Description                                                                                                                                                                                                                                                                                                |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|---------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -67,24 +22,3 @@ You can also check more examples in this colab notebook!
 | `mo-supermario-v0` <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/mario.png" width="200px">                         | Image / Discrete                    | `[x_pos, time, death, coin, enemy]`                           | Multi-objective version of [SuperMarioBrosEnv](https://github.com/Kautenja/gym-super-mario-bros). Objectives are defined similarly as in [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf).                                                                                                         |
 | `mo-halfcheetah-v4` <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/cheetah.png" width="200px">                      | Continuous / Continuous             | `[velocity, energy]`                                          | Multi-objective version of [HalfCheetah-v4](https://www.gymlibrary.ml/environments/mujoco/half_cheetah/) env. Similar to [Xu et al. 2020](https://github.com/mit-gfx/PGMORL).                                                                                                                              |
 | `mo-hopper-v4` <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/hopper.png" width="200px">                            | Continuous / Continuous             | `[velocity, height, energy]`                                  | Multi-objective version of [Hopper-v4](https://www.gymlibrary.ml/environments/mujoco/hopper/) env.                                                                                                                                                                                                         |
-
-## Citing
-
-If you use this repository in your work, please cite:
-
-```bibtex
-@inproceedings{Alegre+2022bnaic,
-  author = {Lucas N. Alegre and Florian	Felten and El-Ghazali Talbi and Gr{\'e}goire Danoy and Ann Now{\'e} and Ana L. C. Bazzan and Bruno C. da Silva},
-  title = {{MO-Gym}: A Library of Multi-Objective Reinforcement Learning Environments},
-  booktitle = {Proceedings of the 34th Benelux Conference on Artificial Intelligence BNAIC/Benelearn 2022},
-  year = {2022}
-}
-```
-
-## Acknowledgments
-
-* The `minecart-v0` env is a refactor of https://github.com/axelabels/DynMORL.
-* The `deep-sea-treasure-v0`, `fruit-tree-v0` and `mo-supermario-v0` envs are based on https://github.com/RunzheYang/MORL.
-* The `four-room-v0` env is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.
-* The `fishwood-v0` code was provided by Denis Steckelmacher and Conor F. Hayes.
-* The `water-reservoir-v0` code was provided by Mathieu Reymond.
