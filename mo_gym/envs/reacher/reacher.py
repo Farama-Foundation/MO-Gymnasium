@@ -13,7 +13,7 @@ target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (
 
 class ReacherBulletEnv(BaseBulletEnv):
 
-    metadata = {"render.modes": ["human", "rgb_array"]}
+    metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(
         self,
