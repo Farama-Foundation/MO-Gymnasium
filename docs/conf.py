@@ -66,8 +66,8 @@ html_favicon = "_static/img/favicon.png"
 html_theme_options = {
     # "light_logo": "img/Minari.svg",
     # "dark_logo": "img/Minari_White.svg",
-    "gtag": "G-R5TRTT6R78",
-    "versioning": True,
+    # "gtag": "G-R5TRTT6R78",
+    # "versioning": True,
 }
 html_context: Dict[str, Any] = {}
 html_context["conf_py_path"] = "/docs/"

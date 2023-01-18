@@ -4,14 +4,6 @@ firstpage:
 lastpage:
 ---
 
-[//]: # (```{toctree})
-
-[//]: # (:hidden:)
-
-[//]: # (:caption: Introduction)
-
-[//]: # (```)
-
 ```{toctree}
 :hidden:
 :caption: API
@@ -65,4 +57,16 @@ pip install mo-gym
 git clone https://github.com/Farama-Foundation/MO-Gymnasium
 cd MO-Gymnasium
 pip install -e .
+```
+
+## Citing
+If you use this repository in your work, please cite:
+
+```bibtex
+@inproceedings{Alegre+2022bnaic,
+  author = {Lucas N. Alegre and Florian	Felten and El-Ghazali Talbi and Gr{\'e}goire Danoy and Ann Now{\'e} and Ana L. C. Bazzan and Bruno C. da Silva},
+  title = {{MO-Gym}: A Library of Multi-Objective Reinforcement Learning Environments},
+  booktitle = {Proceedings of the 34th Benelux Conference on Artificial Intelligence BNAIC/Benelearn 2022},
+  year = {2022}
+}
 ```
