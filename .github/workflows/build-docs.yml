@@ -1,9 +1,11 @@
-name: Build Documentation website
+name: Deploy documentation website
 on:
   push:
     branches: [main]
+
 permissions:
   contents: write
+
 jobs:
   docs:
     name: Generate Website
@@ -11,16 +13,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-python@v4
         with:
             python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install docs requirements
         run: pip install -r docs/requirements.txt
 
       - name: Install MO-Gymnasium
-        run: pip install .
+        run: pip install -e .
 
       - name: Build
         run: sphinx-build -b dirhtml -v docs _build
@@ -38,5 +39,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: _build
-          target-folder: main
-          clean: false
+          clean-exclude: |
+            *.*.*/
