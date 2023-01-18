@@ -1,32 +1,52 @@
+from typing import Optional
 import gymnasium as gym
 import gym_super_mario_bros
 import numpy as np
 from gymnasium.utils import seeding
 
 # from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
-from gym.wrappers import GrayScaleObservation, ResizeObservation
+from gymnasium.wrappers import GrayScaleObservation, ResizeObservation
 from gym_super_mario_bros import SuperMarioBrosEnv
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from nes_py.wrappers import JoypadSpace
+from nes_py.nes_env import SCREEN_SHAPE_24_BIT
+#from nes_py.wrappers import JoypadSpace
+from mo_gym.envs.mario.joypad_space import JoypadSpace
 
 import mo_gym
 
 
-# import matplotlib.pyplot as plt
-
-
 class MOSuperMarioBros(SuperMarioBrosEnv):
+
+    metadata = {
+        "render_modes": ["human", "rgb_array"],
+        "render_fps": 60
+    }    
+
     def __init__(
         self,
         rom_mode="pixel",
         lost_levels=False,
         target=None,
         objectives=["x_pos", "time", "death", "coin", "enemy"],
+        render_mode: Optional[str] = None
     ):
         super().__init__(rom_mode, lost_levels, target)
 
+        self.render_mode = render_mode
+
         self.objectives = set(objectives)
         self.reward_space = gym.spaces.Box(high=np.inf, low=-np.inf, shape=(len(objectives),))
+        
+        # observation space for the environment is static across all instances
+        self.observation_space = gym.spaces.Box(
+            low=0,
+            high=255,
+            shape=SCREEN_SHAPE_24_BIT,
+            dtype=np.uint8
+        )
+
+        # action space is a bitmap of button press values for the 8 NES buttons
+        self.action_space = gym.spaces.Discrete(256)
 
         self.single_stage = True
         self.done_when_dead = True
@@ -39,7 +59,25 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         self.score = 0
         self.stage_bonus = 0
         self.lives = 2
-        return super().reset(), {}
+        obs = super().reset()
+        if self.render_mode == "human":
+            self.render()
+        return obs, {}
+
+    def render(self):
+        if self.render_mode is None:
+            assert self.spec is not None
+            gym.logger.warn(
+                "You are calling render method without specifying any render mode. "
+                "You can specify the render_mode at initialization, "
+                f'e.g. gym.make("{self.spec.id}", render_mode="rgb_array")'
+            )
+            return
+        
+        if self.render_mode == "human":
+            super().render(mode="human")
+        elif self.render_mode == "rgb_array":
+            return super().render(mode="rgb_array")
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
@@ -105,6 +143,9 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         mor = np.array(moreward, dtype=np.float32) * self.reward_space.shape[0] / 150
 
         info["score"] = info["score"] + self.stage_bonus
+
+        if self.render_mode == "human":
+            self.render()
 
         return obs, mor, bool(done), False, info
 
