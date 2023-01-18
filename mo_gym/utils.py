@@ -165,34 +165,6 @@ class MOSyncVectorEnv(SyncVectorEnv):
         )
 
 
-def _add_vector_episode_statistics(info: dict, episode_info: dict, num_envs: int, num_objs: int, env_num: int):
-    """Add episode statistics.
-    Add statistics coming from the vectorized environment.
-    Args:
-        info (dict): info dict of the environment.
-        episode_info (dict): episode statistics data.
-        num_envs (int): number of environments.
-        num_objs (int): number of objectives.
-        env_num (int): env number of the vectorized environments.
-    Returns:
-        info (dict): the input info dict with the episode statistics.
-    """
-    info["episode"] = info.get("episode", {})
-
-    info["_episode"] = info.get("_episode", np.zeros(num_envs, dtype=bool))
-    info["_episode"][env_num] = True
-
-    for k in episode_info.keys():
-        if k == "r" or k == "dr":
-            info_array = info["episode"].get(k, np.zeros((num_envs, num_objs)))
-        else:
-            info_array = info["episode"].get(k, np.zeros(num_envs))
-        info_array[env_num] = deepcopy(episode_info[k])
-        info["episode"][k] = info_array
-
-    return info
-
-
 class MORecordEpisodeStatistics(RecordEpisodeStatistics):
     """This wrapper will keep track of cumulative rewards and episode lengths."""
 
@@ -210,10 +182,14 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
-        observations = super().reset(**kwargs)
-        self.episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
-        self.disc_episode_returns = np.zeros((self.num_envs, self.reward_dim), dtype=np.float32)
-        return observations
+        obs, info = super().reset(**kwargs)
+        self.episode_start_times = np.full(self.num_envs, time.perf_counter(), dtype=np.float32)
+
+        self.episode_returns = np.zeros(self.multi_env_shape, dtype=np.float32)
+        self.disc_episode_returns = np.zeros(self.multi_env_shape, dtype=np.float32)
+
+        self.episode_lengths = np.zeros(self.num_envs, dtype=np.int32)
+        return obs, info
 
     def step(self, action):
         """Steps through the environment, recording the episode statistics."""
@@ -221,8 +197,8 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         (
             observations,
             rewards,
-            terminateds,
-            truncateds,
+            terminations,
+            truncations,
             infos,
         ) = self.env.step(action)
         assert isinstance(
@@ -234,45 +210,45 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
             self.episode_returns.shape
         )
         self.episode_lengths += 1
-        if not self.is_vector_env:
-            terminateds = [terminateds]
-            truncateds = [truncateds]
-        terminateds = list(terminateds)
-        truncateds = list(truncateds)
+        dones = np.logical_or(terminations, truncations)
+        if np.isscalar(dones):
+            dones = np.array([dones])
+        num_dones = np.sum(dones)
+        if num_dones:
+            if "episode" in infos or "_episode" in infos:
+                raise ValueError("Attempted to add episode stats when they already exist")
+            else:
+                episode_return = np.zeros(self.multi_env_shape, dtype=np.float32)
+                disc_episode_return = np.zeros(self.multi_env_shape, dtype=np.float32)
+                for i in range(self.num_envs):
+                    if dones[i]:
+                        # Makes a deepcopy to avoid subsequent mutations
+                        episode_return[i] = deepcopy(self.episode_returns[i])
+                        disc_episode_return[i] = deepcopy(self.disc_episode_returns[i])
 
-        for i in range(len(terminateds)):
-            if terminateds[i] or truncateds[i]:
-                episode_return = deepcopy(self.episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
-                disc_episode_return = deepcopy(self.disc_episode_returns[i])  # Makes a deepcopy to avoid subsequent mutations
-                episode_length = self.episode_lengths[i]
-                episode_info = {
-                    "episode": {
-                        "r": episode_return,
-                        "dr": disc_episode_return,
-                        "l": episode_length,
-                        "t": round(time.perf_counter() - self.t0, 6),
-                    }
+                infos["episode"] = {
+                    "r": episode_return,
+                    "dr": disc_episode_return,
+                    "l": np.where(dones, self.episode_lengths, 0),
+                    "t": np.where(
+                        dones,
+                        np.round(time.perf_counter() - self.episode_start_times, 6),
+                        0.0,
+                    ),
                 }
                 if self.is_vector_env:
-                    infos = _add_vector_episode_statistics(
-                        infos,
-                        episode_info["episode"],
-                        self.num_envs,
-                        self.reward_dim,
-                        i,
-                    )
-                else:
-                    infos = {**infos, **episode_info}
-                self.return_queue.append(episode_return)
-                self.length_queue.append(episode_length)
-                self.episode_count += 1
-                self.episode_returns[i] = 0
-                self.disc_episode_returns[i] = 0
-                self.episode_lengths[i] = 0
+                    infos["_episode"] = np.where(dones, True, False)
+            self.return_queue.extend(self.episode_returns[dones])
+            self.length_queue.extend(self.episode_lengths[dones])
+            self.episode_count += num_dones
+            self.episode_lengths[dones] = 0
+            self.episode_returns[dones] = np.zeros(self.reward_dim, dtype=np.float32)
+            self.disc_episode_returns[dones] = np.zeros(self.reward_dim, dtype=np.float32)
+            self.episode_start_times[dones] = time.perf_counter()
         return (
             observations,
             rewards,
-            terminateds if self.is_vector_env else terminateds[0],
-            truncateds if self.is_vector_env else truncateds[0],
+            terminations,
+            truncations,
             infos,
         )
