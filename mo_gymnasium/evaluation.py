@@ -30,7 +30,7 @@ def eval_mo(
 
     Args:
         agent: Agent
-        env: MO-Gym environment with LinearReward wrapper
+        env: MO-Gymnasium environment with LinearReward wrapper
         scalarization: scalarization function, taking weights and reward as parameters
         w (np.ndarray): Weight vector
         render (bool, optional): Whether to render the environment. Defaults to False.
@@ -77,7 +77,7 @@ def eval_mo_reward_conditioned(
 
     Args:
         agent: Agent
-        env: MO-Gym environment
+        env: MO-Gymnasium environment
         scalarization: scalarization function, taking weights and reward as parameters
         w: weight vector
         render (bool, optional): Whether to render the environment. Defaults to False.
@@ -119,7 +119,7 @@ def policy_evaluation_mo(
 
     Args:
         agent: Agent
-        env: MO-Gym environment with LinearReward wrapper
+        env: MO-Gymnasium environment with LinearReward wrapper
         w (np.ndarray): Weight vector
         rep (int, optional): Number of episodes for averaging. Defaults to 5.
         return_scalarized_value (bool, optional): Whether to return scalarized value. Defaults to False.

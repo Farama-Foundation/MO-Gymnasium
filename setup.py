@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-setup(name="mo-gym", version="0.3.0", description="Environments for Multi-Objective RL.")  # TODO rename this to mo-gymnasium
+setup(name="mo-gymnasium", version="0.3.0", description="Environments for Multi-Objective RL.")
 
 # python setup.py sdist
 # python setup.py bdist_wheel

@@ -3,7 +3,7 @@ requires = ["setuptools >= 61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mo-gym" # TODO replace this
+name = "mo-gymnasium"
 description="Environments for Multi-Objective RL."
 readme = "README.md"
 requires-python = ">= 3.7"
@@ -62,7 +62,7 @@ Documentation = "https://gymnasium.farama.org"
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["mo_gym", "mo_gym.*"] # TODO replace this with mo_gymnasium
+include = ["mo_gymnasium", "mo_gymnasium.*"]
 
 [tool.setuptools.package-data]
 mo_gymnasium = [
@@ -81,14 +81,14 @@ include = '\.pyi?$'
 [tool.isort]
 atomic = true
 profile = "black"
-src_paths = ["mo_gym", "tests", "docs/scripts"] # TODO replace with mo_gymnasium
+src_paths = ["mo_gymnasium", "tests", "docs/scripts"]
 extra_standard_library = ["typing_extensions"]
 indent = 4
 lines_after_imports = 2
 multi_line_output = 3
 
 [tool.pyright]
-include = ["mo_gymnasium/**", "tests/**"] # TODO here also
+include = ["mo_gymnasium/**", "tests/**"]
 exclude = ["**/node_modules", "**/__pycache__"]
 strict = []
 
@@ -113,7 +113,6 @@ reportInvalidTypeVarUse = "none"
 reportGeneralTypeIssues = "none"  # -> commented out raises 489 errors
 reportUntypedFunctionDecorator = "none"  # -> pytest.mark.parameterize issues
 
-# TODO != from Gymnasium
 reportOptionalMemberAccess = "none" # -> commented out raises warnings
 reportPrivateImportUsage = "warning" # -> this raises warnings because we use not exported modules from gym (wrappers)
 
