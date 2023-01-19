@@ -17,7 +17,7 @@ For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [
 
 Via pip:
 ```bash
-pip install mo-gym
+pip install mo-gymnasium
 ```
 
 Alternatively, you can install the newest unreleased version:
@@ -31,7 +31,7 @@ pip install -e .
 
 ```python
 import gymnasium as gym
-import mo_gym
+import mo_gymnasium as mo_gym
 
 env = mo_gym.make('minecart-v0') # It follows the original gym's API ...
 
@@ -42,7 +42,7 @@ next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(o
 env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 ```
 
-[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/MO-Gymnasium/blob/main/mo_gym_demo.ipynb)
+[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/MO-Gymnasium/blob/main/mo_gymnasium_demo.ipynb)
 You can also check more examples in this colab notebook!
 
 [MORL-Baselines](https://github.com/LucasAlegre/morl-baselines) is a repository containing various implementations of multi-objective reinforcement learning algorithms. It relies on the MO-Gymnasium API and shows various examples of the usage of wrappers and environments.

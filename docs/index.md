@@ -49,7 +49,7 @@ For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [
 
 ### From Pypi
 ```bash
-pip install mo-gym
+pip install mo-gymnasium
 ```
 
 ### From source
