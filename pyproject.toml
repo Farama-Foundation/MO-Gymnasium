@@ -88,7 +88,7 @@ lines_after_imports = 2
 multi_line_output = 3
 
 [tool.pyright]
-include = ["mo_gym/**", "tests/**"] # TODO here also
+include = ["mo_gymnasium/**", "tests/**"] # TODO here also
 exclude = ["**/node_modules", "**/__pycache__"]
 strict = []
 

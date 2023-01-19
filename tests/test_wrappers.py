@@ -1,7 +1,6 @@
+import mo_gymnasium as mo_gym
 import numpy as np
-
-import mo_gym
-from mo_gym import (
+from mo_gymnasium import (
     MOClipReward,
     MONormalizeReward,
     MORecordEpisodeStatistics,
