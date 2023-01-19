@@ -189,6 +189,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         super().__init__(env, deque_size)
         # Here we just override the standard implementation to extend to MO
         self.reward_dim = self.env.reward_space.shape[0]
+        self.multi_env_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
 
     def reset(self, **kwargs):
