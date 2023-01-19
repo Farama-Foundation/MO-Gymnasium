@@ -1,0 +1,4 @@
+cython
+sphinx
+myst-parser
+git+https://github.com/Farama-Foundation/Celshast#egg=furo
