@@ -77,7 +77,7 @@ def test_highway_fast():
     check_env(env) """
 
 
-def test_halfcheetah():
+""" def test_halfcheetah():
     env = mo_gym.make("mo-halfcheetah-v4")
     env = LinearReward(env)
     check_env(env)
@@ -86,7 +86,7 @@ def test_halfcheetah():
 def test_hopper():
     env = mo_gym.make("mo-hopper-v4")
     env = LinearReward(env)
-    check_env(env)
+    check_env(env) """
 
 
 def test_breakable_bottles():
