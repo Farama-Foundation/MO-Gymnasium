@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-setup(name="mo-gymnasium", version="0.3.0", description="Environments for Multi-Objective RL.")
+setup(name="mo-gymnasium", version="0.3.0", long_description=open("README.md").read())
 
 # python setup.py sdist
 # python setup.py bdist_wheel
