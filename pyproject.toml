@@ -35,7 +35,7 @@ dynamic = ["version"]
 # Update dependencies in `all` if any are added or removed
 mario = ["nes-py", "gym-super-mario-bros"]
 minecart = ["scipy >=1.7.3  "]
-mujoco = ["mujoco >=2.3.0"]
+mujoco = ["mujoco >=2.3.0", "imageio >=2.14.1"]
 highway = ["highway-env"]
 all = [
     # All dependencies above except accept-rom-license
@@ -46,6 +46,7 @@ all = [
     # minecart
     "scipy >=1.7.3",
     # mujoco
+    "imageio >=2.14.1",
     "mujoco >=2.3.0",
     # highway
     "highway-env",
