@@ -1,7 +1,6 @@
 from typing import Optional
 
 import gymnasium as gym
-import mo_gymnasium as mo_gym
 import numpy as np
 from gym_super_mario_bros import SuperMarioBrosEnv
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
@@ -9,10 +8,12 @@ from gymnasium.utils import seeding
 
 # from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
 from gymnasium.wrappers import GrayScaleObservation, ResizeObservation
+from nes_py.nes_env import SCREEN_SHAPE_24_BIT
+
+import mo_gymnasium as mo_gym
 
 # from nes_py.wrappers import JoypadSpace
 from mo_gymnasium.envs.mario.joypad_space import JoypadSpace
-from nes_py.nes_env import SCREEN_SHAPE_24_BIT
 
 
 class MOSuperMarioBros(SuperMarioBrosEnv):

@@ -1,6 +1,7 @@
 import gymnasium as gym
-import mo_gymnasium as mo_gym
 from gymnasium.utils.env_checker import check_env
+
+import mo_gymnasium as mo_gym
 from mo_gymnasium import LinearReward
 
 
