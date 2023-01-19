@@ -30,3 +30,4 @@ jobs:
     - name: Full Python tests
       run: |
         pytest tests/test_envs.py
+        pytest tests/test_wrappers.py
