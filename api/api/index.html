@@ -289,8 +289,8 @@
 <h1>API<a class="headerlink" href="#api" title="Permalink to this heading">#</a></h1>
 <p>The environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/Gymnasium">gymnasium’s API</a>, but return vectorized rewards as numpy arrays.</p>
 <p>Here is a minimal example of how to create an environment and interact with it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-<span class="kn">import</span> <span class="nn">mo_gym</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">import</span> <span class="nn">mo_gymnasium</span> <span class="k">as</span> <span class="nn">mo_gym</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;minecart-v0&#39;</span><span class="p">)</span> <span class="c1"># It follows the original Gymnasium API ...</span>
 
@@ -301,7 +301,7 @@
 <span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
 </pre></div>
 </div>
-<p><a class="reference external" href="https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gym_demo.ipynb"><img alt="MO-Gym Demo in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
+<p><a class="reference external" href="https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gymnasium_demo.ipynb"><img alt="MO-Gym Demo in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
 You can also check more examples in this colab notebook!</p>
 </section>
 
