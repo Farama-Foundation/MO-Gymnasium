@@ -51,7 +51,7 @@ repos:
     rev: 6.1.1
     hooks:
       - id: pydocstyle
-        exclude: ^(mo_gym/envs/)|(tests/)|(docs/)|(setup.py)
+        exclude: ^(mo_gymnasium/envs/)|(tests/)|(docs/)|(setup.py)
         args:
           - --source
           - --explain

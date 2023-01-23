@@ -25,8 +25,9 @@ jobs:
         git clone https://github.com/benelot/pybullet-gym.git
         pip install -e pybullet-gym
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
-        pip install gym
+        pip install gymnasium
         pip install -e .[all]
     - name: Full Python tests
       run: |
-        pytest tests/
+        pytest tests/test_envs.py
+        pytest tests/test_wrappers.py

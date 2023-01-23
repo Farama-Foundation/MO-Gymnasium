@@ -7,8 +7,8 @@ The environments follow the standard [gymnasium's API](https://github.com/Farama
 
 Here is a minimal example of how to create an environment and interact with it.
 ```python
-import gym
-import mo_gym
+import gymnasium
+import mo_gymnasium as mo_gym
 
 env = mo_gym.make('minecart-v0') # It follows the original Gymnasium API ...
 
@@ -19,5 +19,5 @@ next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(o
 env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 ```
 
-[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gym_demo.ipynb)
+[![MO-Gym Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gymnasium_demo.ipynb)
 You can also check more examples in this colab notebook!

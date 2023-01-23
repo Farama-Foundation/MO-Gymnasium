@@ -3,8 +3,8 @@ requires = ["setuptools >= 61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mo-gym" # TODO replace this
-description="Environments for Multi-Objective RL."
+name = "mo-gymnasium"
+description="A standard API for MORL and a diverse set of reference environments."
 readme = "README.md"
 requires-python = ">= 3.7"
 authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
@@ -23,7 +23,7 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
 ]
 dependencies = [
-    "gym >=0.26",
+    "gymnasium >=0.26",
     "numpy >=1.21.0",
     "pygame >=2.1.0",
     "scipy >=1.7.3",
@@ -35,7 +35,7 @@ dynamic = ["version"]
 # Update dependencies in `all` if any are added or removed
 mario = ["nes-py", "gym-super-mario-bros"]
 minecart = ["scipy >=1.7.3  "]
-mujoco = ["mujoco >=2.3.0"]
+mujoco = ["mujoco >=2.3.0", "imageio >=2.14.1"]
 highway = ["highway-env"]
 all = [
     # All dependencies above except accept-rom-license
@@ -46,6 +46,7 @@ all = [
     # minecart
     "scipy >=1.7.3",
     # mujoco
+    "imageio >=2.14.1",
     "mujoco >=2.3.0",
     # highway
     "highway-env",
@@ -62,7 +63,7 @@ Documentation = "https://gymnasium.farama.org"
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["mo_gym", "mo_gym.*"] # TODO replace this with mo_gymnasium
+include = ["mo_gymnasium", "mo_gymnasium.*"]
 
 [tool.setuptools.package-data]
 mo_gymnasium = [
@@ -81,14 +82,14 @@ include = '\.pyi?$'
 [tool.isort]
 atomic = true
 profile = "black"
-src_paths = ["mo_gym", "tests", "docs/scripts"] # TODO replace with mo_gymnasium
+src_paths = ["mo_gymnasium", "tests", "docs/scripts"]
 extra_standard_library = ["typing_extensions"]
 indent = 4
 lines_after_imports = 2
 multi_line_output = 3
 
 [tool.pyright]
-include = ["mo_gym/**", "tests/**"] # TODO here also
+include = ["mo_gymnasium/**", "tests/**"]
 exclude = ["**/node_modules", "**/__pycache__"]
 strict = []
 
@@ -113,7 +114,6 @@ reportInvalidTypeVarUse = "none"
 reportGeneralTypeIssues = "none"  # -> commented out raises 489 errors
 reportUntypedFunctionDecorator = "none"  # -> pytest.mark.parameterize issues
 
-# TODO != from Gymnasium
 reportOptionalMemberAccess = "none" # -> commented out raises warnings
 reportPrivateImportUsage = "warning" # -> this raises warnings because we use not exported modules from gym (wrappers)
 

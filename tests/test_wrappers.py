@@ -1,7 +1,7 @@
 import numpy as np
 
-import mo_gym
-from mo_gym import (
+import mo_gymnasium as mo_gym
+from mo_gymnasium import (
     MOClipReward,
     MONormalizeReward,
     MORecordEpisodeStatistics,
@@ -95,16 +95,16 @@ def test_mo_record_ep_statistic():
 
     assert isinstance(info["episode"]["r"], np.ndarray)
     assert isinstance(info["episode"]["dr"], np.ndarray)
-    assert info["episode"]["r"].shape == (2,)
-    assert info["episode"]["dr"].shape == (2,)
-    assert tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.0))
-    assert tuple(np.round(info["episode"]["dr"], 4)) == (
+    assert info["episode"]["r"].shape == (1, 2)
+    assert info["episode"]["dr"].shape == (1, 2)
+    assert tuple(info["episode"]["r"][0]) == (np.float32(8.2), np.float32(-3.0))
+    assert tuple(np.round(info["episode"]["dr"][0], 4)) == (
         np.float32(7.7154),
         np.float32(-2.9109),
     )
-    assert isinstance(info["episode"]["l"], np.int32)
-    assert info["episode"]["l"] == 3
-    assert isinstance(info["episode"]["t"], float)
+    assert isinstance(info["episode"]["l"][0], np.int32)
+    assert info["episode"]["l"][0] == 3
+    assert isinstance(info["episode"]["t"][0], np.float32)
 
 
 def test_mo_record_ep_statistic_vector_env():
@@ -125,7 +125,6 @@ def test_mo_record_ep_statistic_vector_env():
     while not np.any(terminateds):
         obs, rewards, terminateds, _, info = envs.step(envs.action_space.sample())
 
-    print(info)
     assert isinstance(info["episode"]["r"], np.ndarray)
     assert isinstance(info["episode"]["dr"], np.ndarray)
     # Episode records are vectorized because multiple environments
