@@ -59,8 +59,14 @@ def test_mario():
     check_env(env, skip_render_check=True)
 
 
-def test_reacher():
+def test_reacher_pybullet():
     env = mo_gym.make("mo-reacher-v0")
+    env = LinearReward(env)
+    check_env(env, skip_render_check=True)
+
+
+def test_reacher_mujoco():
+    env = mo_gym.make("mo-reacher-v4")
     env = LinearReward(env)
     check_env(env, skip_render_check=True)
 
