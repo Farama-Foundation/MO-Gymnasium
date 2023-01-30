@@ -1,8 +1,8 @@
 import math
 
 import numpy as np
-from gym import spaces
-from gym.envs.box2d.lunar_lander import (
+from gymnasium import spaces
+from gymnasium.envs.box2d.lunar_lander import (
     FPS,
     LEG_DOWN,
     MAIN_ENGINE_POWER,
