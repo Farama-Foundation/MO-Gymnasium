@@ -54,9 +54,9 @@ all = [
 testing = ["pytest ==7.1.3"]
 
 [project.urls]
-Homepage = "https://farama.org"
+Homepage = "https://mo-gymnasium.farama.org"
 Repository = "https://github.com/Farama-Foundation/MO-Gymnasium"
-Documentation = "https://gymnasium.farama.org"
+Documentation = "https://mo-gymnasium.farama.org"
 "Bug Report" = "https://github.com/Farama-Foundation/MO-Gymnasium/issues"
 
 [tool.setuptools]
