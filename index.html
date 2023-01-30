@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://mo-gymnasium.farama.org/index.html" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="API" href="api/api/" />
+<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Available environments" href="environments/environments/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/index.html" />
 
     <meta name="generator" content="sphinx-5.3.0, furo 2022.09.15.dev1"/>
@@ -220,11 +220,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/api/">API</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="environments/environments/">Available environments</a></li>
 </ul>
@@ -238,6 +234,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="community/community/">Community</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://farama.org/donations">Donate</a></li>
 </ul>
@@ -293,27 +290,41 @@
 </div>
 <div class="toctree-wrapper compound">
 </div>
-<div class="toctree-wrapper compound">
-</div>
 <section id="mo-gymnasium-is-a-standardized-api-and-a-suite-of-environments-for-multi-objective-reinforcement-learning-morl">
 <h1>MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)<a class="headerlink" href="#mo-gymnasium-is-a-standardized-api-and-a-suite-of-environments-for-multi-objective-reinforcement-learning-morl" title="Permalink to this heading">#</a></h1>
+<p>Gymnasium environments for multi-objective reinforcement learning (MORL). The environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/Gymnasium">gymnasium’s API</a>, but return vectorized rewards as numpy arrays.</p>
 <p>For details on multi-objective MDP’s (MOMDP’s) and other MORL definitions, see <a class="reference external" href="https://link.springer.com/article/10.1007/s10458-022-09552-y">A practical guide to multi-objective reinforcement learning and planning</a>.</p>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span> <span class="k">as</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">mo_gymnasium</span> <span class="k">as</span> <span class="nn">mo_gym</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;minecart-v0&#39;</span><span class="p">)</span> <span class="c1"># It follows the original Gymnasium API ...</span>
+
+<span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">next_obs</span><span class="p">,</span> <span class="n">vector_reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">your_agent</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">obs</span><span class="p">))</span>  <span class="c1"># but vector_reward is a numpy array!</span>
+
+<span class="c1"># Optionally, you can scalarize the reward function with the LinearReward wrapper</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://colab.research.google.com/github/Farama-Foundation/MO-Gymnasium/blob/main/mo_gymnasium_demo.ipynb"><img alt="MO-Gym Demo in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
+You can also check more examples in this colab notebook!</p>
+<p><a class="reference external" href="https://github.com/LucasAlegre/morl-baselines">MORL-Baselines</a> is a repository containing various implementations of multi-objective reinforcement learning algorithms. It relies on the MO-Gymnasium API and shows various examples of the usage of wrappers and environments.</p>
+</section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
-<section id="from-pypi">
-<h3>From Pypi<a class="headerlink" href="#from-pypi" title="Permalink to this heading">#</a></h3>
+<p>Via pip:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mo-gymnasium
 </pre></div>
 </div>
-</section>
-<section id="from-source">
-<h3>From source<a class="headerlink" href="#from-source" title="Permalink to this heading">#</a></h3>
+<p>Alternatively, you can install the newest unreleased version:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Farama-Foundation/MO-Gymnasium
 <span class="nb">cd</span><span class="w"> </span>MO-Gymnasium
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
-</section>
 </section>
 <section id="citing">
 <h2>Citing<a class="headerlink" href="#citing" title="Permalink to this heading">#</a></h2>

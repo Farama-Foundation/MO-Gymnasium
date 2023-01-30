@@ -7,12 +7,12 @@
     <meta property="og:title" content="MO-Gymnasium Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://mo-gymnasium.farama.org/api/api.html" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Available environments" href="../../environments/environments/" /><link rel="prev" title="MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)" href="../../" />
-        <link rel="canonical" href="https://mo-gymnasium.farama.org/api/api.html" />
+    <meta property="og:url" content="https://mo-gymnasium.farama.org/community/community.html" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="prev" title="Wrappers" href="../../wrappers/wrappers/" />
+        <link rel="canonical" href="https://mo-gymnasium.farama.org/community/community.html" />
 
     <meta name="generator" content="sphinx-5.3.0, furo 2022.09.15.dev1"/>
-        <title>API - MO-Gymnasium Documentation</title>
+        <title>Community - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=3cf7b839e8c50b5f3a39bb99d90baa7b845de926" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=9e86d0f2b4c7365fca1b48b729b6cac79739c5d7" />
@@ -203,7 +203,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -220,11 +220,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/environments/">Available environments</a></li>
 </ul>
@@ -237,7 +233,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../wrappers/wrappers/">Wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
-<ul>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Community</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://farama.org/donations">Donate</a></li>
 </ul>
@@ -262,7 +259,7 @@
           
     
     <div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/edit/main/docs/api/api.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/edit/main/docs/community/community.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -278,31 +275,27 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
           
-          <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Permalink to this heading">#</a></h1>
-<p>The environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/Gymnasium">gymnasium’s API</a>, but return vectorized rewards as numpy arrays.</p>
-<p>Here is a minimal example of how to create an environment and interact with it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
-<span class="kn">import</span> <span class="nn">mo_gymnasium</span> <span class="k">as</span> <span class="nn">mo_gym</span>
-
-<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;minecart-v0&#39;</span><span class="p">)</span> <span class="c1"># It follows the original Gymnasium API ...</span>
-
-<span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="n">next_obs</span><span class="p">,</span> <span class="n">vector_reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">your_agent</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">obs</span><span class="p">))</span>  <span class="c1"># but vector_reward is a numpy array!</span>
-
-<span class="c1"># Optionally, you can scalarize the reward function with the LinearReward wrapper</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://colab.research.google.com/github/LucasAlegre/mo-gym/blob/main/mo_gymnasium_demo.ipynb"><img alt="MO-Gym Demo in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
-You can also check more examples in this colab notebook!</p>
+          <section id="community">
+<h1>Community<a class="headerlink" href="#community" title="Permalink to this heading">#</a></h1>
+<p>If you want to help us out, reach us, or simply ask questions, you can join the Farama discord server <a class="reference external" href="https://discord.gg/WF3FqsBk">here</a>.</p>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">#</a></h2>
+<p>Aside from the main contributors, some people have also contributed to the project in various ways. We would like to thank them all for their contributions.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">minecart-v0</span></code> env is a refactor of https://github.com/axelabels/DynMORL.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">deep-sea-treasure-v0</span></code>, <code class="docutils literal notranslate"><span class="pre">fruit-tree-v0</span></code> and <code class="docutils literal notranslate"><span class="pre">mo-supermario-v0</span></code> envs are based on https://github.com/RunzheYang/MORL.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">four-room-v0</span></code> env is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">fishwood-v0</span></code> code was provided by Denis Steckelmacher and Conor F. Hayes.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">water-reservoir-v0</span></code> code was provided by Mathieu Reymond.</p></li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -310,26 +303,8 @@ You can also check more examples in this colab notebook!</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../../environments/environments/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Available environments</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-            <a class="prev-page" href="../../">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">Home</div>
-                
-              </div>
-            </a>
+          
+            
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -355,8 +330,27 @@ You can also check more examples in this colab notebook!</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Community</a><ul>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
