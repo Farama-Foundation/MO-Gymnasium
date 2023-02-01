@@ -1,4 +1,3 @@
-import random
 from typing import Optional
 
 import gymnasium as gym
@@ -7,7 +6,42 @@ from gymnasium import spaces
 
 
 class FishWood(gym.Env):
-    metadata = {"render_modes": ["ansi"]}
+    """
+    ## Description
+    The FishWood environment is a simple MORL problem in which the agent controls a fisherman which can either fish or go collect wood.
+    From "Multi-objective Reinforcement Learning for the Expected Utility of the Return"
+    https://www.researchgate.net/publication/328718263_Multi-objective_Reinforcement_Learning_for_the_Expected_Utility_of_the_Return
+
+    ## Observation Space
+    The observation space is a discrete space with two states:
+    - 0: fishing
+    - 1: in the woods
+
+    ## Action Space
+    The actions is a discrete space where:
+    - 0: go fishing
+    - 1: go collect wood
+
+    ## Reward Space
+    The reward is 2-dimensional:
+    - 0: +1 if agent is in the woods, with woodproba probability, and 0 otherwise
+    - 1: +1 if the agent is fishing, with fishproba probability, and 0 otherwise
+
+    ## Starting State
+    Agent starts in the woods
+
+    ## Termination
+    The episode ends after MAX_TS=200 steps
+
+    ## Arguments
+    - fishproba: probability of catching a fish when fishing
+    - woodproba: probability of collecting wood when in the woods
+
+    ## Credits
+    Code provided by Denis Steckelmacher
+    """
+
+    metadata = {"render_modes": ["human"]}
     FISH = 0
     WOOD = 1
     MAX_TS = 200
@@ -23,7 +57,7 @@ class FishWood(gym.Env):
         # 2 objectives, amount of fish and amount of wood
         self.reward_space = spaces.Box(low=np.array([0, 0]), high=np.array([1.0, 1.0]), dtype=np.float32)
 
-        self._state = self.reset()
+        self._state = self.WOOD
 
     def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
@@ -36,25 +70,28 @@ class FishWood(gym.Env):
         return self._state, {}
 
     def render(self):
-        if self._state == self.WOOD:
-            return f"t={self._timestep}, in wood."
-        else:
-            return f"t={self._timestep}, fishing"
+        if self.render_mode == "human":
+            if self._state == self.WOOD:
+                return f"t={self._timestep}, in wood."
+            else:
+                return f"t={self._timestep}, fishing"
 
     def step(self, action):
         # Obtain a resource from the current state
-        rewards = np.zeros((2,))
+        rewards = np.zeros((2,), dtype=np.float32)
 
-        if self._state == self.WOOD and random.random() < self._woodproba:
+        if self._state == self.WOOD and self.np_random.random() < self._woodproba:
             rewards[self.WOOD] = 1.0
-        elif self._state == self.FISH and random.random() < self._fishproba:
+        elif self._state == self.FISH and self.np_random.random() < self._fishproba:
             rewards[self.FISH] = 1.0
 
         # Execute the action
         self._state = action
         self._timestep += 1
 
-        return self._state, rewards, self._timestep == self.MAX_TS, False, {}
+        if self.render_mode == "human":
+            self.render()
+        return self._state, rewards, self._timestep == self.MAX_TS, self._timestep == self.MAX_TS, {}
 
 
 if __name__ == "__main__":
