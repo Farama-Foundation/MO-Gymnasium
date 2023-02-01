@@ -23,7 +23,7 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
 ]
 dependencies = [
-    "gymnasium >=0.26",
+    "gymnasium >=0.27",
     "numpy >=1.21.0",
     "pygame >=2.1.0",
     "scipy >=1.7.3",
