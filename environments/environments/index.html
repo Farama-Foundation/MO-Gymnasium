@@ -347,29 +347,34 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mo-reacher-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/reacher.png" width="200px"></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[target_1,</span> <span class="pre">target_2,</span> <span class="pre">target_3,</span> <span class="pre">target_4]</span></code></p></td>
-<td><p>Reacher robot from <a class="reference external" href="https://github.com/benelot/pybullet-gym/blob/ec9e87459dd76d92fe3e59ee4417e5a665504f62/pybulletgym/envs/roboschool/robots/manipulators/reacher.py">PyBullet</a>, but there are 4 different target positions. From <a class="reference external" href="https://proceedings.mlr.press/v162/alegre22a.html">Alegre et al. 2022</a>.</p></td>
+<td><p>[:warning: PyBullet support is limited.] Reacher robot from <a class="reference external" href="https://github.com/benelot/pybullet-gym/blob/ec9e87459dd76d92fe3e59ee4417e5a665504f62/pybulletgym/envs/roboschool/robots/manipulators/reacher.py">PyBullet</a>, but there are 4 different target positions. From <a class="reference external" href="https://proceedings.mlr.press/v162/alegre22a.html">Alegre et al. 2022</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">minecart-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/minecart.png" width="200px"></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mo-reacher-v4</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/reacher-mujoco.png" width="200px"></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[target_1,</span> <span class="pre">target_2,</span> <span class="pre">target_3,</span> <span class="pre">target_4]</span></code></p></td>
+<td><p>Mujoco version of <code class="docutils literal notranslate"><span class="pre">mo-reacher-v0</span></code>, based on <code class="docutils literal notranslate"><span class="pre">Reacher-v4</span></code> <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/reacher/">environment</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">minecart-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/minecart.png" width="200px"></p></td>
 <td><p>Continuous or Image / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[ore1,</span> <span class="pre">ore2,</span> <span class="pre">fuel]</span></code></p></td>
 <td><p>Agent must collect two types of ores and minimize fuel consumption. From <a class="reference external" href="https://arxiv.org/abs/1809.07803v2">Abels et al. 2019</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mo-highway-v0</span></code> and <code class="docutils literal notranslate"><span class="pre">mo-highway-fast-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/highway.png" width="200px"></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mo-highway-v0</span></code> and <code class="docutils literal notranslate"><span class="pre">mo-highway-fast-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/highway.png" width="200px"></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[speed,</span> <span class="pre">right_lane,</span> <span class="pre">collision]</span></code></p></td>
 <td><p>The agent’s objective is to reach a high speed while avoiding collisions with neighbouring vehicles and staying on the rightest lane. From <a class="reference external" href="https://github.com/eleurent/highway-env">highway-env</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mo-supermario-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/mario.png" width="200px"></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mo-supermario-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/mario.png" width="200px"></p></td>
 <td><p>Image / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[x_pos,</span> <span class="pre">time,</span> <span class="pre">death,</span> <span class="pre">coin,</span> <span class="pre">enemy]</span></code></p></td>
-<td><p>Multi-objective version of <a class="reference external" href="https://github.com/Kautenja/gym-super-mario-bros">SuperMarioBrosEnv</a>. Objectives are defined similarly as in <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p></td>
+<td><p>[:warning: SuperMarioBrosEnv support is limited.] Multi-objective version of <a class="reference external" href="https://github.com/Kautenja/gym-super-mario-bros">SuperMarioBrosEnv</a>. Objectives are defined similarly as in <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mo-halfcheetah-v4</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/cheetah.png" width="200px"></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mo-halfcheetah-v4</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/cheetah.png" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[velocity,</span> <span class="pre">energy]</span></code></p></td>
 <td><p>Multi-objective version of <a class="reference external" href="https://www.gymlibrary.ml/environments/mujoco/half_cheetah/">HalfCheetah-v4</a> env. Similar to <a class="reference external" href="https://github.com/mit-gfx/PGMORL">Xu et al. 2020</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mo-hopper-v4</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/hopper.png" width="200px"></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mo-hopper-v4</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/screenshots/hopper.png" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[velocity,</span> <span class="pre">height,</span> <span class="pre">energy]</span></code></p></td>
 <td><p>Multi-objective version of <a class="reference external" href="https://www.gymlibrary.ml/environments/mujoco/hopper/">Hopper-v4</a> env.</p></td>
