@@ -7,6 +7,18 @@ from gymnasium.envs.classic_control.mountain_car import MountainCarEnv
 
 
 class MOMountainCar(MountainCarEnv):
+    """
+    A multi-objective version of the MountainCar environment, where the goal is to reach the top of the mountain.
+
+    See https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/ for more information.
+
+    ## Reward space:
+    The reward space is a 3D vector containing the time penalty, and penalties for reversing and going forward.
+    - time penalty: -1.0 for each time step
+    - reverse penalty: -1.0 for each time step the actuin is 0 (reverse)
+    - forward penalty: -1.0 for each time step the action is 2 (forward)
+    """
+
     def __init__(self, render_mode: Optional[str] = None, goal_velocity=0):
         super().__init__(render_mode, goal_velocity)
 
