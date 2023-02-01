@@ -239,6 +239,28 @@ FRUITS = {
 
 
 class FruitTreeEnv(gym.Env):
+    """
+    ## Description
+
+    Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water.
+    From [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf).
+
+    ## Observation Space
+    Discrete space of size 2^d-1, where d is the depth of the tree.
+
+    ## Action Space
+    The agent can chose to go left or right at every node. The action space is therefore a discrete space of size 2.
+
+    ## Reward Space
+    Each leaf node contains a 6-dimensional vector containing the nutrients of the fruit. The agent receives a reward for each nutrient it collects.
+
+    ## Starting State
+    The agent starts at the root node (0, 0).
+
+    ## Episode Termination
+    The episode terminates when the agent reaches a leaf node.
+    """
+
     def __init__(self, depth=6):
         assert depth in [5, 6, 7], "Depth must be 5, 6 or 7."
         self.reward_dim = 6

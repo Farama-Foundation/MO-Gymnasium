@@ -4,6 +4,20 @@ from gymnasium.spaces import Box
 
 
 class MOHopperEnv(HopperEnv):
+    """
+    ## Description
+    Multi-objective version of the HopperEnv environment.
+
+    See https://gymnasium.farama.org/environments/mujoco/hopper/ for more information.
+
+    ## Reward Space
+    The reward is 3-dimensional:
+    - 0: Reward for going forward on the x-axis
+    - 1: Reward for jumping high on the z-axis
+    - 2: Control cost of the action
+    If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.
+    """
+
     def __init__(self, cost_objective=True, **kwargs):
         super().__init__(**kwargs)
         self.cost_objetive = cost_objective

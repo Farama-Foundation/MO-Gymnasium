@@ -86,92 +86,44 @@ CART_IMG = str(Path(__file__).parent.absolute()) + "/assets/cart.png"
 MINE_IMG = str(Path(__file__).parent.absolute()) + "/assets/mine.png"
 
 
-class Mine:
-    """Class representing an individual Mine"""
-
-    def __init__(self, ore_cnt, x, y):
-        self.distributions = [scipy.stats.norm(np.random.random(), np.random.random()) for _ in range(ore_cnt)]
-        self.pos = np.array((x, y))
-
-    def distance(self, cart):
-        return mag(cart.pos - self.pos)
-
-    def mineable(self, cart):
-        return self.distance(cart) <= MINE_RADIUS * MINE_SCALE * CART_SCALE
-
-    def mine(self):
-        """Generates collected resources according to the mine's random
-        distribution
-
-        Returns:
-            list -- list of collected resources
-        """
-        return [max(0.0, dist.rvs()) for dist in self.distributions]
-
-    def distribution_means(self):
-        """
-        Computes the mean of the truncated normal distributions
-        """
-        means = np.zeros(len(self.distributions))
-
-        for i, dist in enumerate(self.distributions):
-            mean, std = dist.mean(), dist.std()
-            means[i] = truncated_mean(mean, std, 0, float("inf"))
-            if np.isnan(means[i]):
-                means[i] = 0
-        return means
-
-
-class Cart:
-    """Class representing the actual minecart"""
-
-    def __init__(self, ore_cnt):
-        self.ore_cnt = ore_cnt
-        self.pos = np.array([HOME_X, HOME_Y])
-        self.speed = 0
-        self.angle = 45
-        self.content = np.zeros(self.ore_cnt)
-        self.departed = False  # Keep track of whether the agent has left the base
-
-    def accelerate(self, acceleration):
-        self.speed = clip(self.speed + acceleration, 0, MAX_SPEED)
-
-    def rotate(self, rotation):
-        self.angle = (self.angle + rotation) % 360
-
-    def step(self):
-        """
-        Update cart's position, taking the current speed into account
-        Colliding with a border at anything but a straight angle will cause
-        cart to "slide" along the wall.
-        """
-        pre = np.copy(self.pos)
-        if self.speed < EPS_SPEED:
-            return False
-        x_velocity = self.speed * math.cos(self.angle * math.pi / 180)
-        y_velocity = self.speed * math.sin(self.angle * math.pi / 180)
-        x, y = self.pos
-        if y != 0 and y != 1 and (y_velocity > 0 + EPS_SPEED or y_velocity < 0 - EPS_SPEED):
-            if x == 1 and x_velocity > 0:
-                self.angle += math.copysign(ROTATION, y_velocity)
-            if x == 0 and x_velocity < 0:
-                self.angle -= math.copysign(ROTATION, y_velocity)
-        if x != 0 and x != 1 and (x_velocity > 0 + EPS_SPEED or x_velocity < 0 - EPS_SPEED):
-            if y == 1 and y_velocity > 0:
-                self.angle -= math.copysign(ROTATION, x_velocity)
-
-            if y == 0 and y_velocity < 0:
-                self.angle += math.copysign(ROTATION, x_velocity)
-
-        self.pos[0] = clip(x + x_velocity, 0, 1)
-        self.pos[1] = clip(y + y_velocity, 0, 1)
-        self.speed = mag(pre - self.pos)
-
-        return True
-
-
 class Minecart(gym.Env):
-    """Minecart environment"""
+    """
+    ## Description
+    Agent must collect two types of ores and minimize fuel consumption.
+    From Abels et al. 2019 https://arxiv.org/abs/1809.07803v2.
+
+    ## Observation Space
+    The observation is a 7-dimensional vector containing the following information:
+    - 2D position of the cart
+    - Speed of the cart
+    - sin and cos of the cart's orientation
+    - porcentage of the capacity of the cart filled
+    If image_observation is True, the observation is a 3D image of the environment.
+
+    ## Action Space
+    The action space is a discrete space with 6 actions:
+    - 0: Mine
+    - 1: Left
+    - 2: Right
+    - 3: Accelerate
+    - 4: Brake
+    - 5: None
+
+    ## Reward Space
+    The reward is a 3D vector:
+    - 0: Quantity of the first minerium that was retrieved to the base (sparse)
+    - 1: Quantity of the second minerium that was retrieved to the base (sparse)
+    - 2: Fuel consumed (dense)
+
+    ## Starting State
+    The cart starts at the base on the upper left corner of the map.
+
+    ## Episode Termination
+    The episode ends when the cart returns to the base.
+
+    ## Credits
+    The code was refactored from https://github.com/axelabels/DynMORL
+    """
 
     metadata = {"render_modes": ["rgb_array", "human"], "render_fps": FPS}
 
@@ -731,6 +683,90 @@ class Minecart(gym.Env):
         this_copy.mines = deepcopy(self.mines)
         this_copy.end = self.end
         return this_copy
+
+
+class Mine:
+    """Class representing an individual Mine"""
+
+    def __init__(self, ore_cnt, x, y):
+        self.distributions = [scipy.stats.norm(np.random.random(), np.random.random()) for _ in range(ore_cnt)]
+        self.pos = np.array((x, y))
+
+    def distance(self, cart):
+        return mag(cart.pos - self.pos)
+
+    def mineable(self, cart):
+        return self.distance(cart) <= MINE_RADIUS * MINE_SCALE * CART_SCALE
+
+    def mine(self):
+        """Generates collected resources according to the mine's random
+        distribution
+
+        Returns:
+            list -- list of collected resources
+        """
+        return [max(0.0, dist.rvs()) for dist in self.distributions]
+
+    def distribution_means(self):
+        """
+        Computes the mean of the truncated normal distributions
+        """
+        means = np.zeros(len(self.distributions))
+
+        for i, dist in enumerate(self.distributions):
+            mean, std = dist.mean(), dist.std()
+            means[i] = truncated_mean(mean, std, 0, float("inf"))
+            if np.isnan(means[i]):
+                means[i] = 0
+        return means
+
+
+class Cart:
+    """Class representing the actual minecart"""
+
+    def __init__(self, ore_cnt):
+        self.ore_cnt = ore_cnt
+        self.pos = np.array([HOME_X, HOME_Y])
+        self.speed = 0
+        self.angle = 45
+        self.content = np.zeros(self.ore_cnt)
+        self.departed = False  # Keep track of whether the agent has left the base
+
+    def accelerate(self, acceleration):
+        self.speed = clip(self.speed + acceleration, 0, MAX_SPEED)
+
+    def rotate(self, rotation):
+        self.angle = (self.angle + rotation) % 360
+
+    def step(self):
+        """
+        Update cart's position, taking the current speed into account
+        Colliding with a border at anything but a straight angle will cause
+        cart to "slide" along the wall.
+        """
+        pre = np.copy(self.pos)
+        if self.speed < EPS_SPEED:
+            return False
+        x_velocity = self.speed * math.cos(self.angle * math.pi / 180)
+        y_velocity = self.speed * math.sin(self.angle * math.pi / 180)
+        x, y = self.pos
+        if y != 0 and y != 1 and (y_velocity > 0 + EPS_SPEED or y_velocity < 0 - EPS_SPEED):
+            if x == 1 and x_velocity > 0:
+                self.angle += math.copysign(ROTATION, y_velocity)
+            if x == 0 and x_velocity < 0:
+                self.angle -= math.copysign(ROTATION, y_velocity)
+        if x != 0 and x != 1 and (x_velocity > 0 + EPS_SPEED or x_velocity < 0 - EPS_SPEED):
+            if y == 1 and y_velocity > 0:
+                self.angle -= math.copysign(ROTATION, x_velocity)
+
+            if y == 0 and y_velocity < 0:
+                self.angle += math.copysign(ROTATION, x_velocity)
+
+        self.pos[0] = clip(x + x_velocity, 0, 1)
+        self.pos[1] = clip(y + y_velocity, 0, 1)
+        self.speed = mag(pre - self.pos)
+
+        return True
 
 
 def compute_angle(p0, p1, p2):
