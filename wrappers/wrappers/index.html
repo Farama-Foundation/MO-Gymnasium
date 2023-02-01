@@ -327,6 +327,33 @@
 <dt class="sig sig-object py" id="mo_gymnasium.MORecordEpisodeStatistics">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">MORecordEpisodeStatistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deque_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.MORecordEpisodeStatistics" title="Permalink to this definition">#</a></dt>
 <dd><p>This wrapper will keep track of cumulative rewards and episode lengths.</p>
+<p>After the completion of an episode, <code class="docutils literal notranslate"><span class="pre">info</span></code> will look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;episode&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;cumulative reward (array)&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;discounted reward (array)&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;episode length (scalar)&gt;&quot;</span><span class="p">,</span> <span class="c1"># contrary to Gymnasium, these are not a numpy array</span>
+<span class="gp">... </span>        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;elapsed time since beginning of episode (scalar)&gt;&quot;</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>For a vectorized environments the output will be in the form of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infos</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;final_observation&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of length num-envs&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;_final_observation&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;final_info&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of length num-envs&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;_final_info&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;episode&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of cumulative reward (2d array, shape (num_envs, dim_reward))&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of discounted reward (2d array, shape (num_envs, dim_reward))&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of episode length (array)&gt;&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of elapsed time since beginning of episode (array)&gt;&quot;</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s2">&quot;_episode&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
