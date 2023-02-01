@@ -43,11 +43,37 @@ CONCAVE_MAP = np.array(
 
 
 class DeepSeaTreasure(gym.Env):
-    """Deep Sea Treasure environment
+    """
+    ## Description
+    The Deep Sea Treasure environment is classic MORL problem in which the agent controls a submarine in a 2D grid world.
 
-    Adapted from: https://github.com/RunzheYang/MORL
+    ## Observation Space
+    The observation space is a 2D discrete box with values in [0, 10] for the x and y coordinates of the submarine.
 
-    CCS weights: [1,0], [0.7,0.3], [0.67,0.33], [0.6,0.4], [0.56,0.44], [0.52,0.48], [0.5,0.5], [0.4,0.6], [0.3,0.7], [0, 1]
+    ## Action Space
+    The actions is a discrete space where:
+    - 0: up
+    - 1: down
+    - 2: left
+    - 3: right
+
+    ## Reward Space
+    The reward is 2-dimensional:
+    - time penalty: -1 at each time step
+    - treasure value: the value of the treasure at the current position
+
+    ## Starting State
+    The starting state is always the same: (0, 0)
+
+    ## Episode Termination
+    The episode terminates when the agent reaches a treasure.
+
+    ## Arguments
+    - dst_map: the map of the deep sea treasure. Default is the convex map from Yang et al. (2019).
+    - float_state: if True, the state is a 2D continuous box with values in [0.0, 1.0] for the x and y coordinates of the submarine.
+
+    ## Credits
+    The code was adapted from: https://github.com/RunzheYang/MORL
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
