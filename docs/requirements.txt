@@ -1,5 +1,6 @@
 cython
 gymnasium
+mo_gymnasium[all]
 sphinx
 myst-parser
 tqdm
