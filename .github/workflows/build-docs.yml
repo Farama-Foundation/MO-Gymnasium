@@ -23,6 +23,9 @@ jobs:
       - name: Install MO-Gymnasium
         run: pip install -e .
 
+      - name: Build env docs
+        run: python docs/_scripts/gen_env_docs.py
+
       - name: Build
         run: sphinx-build -b dirhtml -v docs _build
 
