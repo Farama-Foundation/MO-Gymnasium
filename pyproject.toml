@@ -67,7 +67,7 @@ include = ["mo_gymnasium", "mo_gymnasium.*"]
 
 [tool.setuptools.package-data]
 mo_gymnasium = [
-    "**.json",
+    "**/*.json",
     "**/assets/*",
 ]
 
