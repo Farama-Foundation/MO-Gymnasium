@@ -48,9 +48,9 @@ filtered_envs_by_type = {}
 
 # Obtain filtered list
 for env_spec in tqdm(all_envs):
+    if type(env_spec.entry_point) is not str:
+        continue
 
-    # gymnasium.envs.env_type.env.EnvClass
-    # ale_py.env.gym:AtariEnv
     split = env_spec.entry_point.split(".")
     # ignore gymnasium.envs.env_type:Env
     env_module = split[0]
