@@ -8,7 +8,7 @@ lastpage:
 :hidden:
 :caption: Environments
 
-environments/*
+environments/**
 ```
 
 ```{toctree}
