@@ -68,7 +68,7 @@ include = ["mo_gymnasium", "mo_gymnasium.*"]
 [tool.setuptools.package-data]
 mo_gymnasium = [
     "*.json",
-    "*/assets/*",
+    "**/assets/*",
 ]
 
 # Linters and Test tools #######################################################
