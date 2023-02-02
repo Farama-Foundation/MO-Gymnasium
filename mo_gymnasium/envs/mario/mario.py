@@ -17,6 +17,23 @@ from mo_gymnasium.envs.mario.joypad_space import JoypadSpace
 
 
 class MOSuperMarioBros(SuperMarioBrosEnv):
+    """
+    ## Description
+    Multi-objective version of the SuperMarioBro environment.
+
+    See https://github.com/Kautenja/gym-super-mario-bros for more information.
+
+    ## Reward Space
+    The reward is a 5-dimensional vector:
+    - 0: How far Mario moved in the x position
+    - 1: Time penalty for how much time has passed between two time steps
+    - 2: -25 if Mario died, 0 otherwise
+    - 3: +100 if Mario collected coins, else 0
+    - 4: Points for killing an enemy
+
+    ## Episode Termination
+    The episode terminates when Mario dies or reaches the flag.
+    """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60}
 

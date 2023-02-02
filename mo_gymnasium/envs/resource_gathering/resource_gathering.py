@@ -8,10 +8,36 @@ from gymnasium.spaces import Box, Discrete
 
 
 class ResourceGathering(gym.Env):
-    """Resource Gathering environment
-
+    """
+    ## Description
     From "Barrett, Leon & Narayanan, Srini. (2008). Learning all optimal policies with multiple criteria.
     Proceedings of the 25th International Conference on Machine Learning. 41-47. 10.1145/1390156.1390162."
+
+    ## Observation Space
+    The observation is discrete and consists of 4 elements:
+    - 0: The x coordinate of the agent
+    - 1: The y coordinate of the agent
+    - 2: Flag indicating if the agent collected the gold
+    - 3: Flag indicating if the agent collected the diamond
+
+    ## Action Space
+    The action is discrete and consists of 4 elements:
+    - 0: Move up
+    - 1: Move down
+    - 2: Move left
+    - 3: Move right
+
+    ## Reward Space
+    The reward is 3-dimensional:
+    - 0: +1 if returned home with gold, else 0
+    - 1: +1 if returned home with diamond, else 0
+    - 2: -1 if killed by an enemy, else 0
+
+    ## Starting State
+    The agent starts at the home position with no gold or diamond.
+
+    ## Episode Termination
+    The episode terminates when the agent returns home, or when the agent is killed by an enemy.
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -153,7 +179,7 @@ class ResourceGathering(gym.Env):
         elif cell == "R2":
             self.has_gem = 1
         elif cell == "E1" or cell == "E2":
-            if np.random.random() < 0.1:
+            if self.np_random.random() < 0.1:
                 vec_reward[0] = -1.0
                 done = True
         elif cell == "H":

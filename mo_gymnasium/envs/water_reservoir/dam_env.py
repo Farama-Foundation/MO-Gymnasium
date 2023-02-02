@@ -6,14 +6,26 @@ from gymnasium.spaces.box import Box
 
 
 class DamEnv(gym.Env):
-    """A Water reservoir environment.
+    """
+    ## Description
+    A Water reservoir environment.
     The agent executes a continuous action, corresponding to the amount of water
     released by the dam.
+
+    ## Observation Space
+    The observation is a float corresponding to the current level of the reservoir.
+
+    ## Action Space
+    The action is a float corresponding to the amount of water released by the dam.
+
+    ## Reward Space
     There are up to 4 rewards:
      - cost due to excess level wrt a flooding threshold (upstream)
      - deficit in the water supply wrt the water demand
      - deficit in hydroelectric supply wrt hydroelectric demand
      - cost due to excess level wrt a flooding threshold (downstream)
+
+     ## Credits
      Code from:
      https://gitlab.ai.vub.ac.be/mreymond/dam
      Ported from:

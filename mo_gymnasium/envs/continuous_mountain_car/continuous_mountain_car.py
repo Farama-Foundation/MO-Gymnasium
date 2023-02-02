@@ -9,6 +9,17 @@ from gymnasium.envs.classic_control.continuous_mountain_car import (
 
 
 class MOContinuousMountainCar(Continuous_MountainCarEnv):
+    """
+    A continuous version of the MountainCar environment, where the goal is to reach the top of the mountain.
+
+    See https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/ for more information.
+
+    ## Reward space:
+    The reward space is a 2D vector containing the time penalty and the fuel reward.
+    - time penalty: -1.0 for each time step
+    - fuel reward: -||action||^2 , i.e. the negative of the norm of the action vector
+    """
+
     def __init__(self, render_mode: Optional[str] = None, goal_velocity=0):
         super().__init__(render_mode, goal_velocity)
 

@@ -4,6 +4,18 @@ from gymnasium.spaces import Box
 
 
 class MOHalfCheehtahEnv(HalfCheetahEnv):
+    """
+    ## Description
+    Multi-objective version of the HalfCheetahEnv environment.
+
+    See https://gymnasium.farama.org/environments/mujoco/half_cheetah/ for more information.
+
+    ## Reward Space
+    The reward is 2-dimensional:
+    - 0: Reward for running forward
+    - 1: Control cost of the action
+    """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(2,))

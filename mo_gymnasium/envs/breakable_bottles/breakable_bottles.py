@@ -6,6 +6,49 @@ from gymnasium.spaces import Box, Dict, Discrete, MultiBinary
 
 
 class BreakableBottles(Env):
+    """
+    ## Description
+    This environment implements the problems UnbreakableBottles and BreakableBottles defined in Section 4.1.2 of the paper
+    "Potential-based multiobjective reinforcement learning approaches to low-impact agents for AI safety"
+    (https://www.sciencedirect.com/science/article/pii/S0952197621000336).
+
+    ## Action Space
+    The action space is a discrete space with 3 actions:
+    - 0: move left
+    - 1: move right
+    - 2: pick up a bottle
+
+    ## Observation Space
+    The observation space is a dictionary with 4 keys:
+    - location: the current location of the agent
+    - bottles_carrying: the number of bottles the agent is currently carrying (0, 1 or 2)
+    - bottles_delivered: the number of bottles the agent has delivered (0 or 1)
+    - bottles_dropped: for each location, a boolean flag indicating if that location currently contains a bottle
+
+    ## Reward Space
+    The reward space has 3 dimensions:
+    - time penalty: -1 for each time step
+    - bottle reward: bottle_reward for each bottle delivered
+    - potential: While carrying multiple bottles there is a small probability of dropping them. A potential-based penalty is applied for bottles left on the ground.
+
+    ## Starting State
+    The agent starts at location 0, carrying no bottles, having delivered no bottles and having dropped no bottles.
+
+    ## Episode Termination
+    The episode terminates when the agent has delivered 2 bottles.
+
+    ## Arguments
+    - size: the number of locations in the environment
+    - prob_drop: the probability of dropping a bottle while carrying 2 bottles
+    - time_penalty: the time penalty for each time step
+    - bottle_reward: the reward for delivering a bottle
+    - unbreakable_bottles: if True, a bottle which is dropped in a location can be picked up again (so the outcome of dropping a bottle is reversible),
+    otherwise a dropped bottle cannot be picked up.
+
+    ## Credits
+    This environment was originally a contribution of Robert Klassert
+    """
+
     metadata = {"render_modes": ["human"]}
 
     # actions
@@ -28,7 +71,7 @@ class BreakableBottles(Env):
         self.prob_drop = prob_drop
         self.time_penalty = time_penalty
         self.bottle_reward = bottle_reward
-        self.unbreakable_bottles = False
+        self.unbreakable_bottles = unbreakable_bottles
 
         # properties
         self.num_objectives = 3
@@ -65,7 +108,11 @@ class BreakableBottles(Env):
 
         if action == self.LEFT and self.location > 0:
             # execute bottle drop, if agent is carrying at least two and current location is 1, 2 or 3
-            if self.location in range(1, self.size - 1) and self.bottles_carrying > 1 and np.random.random() < self.prob_drop:
+            if (
+                self.location in range(1, self.size - 1)
+                and self.bottles_carrying > 1
+                and self.np_random.random() < self.prob_drop
+            ):
                 self.bottles_carrying -= 1
                 self.bottles_dropped[self.location - 1] += 1
 
@@ -74,7 +121,11 @@ class BreakableBottles(Env):
 
         elif action == self.RIGHT and self.location < self.size - 1:
             # execute bottle drop, if agent is carrying at least two and current location is 1, 2 or 3
-            if self.location in range(1, self.size - 1) and self.bottles_carrying > 1 and np.random.random() < self.prob_drop:
+            if (
+                self.location in range(1, self.size - 1)
+                and self.bottles_carrying > 1
+                and self.np_random.random() < self.prob_drop
+            ):
                 self.bottles_carrying -= 1
                 self.bottles_dropped[self.location - 1] += 1
 
@@ -117,10 +168,9 @@ class BreakableBottles(Env):
         # sum_t(r2_t) = 0 -> no impact
         reward[2] = self.potential(observation) - old_potential
 
-        info = {}
         if self.render_mode == "human":
             self.render()
-        return observation, reward, terminal, False, info
+        return observation, reward, terminal, False, {}
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
