@@ -6,9 +6,10 @@ lastpage:
 
 ```{toctree}
 :hidden:
+:glob:
 :caption: Environments
 
-environments/**/index
+environments/*
 ```
 
 ```{toctree}
