@@ -11,6 +11,26 @@ DEFAULT_CAMERA_CONFIG = {"trackbodyid": 0}
 
 
 class MOReacherEnv(ReacherEnv):
+    """
+    ## Description
+    Mujoco version of `mo-reacher-v0`, based on `Reacher-v4` environment (https://gymnasium.farama.org/environments/mujoco/reacher/).
+
+    ## Observation Space
+    The observation is 6-dimensional and contains:
+    - sin and cos of the angles of the central and elbow joints
+    - angular velocity of the central and elbow joints
+
+    ## Action Space
+    The action space is discrete and contains the 3^2=9 possible actions based on applying positive (+1), negative (-1) or zero (0) torque to each of the two joints.
+
+    ## Reward Space
+    The reward is 4-dimensional and is defined based on the distance of the tip of the arm and the four target locations.
+    For each i={1,2,3,4} it is computed as:
+    ```math
+        r_i = 1  - 4 * || finger_tip_coord - target_i ||^2
+    ```
+    """
+
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
         self.observation_space = Box(low=-np.inf, high=np.inf, shape=(6,), dtype=np.float64)

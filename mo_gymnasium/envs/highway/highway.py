@@ -16,7 +16,18 @@ from highway_env.envs import HighwayEnv, HighwayEnvFast
 
 
 class MOHighwayEnv(HighwayEnv):
-    """A multi-objective version of the HighwayEnv environment."""
+    """
+    ## Description
+    Multi-objective version of the HighwayEnv environment.
+
+    See https://github.com/eleurent/highway-env for more information.
+
+    ## Reward Space
+    The reward is 3-dimensional:
+    - 0: high speed reward
+    - 1: right lane reward
+    - 2: collision reward
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

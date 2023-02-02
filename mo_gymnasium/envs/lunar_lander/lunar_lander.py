@@ -17,6 +17,20 @@ from gymnasium.envs.box2d.lunar_lander import (
 
 
 class MOLunarLander(LunarLander):
+    """
+    ## Description
+    Multi-objective version of the LunarLander environment.
+
+    See https://gymnasium.farama.org/environments/box2d/lunar_lander/ for more information.
+
+    ## Reward Space
+    The reward is 4-dimensional:
+    - 0: -100 if crash, +100 if lands successfully
+    - 1: Shaping reward
+    - 2: Fuel cost (main engine)
+    - 3: Fuel cost (side engine)
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
