@@ -49,7 +49,7 @@ all = [
     "imageio >=2.14.1",
     "mujoco >=2.3.0",
     # highway
-    "highway-env",
+    "highway-env >= 1.7.1",
 ]
 testing = ["pytest ==7.1.3"]
 
