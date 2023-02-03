@@ -20,7 +20,7 @@ class MOHighwayEnv(HighwayEnv):
     ## Description
     Multi-objective version of the HighwayEnv environment.
 
-    See https://github.com/eleurent/highway-env for more information.
+    See [highway-env](https://github.com/eleurent/highway-env) for more information.
 
     ## Reward Space
     The reward is 3-dimensional:

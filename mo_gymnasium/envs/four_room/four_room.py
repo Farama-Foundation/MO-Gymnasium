@@ -63,7 +63,7 @@ class FourRoom(gym.Env):
     - maze: Array containing the gridworld map. See MAZE for an example.
 
     ## Credits
-    Code adaptaed from: https://github.com/mike-gimelfarb/deep-successor-features-for-transfer/blob/main/source/tasks/gridworld.py
+    Code adapted from: [Mike Gimelfarb's source](https://github.com/mike-gimelfarb/deep-successor-features-for-transfer/blob/main/source/tasks/gridworld.py).
     """
 
     LEFT, UP, RIGHT, DOWN = 0, 1, 2, 3

@@ -10,7 +10,7 @@ class MOMountainCar(MountainCarEnv):
     """
     A multi-objective version of the MountainCar environment, where the goal is to reach the top of the mountain.
 
-    See https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/ for more information.
+    See [Gymnasium's env](https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/) for more information.
 
     ## Reward space:
     The reward space is a 3D vector containing the time penalty, and penalties for reversing and going forward.

@@ -21,7 +21,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
     ## Description
     Multi-objective version of the SuperMarioBro environment.
 
-    See https://github.com/Kautenja/gym-super-mario-bros for more information.
+    See [gym-super-mario-bros](https://github.com/Kautenja/gym-super-mario-bros) for more information.
 
     ## Reward Space
     The reward is a 5-dimensional vector:

@@ -13,7 +13,7 @@ DEFAULT_CAMERA_CONFIG = {"trackbodyid": 0}
 class MOReacherEnv(ReacherEnv):
     """
     ## Description
-    Mujoco version of `mo-reacher-v0`, based on `Reacher-v4` environment (https://gymnasium.farama.org/environments/mujoco/reacher/).
+    Mujoco version of `mo-reacher-v0`, based on [`Reacher-v4` environment](https://gymnasium.farama.org/environments/mujoco/reacher/).
 
     ## Observation Space
     The observation is 6-dimensional and contains:

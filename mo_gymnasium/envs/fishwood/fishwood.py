@@ -9,8 +9,7 @@ class FishWood(gym.Env):
     """
     ## Description
     The FishWood environment is a simple MORL problem in which the agent controls a fisherman which can either fish or go collect wood.
-    From "Multi-objective Reinforcement Learning for the Expected Utility of the Return"
-    https://www.researchgate.net/publication/328718263_Multi-objective_Reinforcement_Learning_for_the_Expected_Utility_of_the_Return
+    From [Multi-objective Reinforcement Learning for the Expected Utility of the Return](https://www.researchgate.net/publication/328718263_Multi-objective_Reinforcement_Learning_for_the_Expected_Utility_of_the_Return).
 
     ## Observation Space
     The observation space is a discrete space with two states:
