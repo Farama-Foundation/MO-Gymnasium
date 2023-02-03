@@ -140,9 +140,7 @@ title: {title_env_name}
         title = f"# {title_env_name}"
         if "rgb_array" in env.metadata["render_modes"]:
             gif = (
-                "```{figure}"
-                + f" ../../_static/videos/{snake_env_name}.gif"
-                + f" \n:width: 200px\n:name: {snake_env_name}\n```"
+                "```{figure}" + f" ../_static/videos/{snake_env_name}.gif" + f" \n:width: 200px\n:name: {snake_env_name}\n```"
             )
         else:
             gif = ""
