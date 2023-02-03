@@ -108,7 +108,7 @@ for i, env_spec in tqdm(enumerate(filtered_envs)):
         snake_env_name = pattern.sub("_", pascal_env_name).lower()
         # remove what is after the last "-" in snake_env_name e.g. "-v0"
         snake_env_name = snake_env_name[: snake_env_name.rfind("-")]
-        title_env_name = snake_env_name.replace("_", " ").title().replace("Mo", "MO")
+        title_env_name = snake_env_name.replace("_", " ").title().replace("Mo-", "MO-")
         env_type_title = env_type.replace("_", " ").title()
         related_pages_meta = ""
         if i == 0 or not env_type == filtered_envs[i - 1].entry_point.split(".")[2]:
