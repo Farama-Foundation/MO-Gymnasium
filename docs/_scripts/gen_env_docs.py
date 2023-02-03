@@ -87,6 +87,13 @@ filtered_envs = list(
     )
 )
 
+env_dir = os.path.join(os.path.dirname(__file__), "..", "environments")
+dir_exists = os.path.exists(env_dir)
+if not dir_exists:
+    # Create a new directory because it does not exist
+    os.makedirs(env_dir)
+    print("environments directory has been created!")
+
 
 # Update Docs
 for i, env_spec in tqdm(enumerate(filtered_envs)):
