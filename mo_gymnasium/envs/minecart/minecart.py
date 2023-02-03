@@ -90,7 +90,7 @@ class Minecart(gym.Env):
     """
     ## Description
     Agent must collect two types of ores and minimize fuel consumption.
-    From Abels et al. 2019 https://arxiv.org/abs/1809.07803v2.
+    From [Abels et al. 2019](https://arxiv.org/abs/1809.07803v2).
 
     ## Observation Space
     The observation is a 7-dimensional vector containing the following information:
@@ -122,7 +122,7 @@ class Minecart(gym.Env):
     The episode ends when the cart returns to the base.
 
     ## Credits
-    The code was refactored from https://github.com/axelabels/DynMORL
+    The code was refactored from [Axel Abels' source](https://github.com/axelabels/DynMORL).
     """
 
     metadata = {"render_modes": ["rgb_array", "human"], "render_fps": FPS}

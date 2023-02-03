@@ -8,7 +8,7 @@ class MOHopperEnv(HopperEnv):
     ## Description
     Multi-objective version of the HopperEnv environment.
 
-    See https://gymnasium.farama.org/environments/mujoco/hopper/ for more information.
+    See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/hopper/) for more information.
 
     ## Reward Space
     The reward is 3-dimensional:

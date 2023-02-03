@@ -12,7 +12,7 @@ class MOContinuousMountainCar(Continuous_MountainCarEnv):
     """
     A continuous version of the MountainCar environment, where the goal is to reach the top of the mountain.
 
-    See https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/ for more information.
+    See [source](https://gymnasium.farama.org/environments/classic_control/mountain_car_continuous/) for more information.
 
     ## Reward space:
     The reward space is a 2D vector containing the time penalty and the fuel reward.

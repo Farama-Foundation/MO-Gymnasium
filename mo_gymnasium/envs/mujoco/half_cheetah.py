@@ -8,7 +8,7 @@ class MOHalfCheehtahEnv(HalfCheetahEnv):
     ## Description
     Multi-objective version of the HalfCheetahEnv environment.
 
-    See https://gymnasium.farama.org/environments/mujoco/half_cheetah/ for more information.
+    See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/half_cheetah/) for more information.
 
     ## Reward Space
     The reward is 2-dimensional:

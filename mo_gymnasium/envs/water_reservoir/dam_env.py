@@ -27,9 +27,9 @@ class DamEnv(gym.Env):
 
      ## Credits
      Code from:
-     https://gitlab.ai.vub.ac.be/mreymond/dam
+     [Mathieu Reymond](https://gitlab.ai.vub.ac.be/mreymond/dam).
      Ported from:
-     https://github.com/sparisi/mips
+     [Simone Parisi](https://github.com/sparisi/mips).
     """
 
     S = 1.0  # Reservoir surface

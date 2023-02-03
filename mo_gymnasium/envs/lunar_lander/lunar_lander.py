@@ -21,7 +21,7 @@ class MOLunarLander(LunarLander):
     ## Description
     Multi-objective version of the LunarLander environment.
 
-    See https://gymnasium.farama.org/environments/box2d/lunar_lander/ for more information.
+    See [Gymnasium's env](https://gymnasium.farama.org/environments/box2d/lunar_lander/) for more information.
 
     ## Reward Space
     The reward is 4-dimensional:

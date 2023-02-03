@@ -9,8 +9,7 @@ class BreakableBottles(Env):
     """
     ## Description
     This environment implements the problems UnbreakableBottles and BreakableBottles defined in Section 4.1.2 of the paper
-    "Potential-based multiobjective reinforcement learning approaches to low-impact agents for AI safety"
-    (https://www.sciencedirect.com/science/article/pii/S0952197621000336).
+    [Potential-based multiobjective reinforcement learning approaches to low-impact agents for AI safety](https://www.sciencedirect.com/science/article/pii/S0952197621000336).
 
     ## Action Space
     The action space is a discrete space with 3 actions:
