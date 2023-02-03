@@ -131,11 +131,14 @@ title: {title_env_name}
 {related_pages_meta}---
 """
         title = f"# {title_env_name}"
-        gif = (
-            "```{figure}"
-            + f" ../../_static/videos/{env_type}/{snake_env_name}.gif"
-            + f" \n:width: 200px\n:name: {snake_env_name}\n```"
-        )
+        if "rgb_array" in env.metadata.render_modes:
+            gif = (
+                "```{figure}"
+                + f" ../../_static/videos/{snake_env_name}.gif"
+                + f" \n:width: 200px\n:name: {snake_env_name}\n```"
+            )
+        else:
+            gif = ""
         info = (
             "This environment is part of the "
             + f"<a href='..'>{env_type_title} environments</a>."
@@ -185,6 +188,7 @@ title: {title_env_name}
             docstring = "No information provided"
         all_text = f"""{front_matter}
 {title}
+{gif}
 {env_table}
 {docstring}
 """
