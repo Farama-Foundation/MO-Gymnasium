@@ -106,7 +106,9 @@ for i, env_spec in tqdm(enumerate(filtered_envs)):
         # pascal case
         pascal_env_name = env_spec.id
         snake_env_name = pattern.sub("_", pascal_env_name).lower()
-        title_env_name = snake_env_name.replace("_", " ").title()
+        # remove what is after the last "-" in snake_env_name e.g. "-v0"
+        snake_env_name = snake_env_name[: snake_env_name.rfind("-")]
+        title_env_name = snake_env_name.replace("_", " ").title().replace("Mo", "MO")
         env_type_title = env_type.replace("_", " ").title()
         related_pages_meta = ""
         if i == 0 or not env_type == filtered_envs[i - 1].entry_point.split(".")[2]:
@@ -172,6 +174,10 @@ title: {title_env_name}
 
         if env.reward_space.shape:
             env_table += f"| Reward Shape | {env.reward_space.shape} |\n"
+        if hasattr(env.reward_space, "high"):
+            env_table += f"| Reward High | {env.reward_space.high} |\n"
+        if hasattr(env.reward_space, "low"):
+            env_table += f"| Reward Low | {env.reward_space.low} |\n"
 
         env_table += f'| Import | `mo_gymnasium.make("{env_spec.id}")` | \n'
 
