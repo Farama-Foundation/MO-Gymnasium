@@ -138,7 +138,7 @@ title: {title_env_name}
 {related_pages_meta}---
 """
         title = f"# {title_env_name}"
-        if "rgb_array" in env.metadata.render_modes:
+        if "rgb_array" in env.metadata["render_modes"]:
             gif = (
                 "```{figure}"
                 + f" ../../_static/videos/{snake_env_name}.gif"
