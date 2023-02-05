@@ -71,7 +71,7 @@ def test_reacher_mujoco():
     check_env(env, skip_render_check=True)
 
 
-# TODO: failing because of highway_env original code
+# TODO: failing because highway_env is not deterministic given a random seed
 """ def test_highway():
     env = mo_gym.make('mo-highway-v0')
     env = LinearReward(env)

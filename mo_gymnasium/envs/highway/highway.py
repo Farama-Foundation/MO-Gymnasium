@@ -35,6 +35,12 @@ class MOHighwayEnv(HighwayEnv):
         self.observation_space = _convert_space(self.observation_space)
         self.action_space = _convert_space(self.action_space)
 
+    def reset(self, seed=None, **kwargs):
+        obs, info = super().reset(seed=seed, **kwargs)
+        self.observation_space = _convert_space(self.observation_space)
+        self.action_space = _convert_space(self.action_space)
+        return obs, info
+
     def step(self, action):
         obs, reward, terminated, truncated, info = super().step(action)
         rewards = info["rewards"]
@@ -59,6 +65,12 @@ class MOHighwayEnvFast(HighwayEnvFast):
         self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
         self.observation_space = _convert_space(self.observation_space)
         self.action_space = _convert_space(self.action_space)
+
+    def reset(self, seed=None, **kwargs):
+        obs, info = super().reset(seed=seed, **kwargs)
+        self.observation_space = _convert_space(self.observation_space)
+        self.action_space = _convert_space(self.action_space)
+        return obs, info
 
     def step(self, action):
         obs, reward, terminated, truncated, info = super().step(action)
@@ -109,4 +121,4 @@ def _convert_space(space: gym.Space) -> gymnasium.Space:
             charset=space._char_str,
         )
     else:
-        raise NotImplementedError(f"Cannot convert space of type {space}. Please upgrade your code to gymnasium.")
+        return space
