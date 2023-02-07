@@ -11,6 +11,7 @@ import numpy as np
 import pygame
 import scipy.stats
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from scipy.spatial import ConvexHull
 
 
@@ -86,7 +87,7 @@ CART_IMG = str(Path(__file__).parent.absolute()) + "/assets/cart.png"
 MINE_IMG = str(Path(__file__).parent.absolute()) + "/assets/mine.png"
 
 
-class Minecart(gym.Env):
+class Minecart(gym.Env, EzPickle):
     """
     ## Description
     Agent must collect two types of ores and minimize fuel consumption.
@@ -133,6 +134,8 @@ class Minecart(gym.Env):
         image_observation=False,
         config=str(Path(__file__).parent.absolute()) + "/mine_config.json",
     ):
+        EzPickle.__init__(self, render_mode, image_observation, config)
+
         self.render_mode = render_mode
         self.screen = None
         self.last_render_mode_used = None

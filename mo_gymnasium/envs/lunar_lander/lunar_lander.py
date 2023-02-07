@@ -16,7 +16,7 @@ from gymnasium.envs.box2d.lunar_lander import (
 )
 
 
-class MOLunarLander(LunarLander):
+class MOLunarLander(LunarLander):  # no need for EzPickle, it's already in LunarLander
     """
     ## Description
     Multi-objective version of the LunarLander environment.

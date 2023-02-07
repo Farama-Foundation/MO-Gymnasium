@@ -3,7 +3,7 @@ from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv
 from gymnasium.spaces import Box
 
 
-class MOHalfCheehtahEnv(HalfCheetahEnv):
+class MOHalfCheehtahEnv(HalfCheetahEnv):  # no need to inherit from EzPickle, it's already done in HalfCheetahEnv
     """
     ## Description
     Multi-objective version of the HalfCheetahEnv environment.

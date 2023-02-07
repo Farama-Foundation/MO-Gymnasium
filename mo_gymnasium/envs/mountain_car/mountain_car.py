@@ -4,9 +4,10 @@ from typing import Optional
 import numpy as np
 from gymnasium import spaces
 from gymnasium.envs.classic_control.mountain_car import MountainCarEnv
+from gymnasium.utils import EzPickle
 
 
-class MOMountainCar(MountainCarEnv):
+class MOMountainCar(MountainCarEnv, EzPickle):
     """
     A multi-objective version of the MountainCar environment, where the goal is to reach the top of the mountain.
 
@@ -20,6 +21,7 @@ class MOMountainCar(MountainCarEnv):
     """
 
     def __init__(self, render_mode: Optional[str] = None, goal_velocity=0):
+        EzPickle.__init__(self, render_mode, goal_velocity)
         super().__init__(render_mode, goal_velocity)
 
         self.reward_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)

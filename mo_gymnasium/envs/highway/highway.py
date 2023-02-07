@@ -12,10 +12,11 @@ from gymnasium.spaces import (
     Text,
     Tuple,
 )
+from gymnasium.utils import EzPickle
 from highway_env.envs import HighwayEnv, HighwayEnvFast
 
 
-class MOHighwayEnv(HighwayEnv):
+class MOHighwayEnv(HighwayEnv, EzPickle):
     """
     ## Description
     Multi-objective version of the HighwayEnv environment.
@@ -30,6 +31,8 @@ class MOHighwayEnv(HighwayEnv):
     """
 
     def __init__(self, *args, **kwargs):
+        EzPickle.__init__(self, *args, **kwargs)
+
         super().__init__(*args, **kwargs)
         self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
         self.observation_space = _convert_space(self.observation_space)

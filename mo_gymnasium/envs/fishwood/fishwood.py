@@ -3,9 +3,10 @@ from typing import Optional
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
+from gymnasium.utils import EzPickle
 
 
-class FishWood(gym.Env):
+class FishWood(gym.Env, EzPickle):
     """
     ## Description
     The FishWood environment is a simple MORL problem in which the agent controls a fisherman which can either fish or go collect wood.
@@ -46,6 +47,8 @@ class FishWood(gym.Env):
     MAX_TS = 200
 
     def __init__(self, render_mode: Optional[str] = None, fishproba=0.1, woodproba=0.9):
+        EzPickle.__init__(self, render_mode, fishproba, woodproba)
+
         self.render_mode = render_mode
         self._fishproba = fishproba
         self._woodproba = woodproba

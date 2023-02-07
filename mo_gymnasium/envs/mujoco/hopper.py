@@ -3,7 +3,7 @@ from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
 from gymnasium.spaces import Box
 
 
-class MOHopperEnv(HopperEnv):
+class MOHopperEnv(HopperEnv):  # no need to inherit from EzPickle, it's already done in HopperEnv
     """
     ## Description
     Multi-objective version of the HopperEnv environment.

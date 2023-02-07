@@ -10,7 +10,7 @@ from gymnasium.spaces import Box, Discrete
 DEFAULT_CAMERA_CONFIG = {"trackbodyid": 0}
 
 
-class MOReacherEnv(ReacherEnv):
+class MOReacherEnv(ReacherEnv):  # no need to inherit from EzPickle, it's already done in ReacherEnv
     """
     ## Description
     Mujoco version of `mo-reacher-v0`, based on [`Reacher-v4` environment](https://gymnasium.farama.org/environments/mujoco/reacher/).

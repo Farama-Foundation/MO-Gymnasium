@@ -3,9 +3,10 @@ from typing import Optional
 import gymnasium as gym
 import numpy as np
 from gymnasium.spaces.box import Box
+from gymnasium.utils import EzPickle
 
 
-class DamEnv(gym.Env):
+class DamEnv(gym.Env, EzPickle):
     """
     ## Description
     A Water reservoir environment.
@@ -73,6 +74,8 @@ class DamEnv(gym.Env):
         nO=2,
         penalize: bool = False,
     ):
+        EzPickle.__init__(self, render_mode, time_limit, nO, penalize)
+
         self.observation_space = Box(low=0.0, high=np.inf, shape=(1,), dtype=np.float32)
         self.action_space = Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
 

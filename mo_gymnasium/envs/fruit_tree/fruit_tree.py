@@ -2,6 +2,7 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
+from gymnasium.utils import EzPickle
 
 
 FRUITS = {
@@ -238,7 +239,7 @@ FRUITS = {
 }
 
 
-class FruitTreeEnv(gym.Env):
+class FruitTreeEnv(gym.Env, EzPickle):
     """
     ## Description
 
@@ -263,6 +264,8 @@ class FruitTreeEnv(gym.Env):
 
     def __init__(self, depth=6):
         assert depth in [5, 6, 7], "Depth must be 5, 6 or 7."
+        EzPickle.__init__(self, depth)
+
         self.reward_dim = 6
         self.tree_depth = depth  # zero based depth
         branches = np.zeros((int(2**self.tree_depth - 1), self.reward_dim))

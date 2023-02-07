@@ -3,9 +3,10 @@ from typing import Optional
 import numpy as np
 from gymnasium import Env
 from gymnasium.spaces import Box, Dict, Discrete, MultiBinary
+from gymnasium.utils import EzPickle
 
 
-class BreakableBottles(Env):
+class BreakableBottles(Env, EzPickle):
     """
     ## Description
     This environment implements the problems UnbreakableBottles and BreakableBottles defined in Section 4.1.2 of the paper
@@ -64,6 +65,8 @@ class BreakableBottles(Env):
         bottle_reward=25,
         unbreakable_bottles=False,
     ):
+        EzPickle.__init__(self, render_mode, size, prob_drop, time_penalty, bottle_reward, unbreakable_bottles)
+
         self.render_mode = render_mode
 
         # settings

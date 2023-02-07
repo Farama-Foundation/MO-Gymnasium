@@ -5,6 +5,7 @@ import gymnasium as gym
 import numpy as np
 import pygame
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 
 
 # As in Yang et al. (2019):
@@ -42,7 +43,7 @@ CONCAVE_MAP = np.array(
 )
 
 
-class DeepSeaTreasure(gym.Env):
+class DeepSeaTreasure(gym.Env, EzPickle):
     """
     ## Description
     The Deep Sea Treasure environment is classic MORL problem in which the agent controls a submarine in a 2D grid world.
@@ -79,6 +80,8 @@ class DeepSeaTreasure(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode: Optional[str] = None, dst_map=DEFAULT_MAP, float_state=False):
+        EzPickle.__init__(self, render_mode, dst_map, float_state)
+
         self.render_mode = render_mode
         self.size = 11
         self.window_size = 512

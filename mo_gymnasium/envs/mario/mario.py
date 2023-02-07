@@ -4,7 +4,7 @@ import gymnasium as gym
 import numpy as np
 from gym_super_mario_bros import SuperMarioBrosEnv
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from gymnasium.utils import seeding
+from gymnasium.utils import EzPickle, seeding
 
 # from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
 from gymnasium.wrappers import GrayScaleObservation, ResizeObservation
@@ -16,7 +16,7 @@ import mo_gymnasium as mo_gym
 from mo_gymnasium.envs.mario.joypad_space import JoypadSpace
 
 
-class MOSuperMarioBros(SuperMarioBrosEnv):
+class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
     """
     ## Description
     Multi-objective version of the SuperMarioBro environment.
@@ -45,6 +45,7 @@ class MOSuperMarioBros(SuperMarioBrosEnv):
         objectives=["x_pos", "time", "death", "coin", "enemy"],
         render_mode: Optional[str] = None,
     ):
+        EzPickle.__init__(self, rom_mode, lost_levels, target, objectives, render_mode)
         super().__init__(rom_mode, lost_levels, target)
 
         self.render_mode = render_mode
