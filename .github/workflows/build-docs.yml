@@ -21,7 +21,7 @@ jobs:
         run: pip install -r docs/requirements.txt
 
       - name: Install MO-Gymnasium
-        run: pip install -e .
+        run: pip install -e .[all]
 
       - name: Build env docs
         run: python docs/_scripts/gen_env_docs.py
