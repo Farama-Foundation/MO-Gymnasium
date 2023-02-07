@@ -1,6 +1,6 @@
 # Community
 
-If you want to help us out, reach us, or simply ask questions, you can join the Farama discord server [here](https://discord.gg/WF3FqsBk).
+If you want to help us out, reach us, or simply ask questions, you can join the Farama discord server [here](https://discord.gg/bnJ6kubTg6).
 
 ## Acknowledgements
 

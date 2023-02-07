@@ -1,4 +1,3 @@
-import gymnasium as gym
 from gymnasium.utils.env_checker import check_env
 
 import mo_gymnasium as mo_gym
@@ -96,12 +95,18 @@ def test_hopper():
 
 
 def test_breakable_bottles():
-    env = gym.make("breakable-bottles-v0")
+    env = mo_gym.make("breakable-bottles-v0")
     env = LinearReward(env)
     check_env(env)
 
 
 def test_water_reservoir():
-    env = gym.make("water-reservoir-v0")
+    env = mo_gym.make("water-reservoir-v0")
+    env = LinearReward(env)
+    check_env(env, skip_render_check=True)
+
+
+def test_lunar_lander():
+    env = mo_gym.make("mo-lunar-lander-v2")
     env = LinearReward(env)
     check_env(env, skip_render_check=True)

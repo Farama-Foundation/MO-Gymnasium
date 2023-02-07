@@ -37,6 +37,7 @@ mario = ["nes-py", "gym-super-mario-bros"]
 minecart = ["scipy >=1.7.3  "]
 mujoco = ["mujoco >=2.3.0", "imageio >=2.14.1"]
 highway = ["highway-env"]
+box2d = ["gymnasium[box2d]"]
 all = [
     # All dependencies above except accept-rom-license
     # NOTE: No need to manually remove the duplicates, setuptools automatically does that.
@@ -50,6 +51,8 @@ all = [
     "mujoco >=2.3.0",
     # highway
     "highway-env >= 1.7.1",
+    # box2d
+    "gymnasium[box2d]",
 ]
 testing = ["pytest ==7.1.3"]
 
