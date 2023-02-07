@@ -1,9 +1,10 @@
 import numpy as np
 from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
 from gymnasium.spaces import Box
+from gymnasium.utils import EzPickle
 
 
-class MOHopperEnv(HopperEnv):  # no need to inherit from EzPickle, it's already done in HopperEnv
+class MOHopperEnv(HopperEnv, EzPickle):
     """
     ## Description
     Multi-objective version of the HopperEnv environment.
@@ -20,6 +21,7 @@ class MOHopperEnv(HopperEnv):  # no need to inherit from EzPickle, it's already 
 
     def __init__(self, cost_objective=True, **kwargs):
         super().__init__(**kwargs)
+        EzPickle.__init__(self, cost_objective, **kwargs)
         self.cost_objetive = cost_objective
         self.rew_dim = 3 if cost_objective else 2
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.rew_dim,))

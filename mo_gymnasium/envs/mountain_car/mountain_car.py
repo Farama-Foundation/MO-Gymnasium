@@ -21,8 +21,8 @@ class MOMountainCar(MountainCarEnv, EzPickle):
     """
 
     def __init__(self, render_mode: Optional[str] = None, goal_velocity=0):
-        EzPickle.__init__(self, render_mode, goal_velocity)
         super().__init__(render_mode, goal_velocity)
+        EzPickle.__init__(self, render_mode, goal_velocity)
 
         self.reward_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
 
