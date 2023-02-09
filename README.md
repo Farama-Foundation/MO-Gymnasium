@@ -43,19 +43,12 @@ MO-Gymnasium includes environments taken from the MORL literature, as well as mu
 ## Installation
 <!-- start install -->
 
-Via pip:
+To install MO-Gymnasium, use:
 ```bash
 pip install mo-gymnasium
 ```
 
 This does not include dependencies for all families of environments (some can be problematic to install on certain systems). You can install these dependencies for one family like `pip install "mo-gymnasium[mujoco]"` or use `pip install "mo-gymnasium[all]"` to install all dependencies.
-
-Alternatively, you can install the newest unreleased version:
-```bash
-git clone https://github.com/Farama-Foundation/MO-Gymnasium
-cd MO-Gymnasium
-pip install -e .
-```
 
 <!-- end install -->
 
