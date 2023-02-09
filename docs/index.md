@@ -1,4 +1,5 @@
 ---
+title: "MO-Gymnasium"
 hide-toc: true
 firstpage:
 lastpage:
@@ -8,6 +9,7 @@ lastpage:
 :hidden:
 :caption: Introduction
 
+self
 examples/publications
 ```
 
