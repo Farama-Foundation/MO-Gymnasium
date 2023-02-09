@@ -14,6 +14,6 @@ title: "Environments"
 :glob:
 :caption: MO-Gymnasium Environments
 
-*
+./*
 
 ```
