@@ -49,8 +49,6 @@ Donate <https://farama.org/donations>
 
 ```{figure} _static/mo_cheetah.gif
    :alt: MO-HalfCheetah gif
-   :width: 350
-   :height: 350
 ```
 
 ```{include} ../README.md

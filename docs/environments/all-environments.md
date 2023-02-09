@@ -11,6 +11,7 @@ title: "Environments"
 
 ```{toctree}
 :hidden:
+:glob:
 :caption: MO-Gymnasium Environments
 
 *
