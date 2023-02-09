@@ -8,3 +8,11 @@ title: "Environments"
 :start-after: <!-- start environments -->
 :end-before: <!-- end environments -->
 ```
+
+```{toctree}
+:hidden:
+:caption: MO-Gymnasium Environments
+
+*
+
+```

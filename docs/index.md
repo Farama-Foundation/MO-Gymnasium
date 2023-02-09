@@ -6,10 +6,17 @@ lastpage:
 
 ```{toctree}
 :hidden:
+:caption: Introduction
+
+examples/publications
+```
+
+```{toctree}
+:hidden:
 :glob:
 :caption: Environments
 
-environments/*
+environments/all-environments
 ```
 
 ```{toctree}
@@ -37,6 +44,12 @@ Donate <https://farama.org/donations>
 ```
 
 # MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)
+
+```{figure} _static/mo_cheetah.gif
+   :alt: MO-HalfCheetah gif
+   :width: 350
+   :height: 350
+```
 
 ```{include} ../README.md
 :start-after: <!-- start elevator-pitch -->
