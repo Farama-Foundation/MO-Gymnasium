@@ -5,6 +5,7 @@ import gymnasium as gym
 import numpy as np
 import pygame
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 
 
 MAZE = np.array(
@@ -30,7 +31,7 @@ GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
 
 
-class FourRoom(gym.Env):
+class FourRoom(gym.Env, EzPickle):
     """
     ## Description
     A discretized version of the gridworld environment introduced in [1]. Here, an agent learns to
@@ -85,6 +86,8 @@ class FourRoom(gym.Env):
                 0, 1, .... 9 indicates the type of shape to be placed in the corresponding cell
                 entries containing other characters are treated as regular empty cells
         """
+        EzPickle.__init__(self, render_mode, maze)
+
         self.render_mode = render_mode
         self.window_size = 512
         self.window = None

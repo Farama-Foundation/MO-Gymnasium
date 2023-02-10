@@ -1,9 +1,10 @@
 import numpy as np
 from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv
 from gymnasium.spaces import Box
+from gymnasium.utils import EzPickle
 
 
-class MOHalfCheehtahEnv(HalfCheetahEnv):
+class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
     """
     ## Description
     Multi-objective version of the HalfCheetahEnv environment.
@@ -18,6 +19,7 @@ class MOHalfCheehtahEnv(HalfCheetahEnv):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        EzPickle.__init__(self, **kwargs)
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(2,))
 
     def step(self, action):

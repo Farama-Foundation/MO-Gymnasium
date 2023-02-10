@@ -5,9 +5,10 @@ import gymnasium as gym
 import numpy as np
 import pygame
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 
 
-class ResourceGathering(gym.Env):
+class ResourceGathering(gym.Env, EzPickle):
     """
     ## Description
     From "Barrett, Leon & Narayanan, Srini. (2008). Learning all optimal policies with multiple criteria.
@@ -43,6 +44,8 @@ class ResourceGathering(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode: Optional[str] = None):
+        EzPickle.__init__(self, render_mode)
+
         self.render_mode = render_mode
         self.size = 5
         self.window_size = 512
