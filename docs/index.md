@@ -9,7 +9,6 @@ lastpage:
 :hidden:
 :caption: Introduction
 
-self
 examples/publications
 ```
 

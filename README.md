@@ -66,7 +66,7 @@ import numpy as np
 # It follows the original Gymnasium API ...
 env = mo_gym.make('minecart-v0')
 
-obs = env.reset()
+obs, info = env.reset()
 # but vector_reward is a numpy array!
 next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))
 
