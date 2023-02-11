@@ -94,9 +94,9 @@ class DamEnv(gym.Env, EzPickle):
         if not self.penalize:
             state = self.np_random.choice(DamEnv.s_init, size=1)
         else:
-            state = self.np_random.randint(0, 160, size=1).astype(np.float32)
+            state = self.np_random.randint(0, 160, size=1)
 
-        self.state = np.array(state)
+        self.state = np.array(state, dtype=np.float32)
         return self.state, {}
 
     def step(self, action):
@@ -112,7 +112,7 @@ class DamEnv(gym.Env, EzPickle):
         action = bounded_action
         dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))
         # small chance dam_inflow < 0
-        n_state = np.clip(self.state + dam_inflow - action, 0, None)
+        n_state = np.clip(self.state + dam_inflow - action, 0, None).astype(np.float32)
 
         # cost due to excess level wrt a flooding threshold (upstream)
         r0 = -np.clip(n_state / DamEnv.S - DamEnv.H_FLO_U, 0, None) + penalty
