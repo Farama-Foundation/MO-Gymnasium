@@ -177,7 +177,7 @@ class Minecart(gym.Env, EzPickle):
                 dtype=np.uint8,
             )
         else:
-            self.observation_space = Box(np.zeros(7), np.ones(7), dtype=np.float32)
+            self.observation_space = Box(-np.ones(7), np.ones(7), dtype=np.float32)
 
         self.action_space = Discrete(6)
         self.reward_space = Box(low=-1, high=self.capacity, shape=(self.ore_cnt + 1,))
