@@ -8,12 +8,8 @@ lastpage:
 :hidden:
 :caption: Introduction
 
-self
 introduction/api
 introduction/install
-```
-
-```{toctree}
 ```
 
 ```{toctree}

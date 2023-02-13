@@ -2,6 +2,7 @@
 title: Publications
 firstpage:
 ---
+
 # List of Publications
 
 MO-Gymnasium (formerly MO-Gym) was first published in:
