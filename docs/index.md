@@ -8,7 +8,12 @@ lastpage:
 :hidden:
 :caption: Introduction
 
-index
+self
+introduction/api
+introduction/install
+```
+
+```{toctree}
 ```
 
 ```{toctree}
@@ -37,7 +42,8 @@ wrappers/wrappers
 :hidden:
 :caption: Citing
 
-citing/citing
+examples/citation
+examples/publications
 ```
 
 ```{toctree}
