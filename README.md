@@ -103,15 +103,3 @@ If you use this repository in your work, please cite:
 ```
 
 <!-- end citation -->
-
-## Acknowledgments
-
-<!-- start acknowledgments -->
-
-* The `minecart-v0` env is a refactor of https://github.com/axelabels/DynMORL.
-* The `deep-sea-treasure-v0`, `fruit-tree-v0` and `mo-supermario-v0` envs are based on https://github.com/RunzheYang/MORL.
-* The `four-room-v0` env is based on https://github.com/mike-gimelfarb/deep-successor-features-for-transfer.
-* The `fishwood-v0` code was provided by Denis Steckelmacher and Conor F. Hayes.
-* The `water-reservoir-v0` code was provided by Mathieu Reymond.
-
-<!-- end acknowledgments -->
