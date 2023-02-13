@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-setup(name="mo-gymnasium", version="0.3.2", long_description=open("README.md").read())
+setup(name="mo-gymnasium", version="0.3.3", long_description=open("README.md").read())
 
 # python setup.py sdist
 # python setup.py bdist_wheel
