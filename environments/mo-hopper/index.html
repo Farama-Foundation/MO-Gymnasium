@@ -15,7 +15,7 @@
         <title>MO-Hopper - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=c36209c3579494d5f9512671edd8cd731f7c406c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=9a53ecd888763df648534e3827a487c30750c47c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=57f753f2a36df4cd87bf0e4232aabc9b3cc73912" />
     
     
 
@@ -260,11 +260,7 @@
 </ul>
 
 </div>
-<div class="farama-sidebar-donate">
-    <a>
-        <button class="farama-donate-btn">Donate</button>
-    </a>
-</div></div>
+</div>
 
       </div>
       
@@ -274,36 +270,7 @@
 
     
 
-    <div class="farama-donate-banner" id="farama-donate-banner">
-      <div class="farama-donate-banner__text">
-        Donations are used to pay our to developers to maintain our libraries and develop new ones.
-      </div>
-      <div class="farama-donate-banner__btns">
-        <a href="https://farama.org/donations" target="_blank" rel="noopener noreferrer">
-          <button class="farama-donate-banner__go">Donate</button>
-        </a>
-        <button class="farama-donate-banner__cancel">
-          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .cls-1 {
-                  fill: none;
-                  stroke: #ffffffcc;
-                  stroke-linecap: round;
-                  stroke-linejoin: round;
-                  stroke-width: 2px;
-                }
-              </style>
-            </defs>
-            <title />
-            <g id="cross">
-              <line class="cls-1" x1="7" x2="25" y1="7" y2="25" />
-              <line class="cls-1" x1="7" x2="25" y1="25" y2="7" />
-            </g>
-          </svg>
-        </button>
-      </div>
-    </div>
+    
 
     <div class="main">
       <div class="content">
@@ -612,35 +579,5 @@ If the cost_objective flag is set to False, the reward is 2-dimensional, and the
     
     
 
-    <script>
-      (() => {
-        const bannerBtns = document.querySelectorAll("#farama-donate-banner button");
-        for (let btn of bannerBtns) {
-            btn.addEventListener("click", () => {
-                const bannerElem = document.getElementById("farama-donate-banner");
-                bannerElem.classList.remove("active")
-            })
-        }
-
-        const beforeFirstTuesdayOfMonth = (time) => {
-            let firstTuesday = new Date();
-            firstTuesday.setDate(1);
-            firstTuesday.setHours(0);
-            firstTuesday.setMinutes(0);
-            firstTuesday.setSeconds(0);
-
-            while (firstTuesday.getDay() !== 2) {
-                firstTuesday.setDate(firstTuesday.getDate() + 1);
-            }
-            return new Date(parseInt(time)) < firstTuesday && firstTuesday <= new Date()
-        }
-
-        if (!localStorage.getItem("time_shown_donations") || beforeFirstTuesdayOfMonth(localStorage.getItem("time_shown_donations"))) {
-            const bannerElem = document.getElementById("farama-donate-banner");
-            bannerElem.classList.add("active")
-            localStorage.setItem("time_shown_donations", Date.now())
-        }
-      })();
-
-    </script></body>
+    </body>
 </html>
