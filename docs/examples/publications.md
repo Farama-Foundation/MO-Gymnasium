@@ -3,7 +3,7 @@ title: Publications
 firstpage:
 ---
 
-# List of Publications
+## List of Publications
 
 MO-Gymnasium (formerly MO-Gym) was first published in:
 - [MO-Gym: A Library of Multi-Objective Reinforcement Learning Environments](https://bnaic2022.uantwerpen.be/wp-content/uploads/BNAICBeNeLearn_2022_submission_6485.pdf) (Alegre et al., BNAIC 2022)
