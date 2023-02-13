@@ -22,8 +22,8 @@ def hypervolume(ref_point: np.ndarray, points: List[np.ndarray]) -> float:
 def eval_mo(
     agent,
     env,
-    scalarization=np.dot,
     w: Optional[np.ndarray] = None,
+    scalarization=np.dot,
     render: bool = False,
 ) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment.
@@ -128,7 +128,7 @@ def policy_evaluation_mo(
         np.ndarray: Value of the policy
     """
     if return_scalarized_value:
-        returns = [eval_mo(agent, env, w)[1] for _ in range(rep)]
+        returns = [eval_mo(agent, env, w=w)[1] for _ in range(rep)]
     else:
-        returns = [eval_mo(agent, env, w)[3] for _ in range(rep)]
+        returns = [eval_mo(agent, env, w=w)[3] for _ in range(rep)]
     return np.mean(returns, axis=0)
