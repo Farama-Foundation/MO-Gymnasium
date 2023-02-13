@@ -1,6 +1,5 @@
 ---
 title: "MO-Gymnasium"
-hide-toc: true
 firstpage:
 lastpage:
 ---
@@ -9,7 +8,7 @@ lastpage:
 :hidden:
 :caption: Introduction
 
-examples/publications
+index
 ```
 
 ```{toctree}
@@ -32,6 +31,13 @@ examples/morl_baselines
 :caption: Wrappers
 
 wrappers/wrappers
+```
+
+```{toctree}
+:hidden:
+:caption: Citing
+
+citing/citing
 ```
 
 ```{toctree}
