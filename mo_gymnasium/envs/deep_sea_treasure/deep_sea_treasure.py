@@ -173,7 +173,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
                 filename = path.join(path.dirname(__file__), "assets", "rock.png")
                 self.rock_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
 
-            self.font = pygame.font.SysFont("Corbel", 30)
+            self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 20)
 
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):

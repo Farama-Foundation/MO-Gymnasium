@@ -1,4 +1,4 @@
-from pathlib import Path
+from os import path
 from typing import Optional
 
 import gymnasium as gym
@@ -39,6 +39,10 @@ class ResourceGathering(gym.Env, EzPickle):
 
     ## Episode Termination
     The episode terminates when the agent returns home, or when the agent is killed by an enemy.
+
+    ## Credits
+    The home asset is from https://limezu.itch.io/serenevillagerevamped
+    The gold, enemy and gem assets are from https://ninjikin.itch.io/treasure
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -47,10 +51,6 @@ class ResourceGathering(gym.Env, EzPickle):
         EzPickle.__init__(self, render_mode)
 
         self.render_mode = render_mode
-        self.size = 5
-        self.window_size = 512
-        self.window = None
-        self.clock = None
 
         # The map of resource gathering env
         self.map = np.array(
@@ -78,6 +78,23 @@ class ResourceGathering(gym.Env, EzPickle):
         # reward space:
         self.reward_space = Box(low=-1, high=1, shape=(3,), dtype=np.float32)
 
+        # pygame
+        self.size = 5
+        self.cell_size = (64, 64)
+        self.window_size = (
+            self.map.shape[1] * self.cell_size[1],
+            self.map.shape[0] * self.cell_size[0],
+        )
+        self.clock = None
+        self.elf_images = []
+        self.gold_img = None
+        self.gem_img = None
+        self.enemy_img = None
+        self.home_img = None
+        self.mountain_bg_img = []
+        self.window = None
+        self.last_action = None
+
     def get_map_value(self, pos):
         return self.map[pos[0]][pos[1]]
 
@@ -85,70 +102,89 @@ class ResourceGathering(gym.Env, EzPickle):
         return state[0] >= 0 and state[0] < self.size and state[1] >= 0 and state[1] < self.size
 
     def render(self):
-        # The size of a single grid square in pixels
-        pix_square_size = self.window_size / self.size
-        if self.window is None:
-            self.gold_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/gold.png")
-            self.gold_img = pygame.transform.scale(self.gold_img, (pix_square_size, pix_square_size))
-            self.gem_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/gem.png")
-            self.gem_img = pygame.transform.scale(self.gem_img, (pix_square_size, pix_square_size))
-            self.enemy_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/sword.png")
-            self.enemy_img = pygame.transform.scale(self.enemy_img, (pix_square_size, pix_square_size))
-            self.home_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/home.png")
-            self.home_img = pygame.transform.scale(self.home_img, (pix_square_size, pix_square_size))
-            self.agent_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/stickerman.png")
-            self.agent_img = pygame.transform.scale(self.agent_img, (pix_square_size, pix_square_size))
+        if self.render_mode is None:
+            assert self.spec is not None
+            gym.logger.warn(
+                "You are calling render method without specifying any render mode. "
+                "You can specify the render_mode at initialization, "
+                f'e.g. mo_gym.make("{self.spec.id}", render_mode="rgb_array")'
+            )
+            return
 
-        if self.window is None and self.render_mode is not None:
+        if self.window is None:
             pygame.init()
+
             if self.render_mode == "human":
                 pygame.display.init()
-                self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and self.render_mode == "human":
-            self.clock = pygame.time.Clock()
+                pygame.display.set_caption("Resource Gathering")
+                self.window = pygame.display.set_mode(self.window_size)
+            else:
+                self.window = pygame.Surface(self.window_size)
 
-        canvas = pygame.Surface((self.window_size, self.window_size))
-        canvas.fill((255, 255, 255))
+            if self.clock is None:
+                self.clock = pygame.time.Clock()
 
-        canvas.blit(self.home_img, self.initial_pos[::-1] * pix_square_size)
+            if not self.elf_images:
+                hikers = [
+                    path.join(path.dirname(__file__), "assets/elf_up.png"),
+                    path.join(path.dirname(__file__), "assets/elf_down.png"),
+                    path.join(path.dirname(__file__), "assets/elf_left.png"),
+                    path.join(path.dirname(__file__), "assets/elf_right.png"),
+                ]
+                self.elf_images = [pygame.transform.scale(pygame.image.load(f_name), self.cell_size) for f_name in hikers]
+            if not self.mountain_bg_img:
+                bg_imgs = [
+                    path.join(path.dirname(__file__), "assets/mountain_bg1.png"),
+                    path.join(path.dirname(__file__), "assets/mountain_bg2.png"),
+                ]
+                self.mountain_bg_img = [
+                    pygame.transform.scale(pygame.image.load(f_name), self.cell_size) for f_name in bg_imgs
+                ]
+            if self.gold_img is None:
+                self.gold_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/gold.png")),
+                    (0.6 * self.cell_size[0], 0.6 * self.cell_size[1]),
+                )
+            if self.gem_img is None:
+                self.gem_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/gem.png")),
+                    (0.6 * self.cell_size[0], 0.6 * self.cell_size[1]),
+                )
+            if self.enemy_img is None:
+                self.enemy_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/enemy.png")),
+                    (0.8 * self.cell_size[0], 0.8 * self.cell_size[1]),
+                )
+            if self.home_img is None:
+                self.home_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/home.png")),
+                    self.cell_size,
+                )
+
         for i in range(self.map.shape[0]):
             for j in range(self.map.shape[1]):
+                check_board_mask = i % 2 ^ j % 2
+                self.window.blit(
+                    self.mountain_bg_img[check_board_mask],
+                    np.array([j, i]) * self.cell_size[0],
+                )
                 if self.map[i, j] == "R1" and not self.has_gold:
-                    canvas.blit(self.gold_img, np.array([j, i]) * pix_square_size)
+                    self.window.blit(self.gold_img, np.array([j + 0.22, i + 0.25]) * self.cell_size[0])
                 elif self.map[i, j] == "R2" and not self.has_gem:
-                    canvas.blit(self.gem_img, np.array([j, i]) * pix_square_size)
+                    self.window.blit(self.gem_img, np.array([j + 0.22, i + 0.25]) * self.cell_size[0])
                 elif self.map[i, j] == "E1" or self.map[i, j] == "E2":
-                    canvas.blit(self.enemy_img, np.array([j, i]) * pix_square_size)
-
-        canvas.blit(self.agent_img, self.current_pos[::-1] * pix_square_size)
-
-        for x in range(self.size + 1):
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, pix_square_size * x),
-                (self.window_size, pix_square_size * x),
-                width=2,
-            )
-            pygame.draw.line(
-                canvas,
-                0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.window_size),
-                width=2,
-            )
+                    self.window.blit(self.enemy_img, np.array([j + 0.1, i + 0.1]) * self.cell_size[0])
+                elif self.map[i, j] == "H":
+                    self.window.blit(self.home_img, np.array([j, i]) * self.cell_size[0])
+        last_action = self.last_action if self.last_action is not None else 2
+        self.window.blit(self.elf_images[last_action], self.current_pos[::-1] * self.cell_size[0])
 
         if self.render_mode == "human":
-            # The following line copies our drawings from `canvas` to the visible window
-            self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
             pygame.display.update()
-
-            # We need to ensure that human-rendering occurs at the predefined framerate.
-            # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
         elif self.render_mode == "rgb_array":  # rgb_array
-            return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+            return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
 
     def get_state(self):
         pos = self.current_pos.copy()
@@ -169,6 +205,7 @@ class ResourceGathering(gym.Env, EzPickle):
 
     def step(self, action):
         next_pos = self.current_pos + self.dir[action]
+        self.last_action = action
 
         if self.is_valid_state(next_pos):
             self.current_pos = next_pos
@@ -202,13 +239,13 @@ class ResourceGathering(gym.Env, EzPickle):
 
 
 if __name__ == "__main__":
+    import mo_gymnasium as mo_gym
 
-    env = ResourceGathering()
+    env = mo_gym.make("resource-gathering-v0", render_mode="human")
     terminated = False
     env.reset()
     while True:
         env.render()
         obs, r, terminated, truncated, info = env.step(env.action_space.sample())
-        print(obs, r, terminated)
-        if terminated:
+        if terminated or truncated:
             env.reset()
