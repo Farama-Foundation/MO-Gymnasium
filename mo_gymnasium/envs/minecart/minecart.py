@@ -122,6 +122,11 @@ class Minecart(gym.Env, EzPickle):
     ## Episode Termination
     The episode ends when the cart returns to the base.
 
+    ## Arguments
+    - render_mode: The render mode to use. Can be "rgb_array" or "human".
+    - image_observation: If True, the observation is a RGB image of the environment.
+    - config: Path to a json configuration file for the mines.
+
     ## Credits
     The code was refactored from [Axel Abels' source](https://github.com/axelabels/DynMORL).
     """
