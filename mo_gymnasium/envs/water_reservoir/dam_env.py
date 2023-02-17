@@ -1,3 +1,5 @@
+from contextlib import closing
+from io import StringIO
 from typing import Optional
 
 import gymnasium as gym
@@ -10,8 +12,11 @@ class DamEnv(gym.Env, EzPickle):
     """
     ## Description
     A Water reservoir environment.
-    The agent executes a continuous action, corresponding to the amount of water
-    released by the dam.
+    The agent executes a continuous action, corresponding to the amount of water released by the dam.
+
+    A. Castelletti, F. Pianosi and M. Restelli, "Tree-based Fitted Q-iteration for Multi-Objective Markov Decision problems,"
+    The 2012 International Joint Conference on Neural Networks (IJCNN),
+    Brisbane, QLD, Australia, 2012, pp. 1-8, doi: 10.1109/IJCNN.2012.6252759.
 
     ## Observation Space
     The observation is a float corresponding to the current level of the reservoir.
@@ -65,7 +70,7 @@ class DamEnv(gym.Env, EzPickle):
         dtype=np.float32,
     )
 
-    metadata = {"render_modes": []}
+    metadata = {"render_modes": ["ansi"]}
 
     def __init__(
         self,
@@ -75,6 +80,7 @@ class DamEnv(gym.Env, EzPickle):
         penalize: bool = False,
     ):
         EzPickle.__init__(self, render_mode, time_limit, nO, penalize)
+        self.render_mode = render_mode
 
         self.observation_space = Box(low=0.0, high=np.inf, shape=(1,), dtype=np.float32)
         self.action_space = Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
@@ -83,6 +89,8 @@ class DamEnv(gym.Env, EzPickle):
         self.penalize = penalize
         self.time_limit = time_limit
         self.time_step = 0
+        self.last_action = None
+        self.dam_inflow = None
 
         low = -np.ones(nO) * np.inf  # DamEnv.antiutopia[nO]
         high = np.zeros(nO)  # DamEnv.utopia[nO]
@@ -99,6 +107,23 @@ class DamEnv(gym.Env, EzPickle):
         self.state = np.array(state, dtype=np.float32)
         return self.state, {}
 
+    def render(self):
+        if self.render_mode == "ansi":
+            return self._render_text()
+        else:
+            gym.logger.warn(f"Render mode {self.render_mode} not supported.")
+
+    def _render_text(self):
+        outfile = StringIO()
+        if self.dam_inflow is not None:
+            outfile.write(f"Dam inflow: {self.dam_inflow[0]:.2f}\n")
+        if self.last_action is not None:
+            outfile.write(f"Water released: {self.last_action[0]:.2f}\n")
+        outfile.write(f"Current water level: {self.state[0]:.2f}\n")
+
+        with closing(outfile):
+            return outfile.getvalue()
+
     def step(self, action):
         # bound the action
         actionLB = np.clip(self.state - DamEnv.S_MIN_REL, 0, None)
@@ -110,9 +135,10 @@ class DamEnv(gym.Env, EzPickle):
 
         # transition dynamic
         action = bounded_action
-        dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))
+        self.last_action = action
+        self.dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))
         # small chance dam_inflow < 0
-        n_state = np.clip(self.state + dam_inflow - action, 0, None).astype(np.float32)
+        n_state = np.clip(self.state + self.dam_inflow - action, 0, None).astype(np.float32)
 
         # cost due to excess level wrt a flooding threshold (upstream)
         r0 = -np.clip(n_state / DamEnv.S - DamEnv.H_FLO_U, 0, None) + penalty
