@@ -75,6 +75,8 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
     ## Credits
     The code was adapted from: [Yang's source](https://github.com/RunzheYang/MORL).
+    The background art is from https://ansimuz.itch.io/underwater-fantasy-pixel-art-environment.
+    The submarine art was created with the assistance of DALL·E 2.
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -167,22 +169,22 @@ class DeepSeaTreasure(gym.Env, EzPickle):
                 filename = path.join(path.dirname(__file__), "assets", "treasure.png")
                 self.treasure_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
             if self.sea_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "sea.png")
-                self.sea_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
+                filename = path.join(path.dirname(__file__), "assets", "sea_bg.png")
+                self.sea_img = pygame.image.load(filename)
+                self.sea_img = pygame.transform.scale(self.sea_img, self.window_size)
             if self.rock_img is None:
                 filename = path.join(path.dirname(__file__), "assets", "rock.png")
                 self.rock_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
 
             self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 20)
 
+        self.window.blit(self.sea_img, (0, 0))
+
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):
                 if self.sea_map[i, j] == -10:
                     self.window.blit(self.rock_img, np.array([j, i]) * self.pix_square_size)
-                elif self.sea_map[i, j] == 0:
-                    self.window.blit(self.sea_img, np.array([j, i]) * self.pix_square_size)
                 elif self.sea_map[i, j] != 0:
-                    self.window.blit(self.sea_img, np.array([j, i]) * self.pix_square_size)
                     self.window.blit(self.treasure_img, np.array([j, i]) * self.pix_square_size)
                     trailing_space = " " if self.sea_map[i, j] < 10 else ""
                     img = self.font.render(trailing_space + str(self.sea_map[i, j]), True, (255, 255, 255))
