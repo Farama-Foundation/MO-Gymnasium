@@ -112,6 +112,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             high=np.array([np.max(self.sea_map), -1]),
             dtype=np.float32,
         )
+        self.reward_dim = 2
 
         self.current_state = np.array([0, 0], dtype=np.int32)
 

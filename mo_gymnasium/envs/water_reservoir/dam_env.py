@@ -105,6 +105,7 @@ class DamEnv(gym.Env, EzPickle):
         low = -np.ones(nO) * np.inf  # DamEnv.antiutopia[nO]
         high = np.zeros(nO)  # DamEnv.utopia[nO]
         self.reward_space = Box(low=np.array(low), high=np.array(high), dtype=np.float32)
+        self.reward_dim = nO
 
         self.window = None
         self.window_size = (300, 200)  # width x height

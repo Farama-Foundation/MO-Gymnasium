@@ -186,9 +186,7 @@ class Minecart(gym.Env, EzPickle):
 
         self.action_space = Discrete(6)
         self.reward_space = Box(low=-1, high=self.capacity, shape=(self.ore_cnt + 1,))
-
-    def obj_cnt(self):
-        return self.ore_cnt + 1
+        self.reward_dim = self.ore_cnt + 1
 
     def convex_coverage_set(self, frame_skip=1, discount=0.98, incremental_frame_skip=True, symmetric=True):
         """
@@ -370,7 +368,7 @@ class Minecart(gym.Env, EzPickle):
             )
             discount_map = discount ** np.arange(max_len)
             for s in all_sequences:
-                reward = np.zeros((len(s), self.obj_cnt()))
+                reward = np.zeros((len(s), self.reward_dim))
                 reward[:, -1] = fuel_costs[s]
                 mine_actions = s.count(ACT_MINE)
                 reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)

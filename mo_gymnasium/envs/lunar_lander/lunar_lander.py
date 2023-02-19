@@ -36,6 +36,7 @@ class MOLunarLander(LunarLander):  # no need for EzPickle, it's already in Lunar
 
         # Result reward, shaping reward, main engine cost, side engine cost
         self.reward_space = spaces.Box(low=-np.inf, high=np.inf, shape=(4,), dtype=np.float32)
+        self.reward_dim = 4
 
     def step(self, action):
         assert self.lander is not None

@@ -21,6 +21,7 @@ class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
         super().__init__(**kwargs)
         EzPickle.__init__(self, **kwargs)
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(2,))
+        self.reward_dim = 2
 
     def step(self, action):
         observation, reward, terminated, truncated, info = super().step(action)

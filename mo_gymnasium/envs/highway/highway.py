@@ -35,6 +35,7 @@ class MOHighwayEnv(HighwayEnv, EzPickle):
 
         super().__init__(*args, **kwargs)
         self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
+        self.reward_dim = 3
         self.observation_space = _convert_space(self.observation_space)
         self.action_space = _convert_space(self.action_space)
 

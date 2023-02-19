@@ -25,6 +25,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
         EzPickle.__init__(self, render_mode, goal_velocity)
 
         self.reward_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
+        self.reward_dim = 3
 
     def step(self, action: int):
         assert self.action_space.contains(action), f"{action!r} ({type(action)}) invalid"

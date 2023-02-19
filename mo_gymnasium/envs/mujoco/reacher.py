@@ -51,6 +51,7 @@ class MOReacherEnv(ReacherEnv):
         # Target goals: x1, y1, x2, y2, ... x4, y4
         self.goal = np.array([0.14, 0.0, -0.14, 0.0, 0.0, 0.14, 0.0, -0.14])
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(4,))
+        self.reward_dim = 4
 
     def step(self, a):
         real_action = self.action_dict[int(a)]
