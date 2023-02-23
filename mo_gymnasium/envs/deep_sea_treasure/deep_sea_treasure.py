@@ -25,6 +25,19 @@ DEFAULT_MAP = np.array(
     ]
 )
 
+FRONT_DEFAULT = [
+    np.array([0.7, -1]),
+    np.array([8.2, -3]),
+    np.array([11.5, -5]),
+    np.array([14.0, -7]),
+    np.array([15.1, -8]),
+    np.array([16.1, -9]),
+    np.array([19.6, -13]),
+    np.array([20.3, -14]),
+    np.array([22.4, -17]),
+    np.array([23.7, -19]),
+]
+
 # As in Vamplew et al. (2018):
 CONCAVE_MAP = np.array(
     [
@@ -41,6 +54,19 @@ CONCAVE_MAP = np.array(
         [-10, -10, -10, -10, -10, -10, -10, -10, -10, 124.0, 0],
     ]
 )
+
+FRONT_CONCAVE = [
+    np.array([1.0, -1]),
+    np.array([2.0, -3]),
+    np.array([3.0, -5]),
+    np.array([5.0, -7]),
+    np.array([8.0, -8]),
+    np.array([16.0, -9]),
+    np.array([24.0, -13]),
+    np.array([50.0, -14]),
+    np.array([74.0, -17]),
+    np.array([124.0, -19]),
+]
 
 
 class DeepSeaTreasure(gym.Env, EzPickle):
@@ -92,6 +118,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
+        self.pareto_front = FRONT_DEFAULT if np.all(dst_map == DEFAULT_MAP) else FRONT_CONCAVE
         assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
 
         self.dir = {
