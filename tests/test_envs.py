@@ -167,7 +167,7 @@ def test_ccs_dst_no_discount():
 
 
 def test_concave_pf_dst():
-    env = mo_gym.make("concave-deep-sea-treasure-v0")
+    env = mo_gym.make("deep-sea-treasure-concave-v0")
 
     # Known for gamma=0.99
     gamma = 0.99
@@ -190,7 +190,7 @@ def test_concave_pf_dst():
 
 
 def test_concave_pf_dst_no_discount():
-    env = mo_gym.make("concave-deep-sea-treasure-v0")
+    env = mo_gym.make("deep-sea-treasure-concave-v0")
 
     known_pf = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONCAVE_FRONT
 
