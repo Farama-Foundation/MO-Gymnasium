@@ -60,17 +60,14 @@ for env_spec in tqdm(all_envs):
     env_version = env_spec.version
 
     try:
-        env = mo_gym.make(env_spec.id)
-        split = str(type(env.unwrapped)).split(".")
-        env_name = split[3]
-
         if env_type not in filtered_envs_by_type.keys():
             filtered_envs_by_type[env_type] = {}
         # only store new entries and higher versions
-        if env_name not in filtered_envs_by_type[env_type] or (
-            env_name in filtered_envs_by_type[env_type] and env_version > filtered_envs_by_type[env_type][env_name].version
+        if env_spec.id not in filtered_envs_by_type[env_type] or (
+            env_spec.id in filtered_envs_by_type[env_type]
+            and env_version > filtered_envs_by_type[env_type][env_spec.id].version
         ):
-            filtered_envs_by_type[env_type][env_name] = env_spec
+            filtered_envs_by_type[env_type][env_spec.id] = env_spec
 
     except Exception as e:
         print(e)

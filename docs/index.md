@@ -8,30 +8,11 @@ lastpage:
 :hidden:
 :caption: Introduction
 
-introduction/api
 introduction/install
-```
-
-```{toctree}
-:hidden:
-:glob:
-:caption: Environments
-
+introduction/api
 environments/all-environments
-```
-
-```{toctree}
-:hidden:
-:caption: Examples
-
-examples/morl_baselines
-```
-
-```{toctree}
-:hidden:
-:caption: Wrappers
-
 wrappers/wrappers
+examples/morl_baselines
 ```
 
 ```{toctree}
