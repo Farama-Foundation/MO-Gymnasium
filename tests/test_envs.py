@@ -132,3 +132,68 @@ def assert_equals(a, b, prefix=None):
             assert_equals(elem_from_a, elem_from_b)
     else:
         assert a == b
+
+
+def test_ccs_dst():
+    env = mo_gym.make("deep-sea-treasure-v0")
+
+    # Known for gamma=0.99
+    known_ccs = [
+        np.array([0.7, -1.0]),
+        np.array([8.037, -2.97]),
+        np.array([11.0469, -4.901]),
+        np.array([13.181, -6.793]),
+        np.array([14.074, -7.726]),
+        np.array([14.856, -8.648]),
+        np.array([17.3731, -12.2479]),
+        np.array([17.814, -13.125]),
+        np.array([19.073, -15.706]),
+        np.array([19.778, -17.383]),
+    ]
+
+    discounted_front = env.pareto_front(gamma=0.99)
+    for desired, actual in zip(known_ccs, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+def test_ccs_dst_no_discount():
+    env = mo_gym.make("deep-sea-treasure-v0")
+
+    known_ccs = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONVEX_FRONT
+
+    discounted_front = env.pareto_front(gamma=1.0)
+    for desired, actual in zip(known_ccs, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+def test_concave_pf_dst():
+    env = mo_gym.make("concave-deep-sea-treasure-v0")
+
+    # Known for gamma=0.99
+    gamma = 0.99
+    known_pf = [
+        np.array([1.0, -1.0]),
+        np.array([2.0 * gamma**2, -2.97]),
+        np.array([3.0 * gamma**4, -4.901]),
+        np.array([5.0 * gamma**6, -6.793]),
+        np.array([8.0 * gamma**7, -7.726]),
+        np.array([16.0 * gamma**8, -8.648]),
+        np.array([24.0 * gamma**12, -12.2479]),
+        np.array([50.0 * gamma**13, -13.125]),
+        np.array([74.0 * gamma**16, -15.706]),
+        np.array([124.0 * gamma**18, -17.383]),
+    ]
+
+    discounted_front = env.pareto_front(gamma=0.99)
+    for desired, actual in zip(known_pf, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+def test_concave_pf_dst_no_discount():
+    env = mo_gym.make("concave-deep-sea-treasure-v0")
+
+    known_pf = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONCAVE_FRONT
+
+    discounted_front = env.pareto_front(gamma=1.0)
+    for desired, actual in zip(known_pf, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)

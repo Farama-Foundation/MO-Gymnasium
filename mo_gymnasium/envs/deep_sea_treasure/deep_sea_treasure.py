@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -25,7 +25,7 @@ DEFAULT_MAP = np.array(
     ]
 )
 
-FRONT_DEFAULT = [
+CONVEX_FRONT = [
     np.array([0.7, -1]),
     np.array([8.2, -3]),
     np.array([11.5, -5]),
@@ -55,7 +55,7 @@ CONCAVE_MAP = np.array(
     ]
 )
 
-FRONT_CONCAVE = [
+CONCAVE_FRONT = [
     np.array([1.0, -1]),
     np.array([2.0, -3]),
     np.array([3.0, -5]),
@@ -118,7 +118,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
-        self.pareto_front = FRONT_DEFAULT if np.all(dst_map == DEFAULT_MAP) else FRONT_CONCAVE
+        self._pareto_front = CONVEX_FRONT if np.all(dst_map == DEFAULT_MAP) else CONCAVE_FRONT
         assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
 
         self.dir = {
@@ -145,12 +145,32 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         self.current_state = np.array([0, 0], dtype=np.int32)
 
-    def get_map_value(self, pos):
+    def pareto_front(self, gamma: float) -> List[np.ndarray]:
+        """Return the discounted pareto front of the environment.
+
+        Args:
+            gamma: the discount factor.
+
+        Returns:
+            The discounted pareto front.
+
+        """
+
+        def discount_time(n):
+            """Discounted time for a given number of steps."""
+            return np.sum(np.array([gamma**i for i in range(int(n))]))
+
+        # The first element is discounted based on the number of steps to reach there (which is -p[1])
+        # e.g. if it takes 1 step to reach 0.7, the discounted value is 0.7 * gamma ** 0
+        discounted_front = [np.array([p[0] * gamma ** (-p[1] - 1), -discount_time(-p[1])]) for p in self._pareto_front]
+        return discounted_front
+
+    def _get_map_value(self, pos):
         return self.sea_map[pos[0]][pos[1]]
 
-    def is_valid_state(self, state):
+    def _is_valid_state(self, state):
         if state[0] >= 0 and state[0] <= 10 and state[1] >= 0 and state[1] <= 10:
-            if self.get_map_value(state) != -10:
+            if self._get_map_value(state) != -10:
                 return True
         return False
 
@@ -222,7 +242,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         elif self.render_mode == "rgb_array":
             return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
 
-    def get_state(self):
+    def _get_state(self):
         if self.float_state:
             state = self.current_state.astype(np.float32) * 0.1
         else:
@@ -234,7 +254,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         self.current_state = np.array([0, 0], dtype=np.int32)
         self.step_count = 0.0
-        state = self.get_state()
+        state = self._get_state()
         if self.render_mode == "human":
             self.render()
         return state, {}
@@ -242,10 +262,10 @@ class DeepSeaTreasure(gym.Env, EzPickle):
     def step(self, action):
         next_state = self.current_state + self.dir[action]
 
-        if self.is_valid_state(next_state):
+        if self._is_valid_state(next_state):
             self.current_state = next_state
 
-        treasure_value = self.get_map_value(self.current_state)
+        treasure_value = self._get_map_value(self.current_state)
         if treasure_value == 0 or treasure_value == -10:
             treasure_value = 0.0
             terminal = False
@@ -254,7 +274,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         time_penalty = -1.0
         vec_reward = np.array([treasure_value, time_penalty], dtype=np.float32)
 
-        state = self.get_state()
+        state = self._get_state()
         if self.render_mode == "human":
             self.render()
         return state, vec_reward, terminal, False, {}
