@@ -390,6 +390,16 @@ If image_observation is True, the observation is a 3D image of the environment.<
 <h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Permalink to this heading">#</a></h2>
 <p>The episode ends when the cart returns to the base.</p>
 </section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>render_mode: The render mode to use. Can be “rgb_array” or “human”.</p></li>
+<li><p>image_observation: If True, the observation is a RGB image of the environment.</p></li>
+<li><p>frame_skip: How many times each action is repeated. Default: 4</p></li>
+<li><p>incremental_frame_skip: Whether actions are repeated incrementally. Default: True</p></li>
+<li><p>config: Path to the .json configuration file. See the default configuration file for more information: https://github.com/Farama-Foundation/MO-Gymnasium/blob/main/mo_gymnasium/envs/minecart/mine_config.json</p></li>
+</ul>
+</section>
 <section id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this heading">#</a></h2>
 <p>The code was refactored from <a class="reference external" href="https://github.com/axelabels/DynMORL">Axel Abels’ source</a>.</p>
@@ -462,6 +472,7 @@ If image_observation is True, the observation is a 3D image of the environment.<
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
 <li><a class="reference internal" href="#starting-state">Starting State</a></li>
 <li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
 <li><a class="reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
