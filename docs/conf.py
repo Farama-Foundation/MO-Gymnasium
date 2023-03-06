@@ -17,13 +17,15 @@
 # -- Project information -----------------------------------------------------
 from typing import Any, Dict
 
+import mo_gymnasium
+
 
 project = "MO-Gymnasium"
 copyright = "2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-release = "0.3.0"
+release = mo_gymnasium.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -66,8 +68,7 @@ html_favicon = "_static/img/favicon.png"
 html_theme_options = {
     # "light_logo": "img/Minari.svg",
     # "dark_logo": "img/Minari_White.svg",
-    # "gtag": "G-R5TRTT6R78",
-    # "versioning": True,
+    "versioning": True,
 }
 html_context: Dict[str, Any] = {}
 html_context["conf_py_path"] = "/docs/"
@@ -79,3 +80,7 @@ html_context["slug"] = "mo_gymnasium"
 
 html_static_path = ["_static"]
 html_css_files = []
+
+# -- Generate Changelog -------------------------------------------------
+
+sphinx_github_changelog_token = os.environ.get("SPHINX_GITHUB_CHANGELOG_TOKEN")
