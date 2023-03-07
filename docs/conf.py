@@ -18,7 +18,7 @@
 import os
 from typing import Any, Dict
 
-import mo_gymnasium
+# import mo_gymnasium
 
 
 project = "MO-Gymnasium"
