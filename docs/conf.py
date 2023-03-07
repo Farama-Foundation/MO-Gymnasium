@@ -18,15 +18,15 @@
 import os
 from typing import Any, Dict
 
+import mo_gymnasium
+
 
 project = "MO-Gymnasium"
 copyright = "2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-# TODO: uncomment when the attr __version__ is added
-# release = mo_gymnasium.__version__
-release = "0.3.3"
+release = mo_gymnasium.__version__
 
 
 # -- General configuration ---------------------------------------------------
