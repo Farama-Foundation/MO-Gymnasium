@@ -20,7 +20,6 @@ from typing import Any, Dict
 
 # import mo_gymnasium
 
-
 project = "MO-Gymnasium"
 copyright = "2023"
 author = "Farama Foundation"
