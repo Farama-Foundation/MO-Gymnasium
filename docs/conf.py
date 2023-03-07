@@ -26,7 +26,9 @@ copyright = "2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-release = mo_gymnasium.__version__
+# TODO: uncomment when the attr __version__ is added
+# release = mo_gymnasium.__version__
+release = "0.3.3"
 
 
 # -- General configuration ---------------------------------------------------
