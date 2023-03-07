@@ -28,6 +28,7 @@ examples/publications
 :caption: Development
 
 community/community
+release_notes
 Github <https://github.com/Farama-Foundation/MO-Gymnasium>
 Donate <https://farama.org/donations>
 

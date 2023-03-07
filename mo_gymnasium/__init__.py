@@ -12,3 +12,6 @@ from mo_gymnasium.utils import (
     MOSyncVectorEnv,
     make,
 )
+
+
+__version__ = "0.3.3"
