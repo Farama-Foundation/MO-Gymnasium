@@ -1,4 +1,4 @@
-from pathlib import Path
+from os import path
 from typing import List, Optional
 
 import gymnasium as gym
@@ -101,6 +101,8 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
     ## Credits
     The code was adapted from: [Yang's source](https://github.com/RunzheYang/MORL).
+    The background art is from https://ansimuz.itch.io/underwater-fantasy-pixel-art-environment.
+    The submarine art was created with the assistance of DALL·E 2.
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -109,11 +111,6 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         EzPickle.__init__(self, render_mode, dst_map, float_state)
 
         self.render_mode = render_mode
-        self.size = 11
-        self.window_size = 512
-        self.window = None
-        self.clock = None
-
         self.float_state = float_state
 
         # The map of the deep sea treasure (convex version)
@@ -142,8 +139,23 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             high=np.array([np.max(self.sea_map), -1]),
             dtype=np.float32,
         )
+        self.reward_dim = 2
 
         self.current_state = np.array([0, 0], dtype=np.int32)
+
+        # pygame
+        self.window_size = (min(64 * self.sea_map.shape[1], 512), min(64 * self.sea_map.shape[0], 512))
+        # The size of a single grid square in pixels
+        self.pix_square_size = (
+            self.window_size[1] // self.sea_map.shape[1] + 1,
+            self.window_size[0] // self.sea_map.shape[0] + 1,
+        )
+        self.window = None
+        self.clock = None
+        self.submarine_img = None
+        self.treasure_img = None
+        self.sea_img = None
+        self.rock_img = None
 
     def pareto_front(self, gamma: float) -> List[np.ndarray]:
         """Return the discounted pareto front of the environment.
@@ -175,72 +187,65 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         return False
 
     def render(self):
-        # The size of a single grid square in pixels
-        pix_square_size = self.window_size / self.size
-        if self.window is None:
-            self.submarine_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/submarine.png")
-            self.submarine_img = pygame.transform.scale(self.submarine_img, (pix_square_size, pix_square_size))
-            self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
-            self.treasure_img = pygame.image.load(str(Path(__file__).parent.absolute()) + "/assets/treasure.png")
-            self.treasure_img = pygame.transform.scale(self.treasure_img, (pix_square_size, pix_square_size))
+        if self.render_mode is None:
+            assert self.spec is not None
+            gym.logger.warn(
+                "You are calling render method without specifying any render mode. "
+                "You can specify the render_mode at initialization, "
+                f'e.g. mo_gym.make("{self.spec.id}", render_mode="rgb_array")'
+            )
+            return
 
-        if self.window is None and self.render_mode is not None:
+        if self.window is None:
             pygame.init()
+
             if self.render_mode == "human":
                 pygame.display.init()
-                self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and self.render_mode == "human":
-            self.clock = pygame.time.Clock()
+                pygame.display.set_caption("Deep Sea Treasure")
+                self.window = pygame.display.set_mode(self.window_size)
+            else:
+                self.window = pygame.Surface(self.window_size)
 
-        self.font = pygame.font.SysFont(None, 30)
-        canvas = pygame.Surface((self.window_size, self.window_size))
-        canvas.fill((0, 105, 148))
+            if self.clock is None:
+                self.clock = pygame.time.Clock()
+
+            if self.submarine_img is None:
+                filename = path.join(path.dirname(__file__), "assets", "submarine.png")
+                self.submarine_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
+                self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
+            if self.treasure_img is None:
+                filename = path.join(path.dirname(__file__), "assets", "treasure.png")
+                self.treasure_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
+            if self.sea_img is None:
+                filename = path.join(path.dirname(__file__), "assets", "sea_bg.png")
+                self.sea_img = pygame.image.load(filename)
+                self.sea_img = pygame.transform.scale(self.sea_img, self.window_size)
+            if self.rock_img is None:
+                filename = path.join(path.dirname(__file__), "assets", "rock.png")
+                self.rock_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
+
+            self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 20)
+
+        self.window.blit(self.sea_img, (0, 0))
 
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):
                 if self.sea_map[i, j] == -10:
-                    pygame.draw.rect(
-                        canvas,
-                        (0, 0, 0),
-                        pygame.Rect(
-                            pix_square_size * np.array([j, i]) + 0.6,
-                            (pix_square_size, pix_square_size),
-                        ),
-                    )
+                    self.window.blit(self.rock_img, np.array([j, i]) * self.pix_square_size)
                 elif self.sea_map[i, j] != 0:
-                    canvas.blit(self.treasure_img, np.array([j, i]) * pix_square_size)
-                    img = self.font.render(str(self.sea_map[i, j]), True, (255, 255, 255))
-                    canvas.blit(img, np.array([j, i]) * pix_square_size + np.array([5, 20]))
+                    self.window.blit(self.treasure_img, np.array([j, i]) * self.pix_square_size)
+                    trailing_space = " " if self.sea_map[i, j] < 10 else ""
+                    img = self.font.render(trailing_space + str(self.sea_map[i, j]), True, (255, 255, 255))
+                    self.window.blit(img, np.array([j, i]) * self.pix_square_size + np.array([5, -20]))
 
-        canvas.blit(self.submarine_img, self.current_state[::-1] * pix_square_size)
-
-        for x in range(self.size + 1):
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, pix_square_size * x),
-                (self.window_size, pix_square_size * x),
-                width=1,
-            )
-            pygame.draw.line(
-                canvas,
-                0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.window_size),
-                width=1,
-            )
+        self.window.blit(self.submarine_img, self.current_state[::-1] * self.pix_square_size)
 
         if self.render_mode == "human":
-            # The following line copies our drawings from `canvas` to the visible window
-            self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
             pygame.display.update()
-
-            # We need to ensure that human-rendering occurs at the predefined framerate.
-            # The following line will automatically add a delay to keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
         elif self.render_mode == "rgb_array":
-            return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+            return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
 
     def _get_state(self):
         if self.float_state:
@@ -286,12 +291,13 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
 
 if __name__ == "__main__":
+    import mo_gymnasium as mo_gym
 
-    env = DeepSeaTreasure()
+    env = mo_gym.make("deep-sea-treasure-v0", render_mode="human")
     terminated = False
     env.reset()
     while True:
         env.render()
         obs, r, terminated, truncated, info = env.step(env.action_space.sample())
-        if terminated:
+        if terminated or truncated:
             env.reset()

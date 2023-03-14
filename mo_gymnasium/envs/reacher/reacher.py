@@ -45,6 +45,7 @@ class ReacherBulletEnv(BaseBulletEnv, EzPickle):
         self.action_space = spaces.Discrete(9)
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(5,), dtype=np.float32)
         self.reward_space = spaces.Box(low=-np.inf, high=np.inf, shape=(4,), dtype=np.float32)
+        self.reward_dim = 4
 
     def create_single_player_scene(self, bullet_client):
         return SingleRobotEmptyScene(bullet_client, gravity=0.0, timestep=0.0165, frame_skip=1)

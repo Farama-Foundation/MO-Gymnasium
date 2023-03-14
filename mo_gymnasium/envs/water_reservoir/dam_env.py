@@ -1,7 +1,11 @@
+from contextlib import closing
+from io import StringIO
+from os import path
 from typing import Optional
 
 import gymnasium as gym
 import numpy as np
+import pygame
 from gymnasium.spaces.box import Box
 from gymnasium.utils import EzPickle
 
@@ -10,8 +14,11 @@ class DamEnv(gym.Env, EzPickle):
     """
     ## Description
     A Water reservoir environment.
-    The agent executes a continuous action, corresponding to the amount of water
-    released by the dam.
+    The agent executes a continuous action, corresponding to the amount of water released by the dam.
+
+    A. Castelletti, F. Pianosi and M. Restelli, "Tree-based Fitted Q-iteration for Multi-Objective Markov Decision problems,"
+    The 2012 International Joint Conference on Neural Networks (IJCNN),
+    Brisbane, QLD, Australia, 2012, pp. 1-8, doi: 10.1109/IJCNN.2012.6252759.
 
     ## Observation Space
     The observation is a float corresponding to the current level of the reservoir.
@@ -31,6 +38,8 @@ class DamEnv(gym.Env, EzPickle):
      [Mathieu Reymond](https://gitlab.ai.vub.ac.be/mreymond/dam).
      Ported from:
      [Simone Parisi](https://github.com/sparisi/mips).
+
+     Sky background image from: Paulina Riva (https://opengameart.org/content/sky-background)
     """
 
     S = 1.0  # Reservoir surface
@@ -49,6 +58,10 @@ class DamEnv(gym.Env, EzPickle):
     utopia = {2: [-0.5, -9], 3: [-0.5, -9, -0.0001], 4: [-0.5, -9, -0.001, -9]}
     antiutopia = {2: [-2.5, -11], 3: [-65, -12, -0.7], 4: [-65, -12, -0.7, -12]}
 
+    # Create colors.
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+
     s_init = np.array(
         [
             9.6855361e01,
@@ -65,7 +78,7 @@ class DamEnv(gym.Env, EzPickle):
         dtype=np.float32,
     )
 
-    metadata = {"render_modes": []}
+    metadata = {"render_modes": ["human", "rgb_array", "ansi"], "render_fps": 2}
 
     def __init__(
         self,
@@ -75,6 +88,7 @@ class DamEnv(gym.Env, EzPickle):
         penalize: bool = False,
     ):
         EzPickle.__init__(self, render_mode, time_limit, nO, penalize)
+        self.render_mode = render_mode
 
         self.observation_space = Box(low=0.0, high=np.inf, shape=(1,), dtype=np.float32)
         self.action_space = Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
@@ -83,10 +97,22 @@ class DamEnv(gym.Env, EzPickle):
         self.penalize = penalize
         self.time_limit = time_limit
         self.time_step = 0
+        self.last_action = None
+        self.dam_inflow = None
+        self.excess = None
+        self.defict = None
 
         low = -np.ones(nO) * np.inf  # DamEnv.antiutopia[nO]
         high = np.zeros(nO)  # DamEnv.utopia[nO]
         self.reward_space = Box(low=np.array(low), high=np.array(high), dtype=np.float32)
+        self.reward_dim = nO
+
+        self.window = None
+        self.window_size = (300, 200)  # width x height
+        self.clock = None
+        self.water_img = None
+        self.wall_img = None
+        self.sky_img = None
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
@@ -97,7 +123,106 @@ class DamEnv(gym.Env, EzPickle):
             state = self.np_random.randint(0, 160, size=1)
 
         self.state = np.array(state, dtype=np.float32)
+
+        if self.render_mode == "human":
+            self.render()
+
         return self.state, {}
+
+    def render(self):
+        if self.render_mode is None:
+            assert self.spec is not None
+            gym.logger.warn(
+                "You are calling render method without specifying any render mode. "
+                "You can specify the render_mode at initialization, "
+                f'e.g. mo_gym.make("{self.spec.id}", render_mode="rgb_array")'
+            )
+            return
+
+        if self.render_mode == "ansi":
+            return self._render_text()
+        else:  # self.render_mode in {"human", "rgb_array"}:
+            return self._render_gui(self.render_mode)
+
+    def _render_gui(self, render_mode: str):
+        if self.window is None:
+            pygame.init()
+
+            if render_mode == "human":
+                pygame.display.init()
+                pygame.display.set_caption("Water Reservoir")
+                self.window = pygame.display.set_mode(self.window_size)
+            else:
+                self.window = pygame.Surface(self.window_size)
+
+            if self.clock is None:
+                self.clock = pygame.time.Clock()
+
+            if self.water_img is None:
+                self.water_img = pygame.image.load(path.join(path.dirname(__file__), "assets/water.png"))
+            if self.wall_img is None:
+                self.wall_img = pygame.image.load(path.join(path.dirname(__file__), "assets/wall.png"))
+            if self.sky_img is None:
+                self.sky_img = pygame.image.load(path.join(path.dirname(__file__), "assets/sky.png"))
+                self.sky_img = pygame.transform.flip(self.sky_img, False, True)
+                self.sky_img = pygame.transform.scale(self.sky_img, self.window_size)
+
+            self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 15)
+
+        self.window.blit(self.sky_img, (0, 0))
+
+        # Draw the dam
+        for x in range(self.wall_img.get_width(), self.window_size[0] - self.wall_img.get_width(), self.water_img.get_width()):
+            for y in range(self.window_size[1] - int(self.state[0]), self.window_size[1], self.water_img.get_height()):
+                self.window.blit(self.water_img, (x, y))
+
+        # Draw the wall
+        for y in range(0, int(DamEnv.H_FLO_U), self.wall_img.get_width()):
+            self.window.blit(self.wall_img, (0, self.window_size[1] - y - self.wall_img.get_height()))
+            self.window.blit(
+                self.wall_img,
+                (self.window_size[0] - self.wall_img.get_width(), self.window_size[1] - y - self.wall_img.get_height()),
+            )
+
+        if self.last_action is not None:
+            img = self.font.render(f"Water Released: {self.last_action:.2f}", True, (0, 0, 0))
+            self.window.blit(img, (20, 10))
+            img = self.font.render(f"Dam Inflow: {self.dam_inflow:.2f}", True, (0, 0, 0))
+            self.window.blit(img, (20, 25))
+            img = self.font.render(f"Water Level: {self.state[0]:.2f}", True, (0, 0, 0))
+            self.window.blit(img, (20, 40))
+            img = self.font.render(f"Demand Deficit: {self.defict:.2f}", True, (0, 0, 0))
+            self.window.blit(img, (20, 55))
+            img = self.font.render(f"Flooding Excess: {self.excess:.2f}", True, (0, 0, 0))
+            self.window.blit(img, (20, 70))
+
+        img = self.font.render("Flooding threshold", True, (255, 0, 0))
+        self.window.blit(img, (20, self.window_size[1] - DamEnv.H_FLO_U))
+        pygame.draw.line(
+            self.window,
+            (255, 0, 0),
+            (0, self.window_size[1] - DamEnv.H_FLO_U),
+            (self.window_size[0], self.window_size[1] - DamEnv.H_FLO_U),
+        )
+
+        if self.render_mode == "human":
+            pygame.event.pump()
+            pygame.display.update()
+            self.clock.tick(self.metadata["render_fps"])
+        elif self.render_mode == "rgb_array":  # rgb_array
+            return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
+
+    def _render_text(self):
+        outfile = StringIO()
+        outfile.write(f"Water level: {self.state[0]:.2f}\n")
+        if self.last_action is not None:
+            outfile.write(f"Water released: {self.last_action:.2f}\n")
+            outfile.write(f"Dam inflow: {self.dam_inflow:.2f}\n")
+            outfile.write(f"Demand deficit: {self.defict:.2f}\n")
+            outfile.write(f"Flooding excess: {self.excess:.2f}\n")
+
+        with closing(outfile):
+            return outfile.getvalue()
 
     def step(self, action):
         # bound the action
@@ -110,14 +235,17 @@ class DamEnv(gym.Env, EzPickle):
 
         # transition dynamic
         action = bounded_action
-        dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))
+        self.last_action = action[0]
+        self.dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))[0]
         # small chance dam_inflow < 0
-        n_state = np.clip(self.state + dam_inflow - action, 0, None).astype(np.float32)
+        n_state = np.clip(self.state + self.dam_inflow - action, 0, None).astype(np.float32)
 
         # cost due to excess level wrt a flooding threshold (upstream)
-        r0 = -np.clip(n_state / DamEnv.S - DamEnv.H_FLO_U, 0, None) + penalty
+        self.excess = np.clip(n_state / DamEnv.S - DamEnv.H_FLO_U, 0, None)[0]
+        r0 = -self.excess + penalty
         # deficit in the water supply wrt the water demand
-        r1 = -np.clip(DamEnv.W_IRR - action, 0, None) + penalty
+        self.defict = -np.clip(DamEnv.W_IRR - action, 0, None)[0]
+        r1 = self.defict + penalty
 
         q = np.clip(action - DamEnv.Q_MEF, 0, None)
         p_hyd = DamEnv.ETA * DamEnv.G * DamEnv.GAMMA_H2O * n_state / DamEnv.S * q / 3.6e6
@@ -134,10 +262,20 @@ class DamEnv(gym.Env, EzPickle):
         self.time_step += 1
         truncated = self.time_step >= self.time_limit
         terminated = False
+
+        if self.render_mode == "human":
+            self.render()
+
         return n_state, reward, terminated, truncated, {}
 
 
 if __name__ == "__main__":
-    env = DamEnv()
+    import mo_gymnasium as mo_gym
+
+    env = mo_gym.make("water-reservoir-v0", render_mode="human")
     obs, info = env.reset()
-    print(obs, obs in env.observation_space)
+    while True:
+        action = env.state
+        obs, reward, terminated, truncated, info = env.step(action)
+        if terminated or truncated:
+            env.reset()

@@ -26,6 +26,7 @@ class MOContinuousMountainCar(Continuous_MountainCarEnv, EzPickle):
         EzPickle.__init__(self, render_mode, goal_velocity)
 
         self.reward_space = spaces.Box(low=np.array([-1.0, -1.0]), high=np.array([0.0, 0.0]), shape=(2,), dtype=np.float32)
+        self.reward_dim = 2
 
     def step(self, action: np.ndarray):
         # Essentially a copy paste from original env, except the rewards

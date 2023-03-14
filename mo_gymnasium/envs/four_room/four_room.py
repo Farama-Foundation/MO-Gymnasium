@@ -120,6 +120,7 @@ class FourRoom(gym.Env, EzPickle):
             dtype=np.int32,
         )
         self.reward_space = Box(low=0, high=1, shape=(3,))
+        self.reward_dim = 3
 
     def state_to_array(self, state):
         s = [element for tupl in state for element in tupl]

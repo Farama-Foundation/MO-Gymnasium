@@ -23,8 +23,8 @@ class MOHopperEnv(HopperEnv, EzPickle):
         super().__init__(**kwargs)
         EzPickle.__init__(self, cost_objective, **kwargs)
         self.cost_objetive = cost_objective
-        self.rew_dim = 3 if cost_objective else 2
-        self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.rew_dim,))
+        self.reward_dim = 3 if cost_objective else 2
+        self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.reward_dim,))
 
     def step(self, action):
         x_position_before = self.data.qpos[0]
