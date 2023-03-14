@@ -1,5 +1,5 @@
 from os import path
-from typing import Optional
+from typing import List, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -95,6 +95,73 @@ class ResourceGathering(gym.Env, EzPickle):
         self.mountain_bg_img = []
         self.window = None
         self.last_action = None
+
+    def pareto_front(self, gamma: float) -> List[np.ndarray]:
+        """This function returns the pareto front of the resource gathering environment.
+
+        Args:
+            gamma (float): The discount factor.
+
+        Returns:
+            The pareto front of the resource gathering environment.
+        """
+
+        def get_non_dominated(candidates: List[np.ndarray]) -> List[np.ndarray]:
+            """This function returns the non-dominated subset of elements.
+
+            Source: https://stackoverflow.com/questions/32791911/fast-calculation-of-pareto-front-in-python
+            The code provided in all the stackoverflow answers is wrong. Important changes have been made in this function.
+
+            Args:
+                candidates: The input set of candidate vectors.
+
+            Returns:
+                The non-dominated subset of this input set.
+            """
+            candidates = np.array(candidates)  # Turn the input set into a numpy array.
+            candidates = candidates[candidates.sum(1).argsort()[::-1]]  # Sort candidates by decreasing sum of coordinates.
+            for i in range(candidates.shape[0]):  # Process each point in turn.
+                n = candidates.shape[0]  # Check current size of the candidates.
+                if i >= n:  # If we've eliminated everything up until this size we stop.
+                    break
+                non_dominated = np.ones(candidates.shape[0], dtype=bool)  # Initialize a boolean mask for undominated points.
+                # find all points not dominated by i
+                # since points are sorted by coordinate sum
+                # i cannot dominate any points in 1,...,i-1
+                non_dominated[i + 1 :] = np.any(candidates[i + 1 :] > candidates[i], axis=1)
+                candidates = candidates[non_dominated]  # Grab only the non-dominated vectors using the generated bitmask.
+
+            non_dominated = set()
+            for candidate in candidates:
+                non_dominated.add(tuple(candidate))  # Add the non dominated vectors to a set again.
+
+            return [np.array(point) for point in non_dominated]
+
+        # Go directly to the diamond (R2) in 10 steps
+        ret1 = np.array([0.0, 0.0, 1.0]) * gamma**10
+
+        # Go to both resources, through both Es
+        ret2 = 0.9 * 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**12  # Didn't die
+        ret2 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E2
+        ret2 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**9  # Died to E1
+
+        # Go to gold (R1), through E1 both ways
+        ret3 = 0.9 * 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**8  # Didn't die
+        ret3 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**3  # Died to E1
+        ret3 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**5  # Died to E1 in the way back
+
+        # Go to both resources, dodging E1 but through E2
+        ret4 = 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**14  # Didn't die
+        ret4 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E2
+
+        # Go to gold (R1), doging all E's in 12 steps
+        ret5 = np.array([0.0, 1.0, 0.0]) * gamma**12  # Didn't die
+
+        # Go to gold (R1), going through E1 only once
+        ret6 = 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**10  # Didn't die
+        ret6 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E1
+
+        return get_non_dominated([ret1, ret2, ret3, ret4, ret5, ret6])
 
     def get_map_value(self, pos):
         return self.map[pos[0]][pos[1]]
