@@ -255,6 +255,7 @@
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../community/community/">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://farama.org/donations">Donate</a></li>
 </ul>
@@ -387,6 +388,11 @@ Proceedings of the 25th International Conference on Machine Learning. 41-47. 10.
 <h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Permalink to this heading">#</a></h2>
 <p>The episode terminates when the agent returns home, or when the agent is killed by an enemy.</p>
 </section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this heading">#</a></h2>
+<p>The home asset is from https://limezu.itch.io/serenevillagerevamped
+The gold, enemy and gem assets are from https://ninjikin.itch.io/treasure</p>
+</section>
 </section>
 
           </article>
@@ -453,6 +459,7 @@ Proceedings of the 25th International Conference on Machine Learning. 41-47. 10.
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
 <li><a class="reference internal" href="#starting-state">Starting State</a></li>
 <li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
 </ul>
@@ -605,7 +612,30 @@ Proceedings of the 25th International Conference on Machine Learning. 41-47. 10.
     </script>
 
     
-    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'MO-Gymnasium',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
 
     </body>
 </html>

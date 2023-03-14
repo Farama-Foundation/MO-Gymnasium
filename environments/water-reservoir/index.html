@@ -255,6 +255,7 @@
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../community/community/">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://farama.org/donations">Donate</a></li>
 </ul>
@@ -307,6 +308,9 @@
             
             <section id="water-reservoir">
 <h1>Water-Reservoir<a class="headerlink" href="#water-reservoir" title="Permalink to this heading">#</a></h1>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../../_images/water-reservoir.gif"><img alt="../../_images/water-reservoir.gif" src="../../_images/water-reservoir.gif" style="width: 200px;" /></a>
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -345,8 +349,10 @@
 <section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
 <p>A Water reservoir environment.
-The agent executes a continuous action, corresponding to the amount of water
-released by the dam.</p>
+The agent executes a continuous action, corresponding to the amount of water released by the dam.</p>
+<p>A. Castelletti, F. Pianosi and M. Restelli, “Tree-based Fitted Q-iteration for Multi-Objective Markov Decision problems,”
+The 2012 International Joint Conference on Neural Networks (IJCNN),
+Brisbane, QLD, Australia, 2012, pp. 1-8, doi: 10.1109/IJCNN.2012.6252759.</p>
 </section>
 <section id="observation-space">
 <h2>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h2>
@@ -372,6 +378,7 @@ released by the dam.</p>
 <a class="reference external" href="https://gitlab.ai.vub.ac.be/mreymond/dam">Mathieu Reymond</a>.
 Ported from:
 <a class="reference external" href="https://github.com/sparisi/mips">Simone Parisi</a>.</p>
+<p>Sky background image from: Paulina Riva (https://opengameart.org/content/sky-background)</p>
 </section>
 </section>
 
@@ -590,7 +597,30 @@ Ported from:
     </script>
 
     
-    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'MO-Gymnasium',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
 
     </body>
 </html>
