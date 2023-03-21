@@ -362,7 +362,8 @@ Brisbane, QLD, Australia, 2012, pp. 1-8, doi: 10.1109/IJCNN.2012.6252759.</p>
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
-<p>The action is a float corresponding to the amount of water released by the dam.</p>
+<p>The action is a float corresponding to the amount of water released by the dam.
+If normalized_action is True, the action is a float between 0 and 1 corresponding to the percentage of water released by the dam.</p>
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Permalink to this heading">#</a></h2>
@@ -371,8 +372,23 @@ Brisbane, QLD, Australia, 2012, pp. 1-8, doi: 10.1109/IJCNN.2012.6252759.</p>
 <li><p>cost due to excess level wrt a flooding threshold (upstream)</p></li>
 <li><p>deficit in the water supply wrt the water demand</p></li>
 <li><p>deficit in hydroelectric supply wrt hydroelectric demand</p></li>
-<li><p>cost due to excess level wrt a flooding threshold (downstream)</p></li>
+<li><p>cost due to excess level wrt a flooding threshold (downstream)
+By default, only the first two are used.</p></li>
 </ul>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Permalink to this heading">#</a></h2>
+<p>The reservoir is initialized with a random level between 0 and 160.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this heading">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- render_mode: The render mode to use. Can be &#39;human&#39;, &#39;rgb_array&#39; or &#39;ansi&#39;.
+- time_limit: The maximum number of steps until the episode is truncated.
+- nO: The number of objectives to use. Can be 2, 3 or 4.
+- penalize: Whether to penalize the agent for selecting an action out of bounds.
+- normalized_action: Whether to normalize the action space as a percentage [0, 1].
+</pre></div>
+</div>
 </section>
 <section id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this heading">#</a></h2>
@@ -446,6 +462,8 @@ Ported from:
 <li><a class="reference internal" href="#observation-space">Observation Space</a></li>
 <li><a class="reference internal" href="#action-space">Action Space</a></li>
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
 <li><a class="reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
