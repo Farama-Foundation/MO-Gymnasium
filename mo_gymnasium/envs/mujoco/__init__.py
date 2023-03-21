@@ -14,6 +14,13 @@ register(
 )
 
 register(
+    id="mo-hopper-2d-v4",
+    entry_point="mo_gymnasium.envs.mujoco.hopper:MOHopperEnv",
+    max_episode_steps=1000,
+    kwargs={"cost_objective": False},
+)
+
+register(
     id="mo-reacher-v4",
     entry_point="mo_gymnasium.envs.mujoco.reacher:MOReacherEnv",
     max_episode_steps=50,
