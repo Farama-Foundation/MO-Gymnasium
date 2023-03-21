@@ -17,7 +17,7 @@ register(
     id="mo-hopper-2d-v4",
     entry_point="mo_gymnasium.envs.mujoco.hopper:MOHopperEnv",
     max_episode_steps=1000,
-    cost_objective=False,
+    kwargs={"cost_objective": False},
 )
 
 register(
