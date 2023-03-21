@@ -25,6 +25,7 @@ class DamEnv(gym.Env, EzPickle):
 
     ## Action Space
     The action is a float corresponding to the amount of water released by the dam.
+    If normalized_action is True, the action is a float between 0 and 1 corresponding to the percentage of water released by the dam.
 
     ## Reward Space
     There are up to 4 rewards:
@@ -32,6 +33,17 @@ class DamEnv(gym.Env, EzPickle):
      - deficit in the water supply wrt the water demand
      - deficit in hydroelectric supply wrt hydroelectric demand
      - cost due to excess level wrt a flooding threshold (downstream)
+     By default, only the first two are used.
+
+     ## Starting State
+     The reservoir is initialized with a random level between 0 and 160.
+
+     ## Arguments
+        - render_mode: The render mode to use. Can be 'human', 'rgb_array' or 'ansi'.
+        - time_limit: The maximum number of steps until the episode is truncated.
+        - nO: The number of objectives to use. Can be 2, 3 or 4.
+        - penalize: Whether to penalize the agent for selecting an action out of bounds.
+        - normalized_action: Whether to normalize the action space as a percentage [0, 1].
 
      ## Credits
      Code from:
@@ -86,12 +98,17 @@ class DamEnv(gym.Env, EzPickle):
         time_limit: int = 100,
         nO=2,
         penalize: bool = False,
+        normalized_action: bool = False,
     ):
-        EzPickle.__init__(self, render_mode, time_limit, nO, penalize)
+        EzPickle.__init__(self, render_mode, time_limit, nO, penalize, normalized_action)
         self.render_mode = render_mode
 
         self.observation_space = Box(low=0.0, high=np.inf, shape=(1,), dtype=np.float32)
-        self.action_space = Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
+        self.normalized_action = normalized_action
+        if self.normalized_action:
+            self.action_space = Box(low=0.0, high=1.0, shape=(1,), dtype=np.float32)
+        else:
+            self.action_space = Box(low=0.0, high=np.inf, shape=(1,), dtype=np.float32)
 
         self.nO = nO
         self.penalize = penalize
@@ -229,12 +246,16 @@ class DamEnv(gym.Env, EzPickle):
         actionLB = np.clip(self.state - DamEnv.S_MIN_REL, 0, None)
         actionUB = self.state
 
-        # Penalty proportional to the violation
-        bounded_action = np.clip(action, actionLB, actionUB)
-        penalty = -self.penalize * np.abs(bounded_action - action)
+        if self.normalized_action:
+            action = action * (actionUB - actionLB) + actionLB
+            penalty = 0.0
+        else:
+            # Penalty proportional to the violation
+            bounded_action = np.clip(action, actionLB, actionUB)
+            penalty = -self.penalize * np.abs(bounded_action - action)
+            action = bounded_action
 
         # transition dynamic
-        action = bounded_action
         self.last_action = action[0]
         self.dam_inflow = self.np_random.normal(DamEnv.DAM_INFLOW_MEAN, DamEnv.DAM_INFLOW_STD, len(self.state))[0]
         # small chance dam_inflow < 0
