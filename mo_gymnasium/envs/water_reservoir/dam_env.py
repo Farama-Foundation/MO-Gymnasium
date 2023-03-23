@@ -137,7 +137,7 @@ class DamEnv(gym.Env, EzPickle):
         if not self.penalize:
             state = self.np_random.choice(DamEnv.s_init, size=1)
         else:
-            state = self.np_random.randint(0, 160, size=1)
+            state = self.np_random.integers(0, 160, size=1)
 
         self.state = np.array(state, dtype=np.float32)
 
