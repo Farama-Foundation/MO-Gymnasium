@@ -268,13 +268,13 @@ class DamEnv(gym.Env, EzPickle):
         self.defict = -np.clip(DamEnv.W_IRR - action, 0, None)[0]
         r1 = self.defict + penalty
 
-        q = np.clip(action - DamEnv.Q_MEF, 0, None)
-        p_hyd = DamEnv.ETA * DamEnv.G * DamEnv.GAMMA_H2O * n_state / DamEnv.S * q / 3.6e6
+        q = np.clip(action[0] - DamEnv.Q_MEF, 0, None)
+        p_hyd = DamEnv.ETA * DamEnv.G * DamEnv.GAMMA_H2O * n_state[0] / DamEnv.S * q / 3.6e6
 
         # deficit in hydroelectric supply wrt hydroelectric demand
         r2 = -np.clip(DamEnv.W_HYD - p_hyd, 0, None) + penalty
         # cost due to excess level wrt a flooding threshold (downstream)
-        r3 = -np.clip(action - DamEnv.Q_FLO_D, 0, None) + penalty
+        r3 = -np.clip(action[0] - DamEnv.Q_FLO_D, 0, None) + penalty
 
         reward = np.array([r0, r1, r2, r3], dtype=np.float32)[: self.nO].flatten()
 
