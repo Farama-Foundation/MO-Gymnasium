@@ -44,6 +44,7 @@ class DamEnv(gym.Env, EzPickle):
         - nO: The number of objectives to use. Can be 2, 3 or 4.
         - penalize: Whether to penalize the agent for selecting an action out of bounds.
         - normalized_action: Whether to normalize the action space as a percentage [0, 1].
+        - initial_state: The initial state of the reservoir. If None, a random state is used.
 
      ## Credits
      Code from:
@@ -99,6 +100,7 @@ class DamEnv(gym.Env, EzPickle):
         nO=2,
         penalize: bool = False,
         normalized_action: bool = False,
+        initial_state: Optional[np.ndarray] = None,
     ):
         EzPickle.__init__(self, render_mode, time_limit, nO, penalize, normalized_action)
         self.render_mode = render_mode
@@ -113,6 +115,7 @@ class DamEnv(gym.Env, EzPickle):
         self.nO = nO
         self.penalize = penalize
         self.time_limit = time_limit
+        self.initial_state = initial_state
         self.time_step = 0
         self.last_action = None
         self.dam_inflow = None
@@ -134,10 +137,13 @@ class DamEnv(gym.Env, EzPickle):
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
         self.time_step = 0
-        if not self.penalize:
-            state = self.np_random.choice(DamEnv.s_init, size=1)
+        if self.initial_state is not None:
+            state = self.initial_state
         else:
-            state = self.np_random.integers(0, 160, size=1)
+            if not self.penalize:
+                state = self.np_random.choice(DamEnv.s_init, size=1)
+            else:
+                state = self.np_random.integers(0, 160, size=1)
 
         self.state = np.array(state, dtype=np.float32)
 
