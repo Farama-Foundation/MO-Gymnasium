@@ -265,6 +265,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         return state, {}
 
     def step(self, action):
+        action = self._convert_action(action)
         next_state = self.current_state + self.dir[action]
 
         if self._is_valid_state(next_state):
@@ -283,6 +284,12 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         if self.render_mode == "human":
             self.render()
         return state, vec_reward, terminal, False, {}
+
+    def _convert_action(self, action):
+        if isinstance(action, int):
+            return action
+        elif isinstance(action, (np.generic, np.ndarray)) and (np.issubdtype(action.dtype, np.integer) and action.shape == ()):
+            return np.int64(action)
 
     def close(self):
         if self.window is not None:
