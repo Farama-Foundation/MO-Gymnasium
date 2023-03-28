@@ -272,6 +272,7 @@ class ResourceGathering(gym.Env, EzPickle):
         return state, {}
 
     def step(self, action):
+        action = int(action)
         next_pos = self.current_pos + self.dir[action]
         self.last_action = action
 

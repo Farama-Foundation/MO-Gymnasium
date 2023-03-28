@@ -303,7 +303,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
         direction = {
             0: np.array([1, self.current_state[1]], dtype=np.int32),  # left
             1: np.array([1, self.current_state[1] + 1], dtype=np.int32),  # right
-        }[action]
+        }[int(action)]
 
         self.current_state = self.current_state + direction
 
