@@ -335,7 +335,6 @@ class FourRoom(gym.Env, EzPickle):
 
 
 if __name__ == "__main__":
-
     env = FourRoom()
     terminated = False
     env.reset()

@@ -16,7 +16,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
     ## Reward space:
     The reward space is a 3D vector containing the time penalty, and penalties for reversing and going forward.
     - time penalty: -1.0 for each time step
-    - reverse penalty: -1.0 for each time step the actuin is 0 (reverse)
+    - reverse penalty: -1.0 for each time step the action is 0 (reverse)
     - forward penalty: -1.0 for each time step the action is 2 (forward)
     """
 

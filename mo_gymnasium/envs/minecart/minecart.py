@@ -440,7 +440,6 @@ class Minecart(gym.Env, EzPickle):
             reward[-1] += FUEL_MINE * self.frame_skip
 
         for _ in range(self.frame_skip if self.incremental_frame_skip else 1):
-
             if action == ACT_LEFT:
                 self.cart.rotate(-ROTATION * (1 if self.incremental_frame_skip else self.frame_skip))
                 change = True
@@ -653,7 +652,6 @@ class Minecart(gym.Env, EzPickle):
         content_width = (width + 1) * self.ore_cnt
         offset = (self.cart_sprite.rect.width - content_width) / 2
         for i in range(self.ore_cnt):
-
             rect_height = height * self.cart.content[i] / self.capacity
 
             if rect_height >= 1:
