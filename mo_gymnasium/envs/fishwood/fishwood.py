@@ -98,7 +98,6 @@ class FishWood(gym.Env, EzPickle):
 
 
 if __name__ == "__main__":
-
     env = FishWood()
     terminated = False
     env.reset()

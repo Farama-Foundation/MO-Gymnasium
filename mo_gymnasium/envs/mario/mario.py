@@ -163,7 +163,6 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
 
 
 if __name__ == "__main__":
-
     env = MOSuperMarioBros()
     env = JoypadSpace(env, SIMPLE_MOVEMENT)
     # env = MaxAndSkipEnv(env, 4)

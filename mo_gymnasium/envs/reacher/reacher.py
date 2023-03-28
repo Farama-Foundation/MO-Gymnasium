@@ -12,7 +12,6 @@ target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (
 
 
 class ReacherBulletEnv(BaseBulletEnv, EzPickle):
-
     metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(
@@ -148,7 +147,6 @@ class ReacherRobot(MJCFBasedRobot):
 
 
 if __name__ == "__main__":
-
     env = ReacherBulletEnv()
     # env.render(mode='human')
     obs = env.reset()
