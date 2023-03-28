@@ -265,7 +265,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         return state, {}
 
     def step(self, action):
-        next_state = self.current_state + self.dir[action]
+        next_state = self.current_state + self.dir[int(action)]
 
         if self._is_valid_state(next_state):
             self.current_state = next_state
