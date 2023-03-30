@@ -1,4 +1,6 @@
 # Environment from https://github.com/RunzheYang/MORL/blob/master/synthetic/envs/fruit_tree.py
+from typing import List
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
@@ -291,6 +293,19 @@ class FruitTreeEnv(gym.Env, EzPickle):
 
     def get_tree_value(self, pos):
         return self.tree[self.get_ind(pos)]
+
+    def pareto_front(self, gamma: float) -> List[np.ndarray]:
+        """Returns the discounted pareto front of the tree.
+
+        Args:
+            gamma: Discount factor.
+
+        Returns:
+            List of discounted rewards.
+        """
+        fruits = np.array(FRUITS[str(self.tree_depth)])
+        disc_fruits = fruits * gamma ** (self.tree_depth - 1)
+        return list(disc_fruits)
 
     def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)

@@ -195,3 +195,25 @@ def test_concave_pf_dst_no_discount():
     discounted_front = env.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+def test_pf_fruit_tree():
+    env = mo_gym.make("fruit-tree-v0")
+    depth = 6
+
+    known_pf = np.array(mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]) * (0.99 ** (depth - 1))
+
+    discounted_front = env.pareto_front(gamma=0.99)
+    for desired, actual in zip(known_pf, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+def test_pf_fruit_tree_no_discount():
+    env = mo_gym.make("fruit-tree-v0")
+    depth = 6
+
+    known_pf = mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]
+
+    discounted_front = env.pareto_front(gamma=1.0)
+    for desired, actual in zip(known_pf, discounted_front):
+        np.testing.assert_array_almost_equal(desired, actual, decimal=2)
