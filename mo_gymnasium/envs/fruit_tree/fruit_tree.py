@@ -305,7 +305,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
         """
         fruits = np.array(FRUITS[str(self.tree_depth)])
         disc_fruits = fruits * gamma ** (self.tree_depth - 1)
-        return disc_fruits.tolist()
+        return list(disc_fruits)
 
     def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
