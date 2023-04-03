@@ -65,11 +65,17 @@ You can also check more examples in this colab notebook! [![MO-Gym Demo in Colab
 
 MO-Gymnasium keeps strict versioning for reproducibility reasons. All environments end in a suffix like "-v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
 
+## Project Maintainers
+
+Project Managers: [Lucas Alegre](https://github.com/LucasAlegre) and [Florian Felten](https://github.com/ffelten).
+
+Maintenance for this project is also contributed by the broader Farama team: [farama.org/team](https://farama.org/team).
+
 ## Citing
 
 <!-- start citation -->
 
-If you use this repository in your work, please cite:
+If you use this repository in your research, please cite:
 
 ```bibtex
 @inproceedings{Alegre+2022bnaic,
