@@ -16,7 +16,6 @@
 
 # -- Project information -----------------------------------------------------
 import os
-from typing import Any, Dict
 
 import mo_gymnasium
 
