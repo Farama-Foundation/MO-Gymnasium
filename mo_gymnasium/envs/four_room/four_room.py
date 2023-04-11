@@ -89,7 +89,7 @@ class FourRoom(gym.Env, EzPickle):
         EzPickle.__init__(self, render_mode, maze)
 
         self.render_mode = render_mode
-        self.window_size = 512
+        self.window_size = int(13 * 35)
         self.window = None
         self.clock = None
 
@@ -234,7 +234,7 @@ class FourRoom(gym.Env, EzPickle):
 
     def render(self):
         # The size of a single grid square in pixels
-        pix_square_size = self.window_size / 13
+        pix_square_size = self.window_size // 13
 
         if self.window is None and self.render_mode is not None:
             pygame.init()
@@ -306,19 +306,27 @@ class FourRoom(gym.Env, EzPickle):
         )
 
         for x in range(13 + 1):
-            pygame.draw.line(
+            if x == 0 or x == 13:
+                width = 3
+                dash_lenght = 0
+            else:
+                width = 1
+                dash_lenght = 3
+            draw_line_dashed(
                 canvas,
                 0,
                 (0, pix_square_size * x),
                 (self.window_size, pix_square_size * x),
-                width=1,
+                width=width,
+                dash_length=dash_lenght,
             )
-            pygame.draw.line(
+            draw_line_dashed(
                 canvas,
                 0,
                 (pix_square_size * x, 0),
                 (pix_square_size * x, self.window_size),
-                width=1,
+                width=width,
+                dash_length=dash_lenght,
             )
 
         if self.render_mode == "human":
@@ -337,6 +345,30 @@ class FourRoom(gym.Env, EzPickle):
         if self.window is not None:
             pygame.display.quit()
             pygame.quit()
+
+
+def draw_line_dashed(surface, color, start_pos, end_pos, width=1, dash_length=3, exclude_corners=True):
+    """Code from https://codereview.stackexchange.com/questions/70143/drawing-a-dashed-line-with-pygame."""
+    # convert tuples to numpy arrays
+    if dash_length < 1:
+        pygame.draw.line(surface, color, start_pos, end_pos, width)
+    else:
+        start_pos = np.array(start_pos)
+        end_pos = np.array(end_pos)
+
+        # get euclidean distance between start_pos and end_pos
+        length = np.linalg.norm(end_pos - start_pos)
+
+        # get amount of pieces that line will be split up in (half of it are amount of dashes)
+        dash_amount = int(length / dash_length)
+
+        # x-y-value-pairs of where dashes start (and on next, will end)
+        dash_knots = np.array([np.linspace(start_pos[i], end_pos[i], dash_amount) for i in range(2)]).transpose()
+
+        return [
+            pygame.draw.line(surface, color, tuple(dash_knots[n]), tuple(dash_knots[n + 1]), width)
+            for n in range(int(exclude_corners), dash_amount - int(exclude_corners), 2)
+        ]
 
 
 if __name__ == "__main__":
