@@ -206,6 +206,9 @@ class FourRoom(gym.Env, EzPickle):
                 phi = self.features(old_state, action, self.state)
                 return self.state_to_array(self.state), phi, terminated, False, {}
 
+        if self.render_mode == "human":
+            self.render()
+
         # into an empty cell
         return (
             self.state_to_array(self.state),
@@ -248,6 +251,8 @@ class FourRoom(gym.Env, EzPickle):
         self.font = pygame.font.SysFont(None, 48)
         img = self.font.render("G", True, BLACK)
         canvas.blit(img, (np.array(self.goal)[::-1] + 0.15) * pix_square_size)
+        img = self.font.render("S", True, BLACK)
+        canvas.blit(img, (np.array(self.initial[0])[::-1] + 0.15) * pix_square_size)
 
         for i in range(self.maze.shape[0]):
             for j in range(self.maze.shape[1]):
@@ -335,9 +340,10 @@ class FourRoom(gym.Env, EzPickle):
 
 
 if __name__ == "__main__":
-    env = FourRoom()
+    import mo_gymnasium as mo_gym
+
+    env = mo_gym.make("four-room-v0", render_mode="human")
     terminated = False
     env.reset()
-    while not terminated:
-        env.render()
+    while True:
         obs, r, terminated, truncated, info = env.step(env.action_space.sample())
