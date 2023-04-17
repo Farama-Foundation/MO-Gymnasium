@@ -192,7 +192,11 @@ class Minecart(gym.Env, EzPickle):
             self.observation_space = Box(-np.ones(7), np.ones(7), dtype=np.float32)
 
         self.action_space = Discrete(6)
-        self.reward_space = Box(low=-1, high=self.capacity, shape=(self.ore_cnt + 1,))
+        self.reward_space = Box(
+            low=np.array(0.0, 0.0, -1.0),
+            high=np.array(self.capacity, self.capacity, 0.0),
+            shape=(self.ore_cnt + 1,),
+        )
         self.reward_dim = self.ore_cnt + 1
 
     def convex_coverage_set(self, gamma: float, symmetric: bool = True) -> List[np.ndarray]:

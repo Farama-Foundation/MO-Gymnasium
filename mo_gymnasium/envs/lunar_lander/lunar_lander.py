@@ -35,7 +35,12 @@ class MOLunarLander(LunarLander):  # no need for EzPickle, it's already in Lunar
         super().__init__(*args, **kwargs)
 
         # Result reward, shaping reward, main engine cost, side engine cost
-        self.reward_space = spaces.Box(low=-np.inf, high=np.inf, shape=(4,), dtype=np.float32)
+        self.reward_space = spaces.Box(
+            low=np.array(-100, -np.inf, -1, -1),
+            high=np.array(100, np.inf, 0, 0),
+            shape=(4,),
+            dtype=np.float32,
+        )
         self.reward_dim = 4
 
     def step(self, action):
