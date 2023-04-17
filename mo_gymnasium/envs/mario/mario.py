@@ -51,7 +51,11 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
         self.render_mode = render_mode
 
         self.objectives = set(objectives)
-        self.reward_space = gym.spaces.Box(high=np.inf, low=-np.inf, shape=(len(objectives),))
+        self.reward_space = gym.spaces.Box(
+            low=np.array([-np.inf, -np.inf, -25, 0, 0]),
+            high=np.array([np.inf, 0, 0, 100, np.inf]),
+            shape=(len(objectives),),
+        )
         self.reward_dim = len(objectives)
 
         # observation space for the environment is static across all instances
