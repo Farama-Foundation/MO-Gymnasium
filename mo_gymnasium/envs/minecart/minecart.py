@@ -193,8 +193,8 @@ class Minecart(gym.Env, EzPickle):
 
         self.action_space = Discrete(6)
         self.reward_space = Box(
-            low=np.array(0.0, 0.0, -1.0),
-            high=np.array(self.capacity, self.capacity, 0.0),
+            low=np.append(np.zeros(self.ore_cnt), -1.0),
+            high=np.append(np.ones(self.ore_cnt) * self.capacity, 0.0),
             shape=(self.ore_cnt + 1,),
         )
         self.reward_dim = self.ore_cnt + 1
