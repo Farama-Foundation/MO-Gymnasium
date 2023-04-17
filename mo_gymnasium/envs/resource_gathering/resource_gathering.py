@@ -76,7 +76,7 @@ class ResourceGathering(gym.Env, EzPickle):
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
         # reward space:
-        self.reward_space = Box(low=np.array(0.0, 0.0, -1.0), high=np.array(1.0, 1.0, 0), shape=(3,), dtype=np.float32)
+        self.reward_space = Box(low=np.array([0.0, 0.0, -1.0]), high=np.array([1.0, 1.0, 0]), shape=(3,), dtype=np.float32)
         self.reward_dim = 3
 
         # pygame

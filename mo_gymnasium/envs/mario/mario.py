@@ -52,8 +52,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
 
         self.objectives = set(objectives)
         self.reward_space = gym.spaces.Box(
-            low=np.array(-np.inf, -np.inf, -25, 0, 0),
-            high=np.array(np.inf, 0, 0, 100, np.inf),
+            low=np.array([-np.inf, -np.inf, -25, 0, 0]),
+            high=np.array([np.inf, 0, 0, 100, np.inf]),
             shape=(len(objectives),),
         )
         self.reward_dim = len(objectives)
