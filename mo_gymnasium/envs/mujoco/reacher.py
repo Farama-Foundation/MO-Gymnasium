@@ -50,7 +50,7 @@ class MOReacherEnv(ReacherEnv):
         self.action_space = Discrete(9)
         # Target goals: x1, y1, x2, y2, ... x4, y4
         self.goal = np.array([0.14, 0.0, -0.14, 0.0, 0.0, 0.14, 0.0, -0.14])
-        self.reward_space = Box(low=-np.inf, high=np.inf, shape=(4,))
+        self.reward_space = Box(low=-1.0, high=1.0, shape=(4,))
         self.reward_dim = 4
 
     def step(self, a):
