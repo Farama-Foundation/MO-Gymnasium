@@ -61,7 +61,7 @@ class ReacherBulletEnv(BaseBulletEnv, EzPickle):
         """ delta = np.linalg.norm(np.array(self.robot.fingertip.pose().xyz()) - np.array(self.robot.target.pose().xyz()))
         reward = 1. - 4. * delta """
 
-        phi = np.zeros(len(self.target_positions))
+        phi = np.zeros(len(self.target_positions), dtype=np.float32)
         for index, target in enumerate(self.target_positions):
             delta = np.linalg.norm(np.array(self.robot.fingertip.pose().xyz()[:2]) - target)
             phi[index] = 1.0 - 4 * delta  # 1 - 4
