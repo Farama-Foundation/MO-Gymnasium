@@ -22,7 +22,7 @@ class MOHighwayEnv(HighwayEnv, EzPickle):
         EzPickle.__init__(self, *args, **kwargs)
 
         super().__init__(*args, **kwargs)
-        self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
+        self.reward_space = Box(low=np.array([0.0, 0.0, -1.0]), high=np.array([1.0, 1.0, 0.0]), shape=(3,), dtype=np.float32)
         self.reward_dim = 3
 
     def step(self, action):
@@ -46,7 +46,7 @@ class MOHighwayEnvFast(HighwayEnvFast):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
+        self.reward_space = Box(low=np.array([0.0, 0.0, -1.0]), high=np.array([1.0, 1.0, 0.0]), shape=(3,), dtype=np.float32)
         self.reward_dim = 3
 
     def step(self, action):
