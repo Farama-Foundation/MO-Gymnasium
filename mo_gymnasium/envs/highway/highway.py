@@ -47,6 +47,7 @@ class MOHighwayEnvFast(HighwayEnvFast):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reward_space = Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
+        self.reward_dim = 3
 
     def step(self, action):
         obs, reward, terminated, truncated, info = super().step(action)
