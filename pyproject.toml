@@ -48,7 +48,7 @@ all = [
     "scipy >=1.7.3",
     # mujoco
     "imageio >=2.14.1",
-    "mujoco >=2.3.0",
+    "mujoco ==2.3.2",
     # highway
     "highway-env >= 1.8",
     # box2d
