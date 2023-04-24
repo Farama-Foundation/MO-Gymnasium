@@ -28,6 +28,7 @@ def test_all_env_api(spec):
     env = mo_gym.make(spec.id)
     env = mo_gym.LinearReward(env)
     check_env(env, skip_render_check=True)
+    _test_reward_bounds(env.unwrapped)
     _test_pickle_env(env)
 
 
@@ -95,6 +96,19 @@ def test_env_determinism_rollout(env_spec: EnvSpec):
 
     env_1.close()
     env_2.close()
+
+
+def _test_reward_bounds(env: gym.Env):
+    """Test that the reward bounds are respected."""
+    assert env.reward_dim is not None
+    assert env.reward_space is not None
+    env.reset()
+    for _ in range(NUM_STEPS):
+        action = env.action_space.sample()
+        _, reward, terminated, truncated, _ = env.step(action)
+        assert env.reward_space.contains(reward)
+        if terminated or truncated:
+            env.reset()
 
 
 def _test_pickle_env(env: gym.Env):
