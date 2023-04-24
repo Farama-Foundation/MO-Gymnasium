@@ -25,7 +25,7 @@ class MOContinuousMountainCar(Continuous_MountainCarEnv, EzPickle):
         super().__init__(render_mode, goal_velocity)
         EzPickle.__init__(self, render_mode, goal_velocity)
 
-        self.reward_space = spaces.Box(low=np.array([-1.0, -1.0]), high=np.array([0.0, 0.0]), shape=(2,), dtype=np.float32)
+        self.reward_space = spaces.Box(low=np.array([-1.0, -1.0]), high=np.array([0.0, 0.0]), dtype=np.float32)
         self.reward_dim = 2
 
     def step(self, action: np.ndarray):
@@ -51,7 +51,7 @@ class MOContinuousMountainCar(Continuous_MountainCarEnv, EzPickle):
         # Convert a possible numpy bool to a Python bool.
         terminated = bool(position >= self.goal_position and velocity >= self.goal_velocity)
 
-        reward = np.zeros(2)
+        reward = np.zeros(2, dtype=np.float32)
         # Time reward is negative at all timesteps except when reaching the goal
         if terminated:
             reward[0] = 0.0

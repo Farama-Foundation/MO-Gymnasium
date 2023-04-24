@@ -292,7 +292,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
         return int(2 ** pos[0] - 1) + pos[1]
 
     def get_tree_value(self, pos):
-        return self.tree[self.get_ind(pos)]
+        return np.array(self.tree[self.get_ind(pos)], dtype=np.float32)
 
     def pareto_front(self, gamma: float) -> List[np.ndarray]:
         """Returns the discounted pareto front of the tree.
