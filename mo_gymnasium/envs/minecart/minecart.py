@@ -434,7 +434,7 @@ class Minecart(gym.Env, EzPickle):
 
     def step(self, action):
         change = False  # Keep track of whether the state has changed
-        reward = np.zeros(self.ore_cnt + 1)
+        reward = np.zeros(self.ore_cnt + 1, dtype=np.float32)
 
         reward[-1] = FUEL_IDLE * self.frame_skip
 
