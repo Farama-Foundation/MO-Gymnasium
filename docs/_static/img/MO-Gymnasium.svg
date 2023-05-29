@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Creator: CorelDRAW -->
+
+<svg
+   xml:space="preserve"
+   width="1000px"
+   height="1000px"
+   version="1.1"
+   style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+   viewBox="0 0 1000 1000"
+   id="svg245"
+   sodipodi:docname="MO-Gymnasium.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:export-filename="MO-Gymnasium1000.png"
+   inkscape:export-xdpi="96.576965"
+   inkscape:export-ydpi="96.576965"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   id="namedview247"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   showgrid="false"
+   inkscape:zoom="0.48229806"
+   inkscape:cx="194.90022"
+   inkscape:cy="471.70001"
+   inkscape:window-width="1061"
+   inkscape:window-height="714"
+   inkscape:window-x="606"
+   inkscape:window-y="-1"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="g4252"
+   showguides="true"><inkscape:grid
+     type="xygrid"
+     id="grid2541"
+     dotted="true" /><sodipodi:guide
+     position="500,353.55309"
+     orientation="1,0"
+     id="guide4143"
+     inkscape:locked="false" /><sodipodi:guide
+     position="370.12984,483.42321"
+     orientation="0,-1"
+     id="guide4145"
+     inkscape:locked="false" /></sodipodi:namedview>
+ <defs
+   id="defs239">
+  <style
+   type="text/css"
+   id="style237">
+   <![CDATA[
+    .str0 {stroke:#373435;stroke-width:2.36;stroke-miterlimit:22.9256}
+    .fil0 {fill:none}
+   ]]>
+  </style>
+ </defs>
+ <g
+   id="Layer_x0020_1"
+   inkscape:label="Layer 1">
+  <metadata
+   id="CorelCorpID_0Corel-Layer" />
+  
+ <g
+   id="g4252"
+   style="stroke-width:20;stroke-dasharray:none"
+   transform="translate(0,-2.7720259e-4)"><path
+     style="clip-rule:evenodd;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:fill markers stroke;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+     d="M 519.48052,386.70668 C 660.74726,56.479409 987.01295,-186.1968 987.01295,256.83656 v 727.27267 c -324.6753,0 -649.3506,0 -974.0259,0 V 256.83656 c 0,-443.03336 326.26569,-200.357151 467.53243,129.87012 m 69.07649,252.2752 c 73.27824,209.0443 193.5937,291.99316 419.32703,280.78719 l 15.94516,-1.24992"
+     id="path1655-9"
+     sodipodi:nodetypes="csccsccc" /><path
+     id="path2635"
+     style="fill:none;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:fill markers stroke"
+     d="M 629.87012,516.57679 A 129.87012,129.87012 0 0 1 500,646.44691 129.87012,129.87012 0 0 1 370.12988,516.57679 129.87012,129.87012 0 0 1 500,386.70667 129.87012,129.87012 0 0 1 629.87012,516.57679 Z" /></g></g>
+</svg>

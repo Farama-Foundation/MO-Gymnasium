@@ -34,7 +34,13 @@ Donate <https://farama.org/donations>
 
 ```
 
-# MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)
+```{project-logo} _static/img/MO-Gymnasium-text.svg
+:alt: MO-Gymnasium Logo
+```
+
+```{project-heading}
+MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)
+```
 
 ```{figure} _static/mo_cheetah_rect.gif
    :alt: MO-HalfCheetah gif

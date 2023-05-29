@@ -67,8 +67,10 @@ html_baseurl = "https://mo-gymnasium.farama.org"
 html_copy_source = False
 html_favicon = "_static/img/favicon.png"
 html_theme_options = {
-    # "light_logo": "img/Minari.svg",
-    # "dark_logo": "img/Minari_White.svg",
+    "light_logo": "img/MO-Gymnasium.svg",
+    "dark_logo": "img/MO-Gymnasium-white.svg",
+    "description": "MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)",
+    "image": "img/MO-Gymnasium-github.png",
     "versioning": True,
     "source_repository": "https://github.com/Farama-Foundation/MO-Gymnasium/",
     "source_branch": "main",
