@@ -2,8 +2,9 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-
-# MO-Gymnasium: Multi-Objective Reinforcement Learning Environments
+<p align="center">
+    <img src="docs/_static/img/MO-Gymnasium-text.png" width="500px"/>
+</p>
 
 <!-- start elevator-pitch -->
 
