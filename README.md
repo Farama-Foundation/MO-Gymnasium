@@ -66,6 +66,9 @@ You can also check more examples in this colab notebook! [![MO-Gym Demo in Colab
 
 MO-Gymnasium keeps strict versioning for reproducibility reasons. All environments end in a suffix like "-v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
 
+## Development Roadmap
+We have a roadmap for future development available here: https://github.com/Farama-Foundation/MO-Gymnasium/issues/66.
+
 ## Project Maintainers
 
 Project Managers: [Lucas Alegre](https://github.com/LucasAlegre) and [Florian Felten](https://github.com/ffelten).
