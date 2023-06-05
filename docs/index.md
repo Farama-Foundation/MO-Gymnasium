@@ -34,7 +34,7 @@ Donate <https://farama.org/donations>
 
 ```
 
-```{project-logo} _static/img/MO-Gymnasium-text.png
+```{project-logo} _static/img/MO-Gymnasium-text_small.png
 :alt: MO-Gymnasium Logo
 ```
 
