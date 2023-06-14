@@ -65,7 +65,7 @@ class LinearReward(gym.Wrapper, EzPickle):
         observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info["vector_reward"] = reward
-        info["reward_weight"] = self.w
+        info["reward_weights"] = self.w
 
         return observation, scalar_reward, terminated, truncated, info
 
