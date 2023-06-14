@@ -322,6 +322,72 @@
             
             <section id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
+<section id="release-v1-0-0">
+<h2>v1.0.0: MO-Gymnasium becomes mature<a class="headerlink" href="#release-v1-0-0" title="Permalink to this heading">#</a></h2>
+<p><em>Released on 2023-06-12 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.0.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.0.0/">PyPI</a></em></p>
+<h1>MO-Gymnasium 1.0.0 Release Notes</h1>
+<p>We are thrilled to introduce the mature release of <a href="https://mo-gymnasium.farama.org/" rel="nofollow">MO-Gymnasium</a>, a standardized API and collection of environments designed for Multi-Objective Reinforcement Learning (MORL).</p>
+<p>MORL expands the capabilities of RL to scenarios where agents need to optimize multiple objectives, which may potentially conflict with each other. Each objective is represented by a distinct reward function. In this context, the agent learns to make trade-offs between these objectives based on a reward vector received after each step. For instance, in the well-known Mujoco halfcheetah environment, reward components are combined linearly using predefined weights as shown in the following code snippet from <a href="https://github.com/Farama-Foundation/Gymnasium/blob/main/gymnasium/envs/mujoco/half_cheetah_v4.py#LL201C9-L206C44">Gymnasium</a>:</p>
+<div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="ctrl_cost = self.control_cost(action)
+forward_reward = self._forward_reward_weight * x_velocity
+reward = forward_reward - ctrl_cost"><pre><span class="pl-s1">ctrl_cost</span> <span class="pl-c1">=</span> <span class="pl-s1">self</span>.<span class="pl-en">control_cost</span>(<span class="pl-s1">action</span>)
+<span class="pl-s1">forward_reward</span> <span class="pl-c1">=</span> <span class="pl-s1">self</span>.<span class="pl-s1">_forward_reward_weight</span> <span class="pl-c1">*</span> <span class="pl-s1">x_velocity</span>
+<span class="pl-s1">reward</span> <span class="pl-c1">=</span> <span class="pl-s1">forward_reward</span> <span class="pl-c1">-</span> <span class="pl-s1">ctrl_cost</span></pre></div>
+<p>With MORL, users have the flexibility to determine the compromises they desire based on their preferences for each objective. Consequently, the environments in MO-Gymnasium do not have predefined weights. Thus, MO-Gymnasium extends the capabilities of <a href="https://gymnasium.farama.org/" rel="nofollow">Gymnasium</a> to the multi-objective setting, where the agents receives a vectorial reward.</p>
+<p>For example, here is an illustration of the multiple policies learned by an MORL agent for the <code>mo-halfcheetah</code> domain, balancing between saving battery and speed:</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/Farama-Foundation/MO-Gymnasium/assets/11799929/10796cae-6f84-4690-8e17-d23f792c32c2"><img src="https://github.com/Farama-Foundation/MO-Gymnasium/assets/11799929/10796cae-6f84-4690-8e17-d23f792c32c2" width="400" style="max-width: 100%;"></a></p> 
+<p>This release marks the first mature version of MO-Gymnasium within Farama, indicating that the API is stable, and we have achieved a high level of quality in this library.</p>
+<h2>API</h2>
+<div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="import gymnasium as gym
+import mo_gymnasium as mo_gym
+import numpy as np
+
+# It follows the original Gymnasium API ...
+env = mo_gym.make('minecart-v0')
+
+obs, info = env.reset()
+# but vector_reward is a numpy array!
+next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))
+
+# Optionally, you can scalarize the reward function with the LinearReward wrapper.
+# This allows to fall back to single objective RL
+env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span class="pl-k">import</span> <span class="pl-s1">gymnasium</span> <span class="pl-k">as</span> <span class="pl-s1">gym</span>
+<span class="pl-k">import</span> <span class="pl-s1">mo_gymnasium</span> <span class="pl-k">as</span> <span class="pl-s1">mo_gym</span>
+<span class="pl-k">import</span> <span class="pl-s1">numpy</span> <span class="pl-k">as</span> <span class="pl-s1">np</span>
+
+<span class="pl-c"># It follows the original Gymnasium API ...</span>
+<span class="pl-s1">env</span> <span class="pl-c1">=</span> <span class="pl-s1">mo_gym</span>.<span class="pl-en">make</span>(<span class="pl-s">'minecart-v0'</span>)
+
+<span class="pl-s1">obs</span>, <span class="pl-s1">info</span> <span class="pl-c1">=</span> <span class="pl-s1">env</span>.<span class="pl-en">reset</span>()
+<span class="pl-c"># but vector_reward is a numpy array!</span>
+<span class="pl-s1">next_obs</span>, <span class="pl-s1">vector_reward</span>, <span class="pl-s1">terminated</span>, <span class="pl-s1">truncated</span>, <span class="pl-s1">info</span> <span class="pl-c1">=</span> <span class="pl-s1">env</span>.<span class="pl-en">step</span>(<span class="pl-s1">your_agent</span>.<span class="pl-en">act</span>(<span class="pl-s1">obs</span>))
+
+<span class="pl-c"># Optionally, you can scalarize the reward function with the LinearReward wrapper.</span>
+<span class="pl-c"># This allows to fall back to single objective RL</span>
+<span class="pl-s1">env</span> <span class="pl-c1">=</span> <span class="pl-s1">mo_gym</span>.<span class="pl-v">LinearReward</span>(<span class="pl-s1">env</span>, <span class="pl-s1">weight</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-en">array</span>([<span class="pl-c1">0.8</span>, <span class="pl-c1">0.2</span>, <span class="pl-c1">0.2</span>]))</pre></div>
+<h2>Environments</h2>
+<p>We support environments ranging from MORL literature to inherently multi-objective problems in the RL literature such as Mujoco. An exhaustive list of environments is available on our <a href="https://mo-gymnasium.farama.org/environments/all-environments/" rel="nofollow">documentation website</a>.</p>
+<h2>Wrappers</h2>
+<p>Additionally, we provide a set of wrappers tailor made for MORL, such as <code>MONormalizeReward</code> which normalizes an element of the reward vector, or <code>LinearWrapper</code> which transforms the MOMDP into an MDP. See also our <a href="https://mo-gymnasium.farama.org/wrappers/wrappers/" rel="nofollow">documentation</a>.</p>
+<h2>New features and improvements</h2>
+<ul>
+<li>Bump <code>highway-env</code> version in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1630363763" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/50" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/50/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/50">#50</a></li>
+<li>Add <code>mo-lunar-lander-continuous-v2</code> and <code>mo-hopper-2d-v4</code> environments in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1633612872" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/51" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/51/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/51">#51</a></li>
+<li>Add normalized action option to <code>water-reservoir-v0</code> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1633867472" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/52" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/52/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/52">#52</a></li>
+<li>Accept zero-dimension numpy array as discrete action in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1643463784" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/55" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/55/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/55">#55</a></li>
+<li>Update pre-commit versions and fix small spelling mistake in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1643968854" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/56" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/56/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/56">#56</a></li>
+<li>Add method to compute known Pareto Front of fruit tree in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1647657177" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/57" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/57/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/57">#57</a></li>
+<li>Improve reward bounds on: Mario, minecart, mountain car, resource gathering, reacher in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1671212372" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/59" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/59/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/59">#59</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1680700481" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/60" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/60/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/60">#60</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1680760618" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/61" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/61/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/61">#61</a></li>
+<li>Add Python 3.11 support, drop Python 3.7 in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1742001832" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/65" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/65/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/65">#65</a></li>
+</ul>
+<h2>Bug fixes and documentation updates</h2>
+<ul>
+<li>Fix water-reservoir bug caused by numpy randint deprecation in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1638136787" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/53" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/53/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/53">#53</a></li>
+<li>Fix missing edit button in website in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1655449301" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/58" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/58/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/58">#58</a></li>
+<li>Fix reward space and add reward bound tests in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1680870335" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/62" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/62/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/62">#62</a></li>
+<li>Add MO-Gymnasium logo to docs in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1730674121" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/64" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/64/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/64">#64</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v0.3.4...v1.0.0"><tt>v0.3.4...v1.0.0</tt></a></p></section>
 <section id="release-v0-3-4">
 <h2>v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation<a class="headerlink" href="#release-v0-3-4" title="Permalink to this heading">#</a></h2>
 <p><em>Released on 2023-03-14 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v0.3.4">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v0.3.4/">PyPI</a></em></p>
@@ -493,6 +559,7 @@
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-v1-0-0">v1.0.0: MO-Gymnasium becomes mature</a></li>
 <li><a class="reference internal" href="#release-v0-3-4">v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation</a></li>
 <li><a class="reference internal" href="#release-v0-3-3">v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page</a></li>
 <li><a class="reference internal" href="#release-0-3-2">MO-Gymnasium 0.3.2 Release: Bug fixes, improved webpage</a></li>
