@@ -2,8 +2,9 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-
-# MO-Gymnasium: Multi-Objective Reinforcement Learning Environments
+<p align="center">
+    <img src="docs/_static/img/MO-Gymnasium-text_small.png" width="500px"/>
+</p>
 
 <!-- start elevator-pitch -->
 
@@ -64,6 +65,9 @@ You can also check more examples in this colab notebook! [![MO-Gym Demo in Colab
 ## Environment Versioning
 
 MO-Gymnasium keeps strict versioning for reproducibility reasons. All environments end in a suffix like "-v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
+
+## Development Roadmap
+We have a roadmap for future development available here: https://github.com/Farama-Foundation/MO-Gymnasium/issues/66.
 
 ## Project Maintainers
 
