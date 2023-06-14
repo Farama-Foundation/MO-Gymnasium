@@ -24,6 +24,7 @@ jobs:
         pip install mujoco==2.3.2
         git clone https://github.com/benelot/pybullet-gym.git
         pip install -e pybullet-gym
+        sudo apt-get update
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
         pip install gymnasium
         pip install -e .[all]
