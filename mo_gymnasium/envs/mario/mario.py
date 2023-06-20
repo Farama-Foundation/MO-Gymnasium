@@ -46,9 +46,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
         render_mode: Optional[str] = None,
     ):
         EzPickle.__init__(self, rom_mode, lost_levels, target, objectives, render_mode)
-        super().__init__(rom_mode, lost_levels, target)
-
         self.render_mode = render_mode
+        super().__init__(rom_mode, lost_levels, target)
 
         self.objectives = set(objectives)
         self.reward_space = gym.spaces.Box(
