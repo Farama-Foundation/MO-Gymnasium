@@ -72,10 +72,6 @@ class JoypadSpace(Wrapper):
         # take the step and record the output
         return self.env.step(self._action_map[action])
 
-    def reset(self):
-        """Reset the environment and return the initial observation."""
-        return self.env.reset()
-
     def get_keys_to_action(self):
         """Return the dictionary of keyboard keys to actions."""
         # get the old mapping of keys to actions
