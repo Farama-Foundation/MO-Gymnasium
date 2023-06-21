@@ -195,7 +195,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics, EzPickle):
         ...     },
         ... }
 
-    For a vectorized environments the output will be in the form of::
+    For a vectorized environments the output will be in the form of (be careful to first wrap the env into vector before applying MORewordStatistics)::
 
         >>> infos = {
         ...     "final_observation": "<array of length num-envs>",
