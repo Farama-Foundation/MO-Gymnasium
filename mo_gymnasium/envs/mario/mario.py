@@ -162,8 +162,6 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
         if "death" in self.objectives:
             vec_reward[obj_idx] = death_r
             obj_idx += 1
-        elif self.death_as_penalty:
-            vec_reward += death_r  # add death reward to all objectives
 
         # 4. coin
         coin_r = 0.0
@@ -182,6 +180,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
             vec_reward[obj_idx] = enemy_r
             obj_idx += 1
 
+        if self.death_as_penalty:
+            vec_reward += death_r  # add death reward to all objectives
         ############################################################################
 
         if self.done_when_dead:
