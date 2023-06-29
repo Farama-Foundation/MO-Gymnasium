@@ -1,5 +1,8 @@
 """An environment wrapper to convert binary to discrete action space. This is a modified version of the original code from nes-py."""
+from typing import List
+
 import gymnasium as gym
+from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 from gymnasium import Env, Wrapper
 
 
@@ -20,11 +23,11 @@ class JoypadSpace(Wrapper):
     }
 
     @classmethod
-    def buttons(cls) -> list:
+    def buttons(cls) -> List:
         """Return the buttons that can be used as actions."""
         return list(cls._button_map.keys())
 
-    def __init__(self, env: Env, actions: list):
+    def __init__(self, env: Env, actions: List = SIMPLE_MOVEMENT):
         """
         Initialize a new binary to discrete action space wrapper.
 

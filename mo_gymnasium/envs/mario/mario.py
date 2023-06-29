@@ -43,19 +43,47 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
         lost_levels=False,
         target=None,
         objectives=["x_pos", "time", "death", "coin", "enemy"],
+        death_as_penalty=False,
         render_mode: Optional[str] = None,
     ):
-        EzPickle.__init__(self, rom_mode, lost_levels, target, objectives, render_mode)
+        EzPickle.__init__(self, rom_mode, lost_levels, target, objectives, death_as_penalty, render_mode)
         self.render_mode = render_mode
         super().__init__(rom_mode, lost_levels, target)
 
         self.objectives = set(objectives)
+        self.death_as_penalty = death_as_penalty
+        if self.death_as_penalty:  # death is not a separate objective
+            self.objectives.discard("death")
+        self.reward_dim = len(self.objectives)
+
+        low = np.empty(self.reward_dim, dtype=np.float32)
+        high = np.empty(self.reward_dim, dtype=np.float32)
+        obj_idx = 0
+        if "x_pos" in self.objectives:
+            low[obj_idx] = -np.inf
+            high[obj_idx] = np.inf
+            obj_idx += 1
+        if "time" in self.objectives:
+            low[obj_idx] = -np.inf
+            high[obj_idx] = 0.0
+            obj_idx += 1
+        if "death" in self.objectives:
+            low[obj_idx] = -25.0
+            high[obj_idx] = 0.0
+            obj_idx += 1
+        if "coin" in self.objectives:
+            low[obj_idx] = 0.0
+            high[obj_idx] = 100.0
+            obj_idx += 1
+        if "enemy" in self.objectives:
+            low[obj_idx] = 0.0
+            high[obj_idx] = np.inf
+
         self.reward_space = gym.spaces.Box(
-            low=np.array([-np.inf, -np.inf, -25, 0, 0]),
-            high=np.array([np.inf, 0, 0, 100, np.inf]),
-            shape=(len(objectives),),
+            low=low,
+            high=high,
+            shape=(len(self.objectives),),
         )
-        self.reward_dim = len(objectives)
 
         # observation space for the environment is static across all instances
         self.observation_space = gym.spaces.Box(low=0, high=255, shape=SCREEN_SHAPE_24_BIT, dtype=np.uint8)
@@ -103,7 +131,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
 
         """ Construct Multi-Objective Reward"""
         # [x_pos, time, death, coin, enemy]
-        moreward = []
+        vec_reward = np.zeros(self.reward_dim, dtype=np.float32)
+        obj_idx = 0
 
         # 1. x position
         if "x_pos" in self.objectives:
@@ -112,7 +141,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
             # resolve an issue where after death the x position resets
             if xpos_r < -5:
                 xpos_r = 0
-            moreward.append(xpos_r)
+            vec_reward[obj_idx] = xpos_r
+            obj_idx += 1
 
         # 2. time penaltiy
         if "time" in self.objectives:
@@ -120,23 +150,28 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
             self.time = info["time"]
             # time is always decreasing
             if time_r > 0:
-                time_r = 0
-            moreward.append(time_r)
+                time_r = 0.0
+            vec_reward[obj_idx] = time_r
+            obj_idx += 1
 
         # 3. death
+        if self.lives > info["life"]:
+            death_r = -25.0
+        else:
+            death_r = 0.0
         if "death" in self.objectives:
-            if self.lives > info["life"]:
-                death_r = -25
-            else:
-                death_r = 0
-            moreward.append(death_r)
+            vec_reward[obj_idx] = death_r
+            obj_idx += 1
+        elif self.death_as_penalty:
+            vec_reward += death_r  # add death reward to all objectives
 
         # 4. coin
-        coin_r = 0
+        coin_r = 0.0
         if "coin" in self.objectives:
             coin_r = (info["coins"] - self.coin) * 100
             self.coin = info["coins"]
-            moreward.append(coin_r)
+            vec_reward[obj_idx] = coin_r
+            obj_idx += 1
 
         # 5. enemy
         if "enemy" in self.objectives:
@@ -144,7 +179,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
             if coin_r > 0 or done:
                 enemy_r = 0
             self.score = info["score"]
-            moreward.append(enemy_r)
+            vec_reward[obj_idx] = enemy_r
+            obj_idx += 1
 
         ############################################################################
 
@@ -155,14 +191,14 @@ class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
 
         self.lives = info["life"]
 
-        mor = np.array(moreward, dtype=np.float32) * self.reward_space.shape[0] / 150
+        vec_reward *= self.reward_space.shape[0] / 150
 
         info["score"] = info["score"] + self.stage_bonus
 
         if self.render_mode == "human":
             self.render()
 
-        return obs, mor, bool(done), False, info
+        return obs, vec_reward, bool(done), False, info
 
 
 if __name__ == "__main__":
