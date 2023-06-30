@@ -7,12 +7,12 @@
     <meta property="og:title" content="MO-Gymnasium Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)" />
-    <meta property="og:url" content="https://mo-gymnasium.farama.org/environments/mo-hopper.html" /><meta property="og:image" content="https://mo-gymnasium.farama.org/_static/img/MO-Gymnasium-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-Hopper-2D" href="../mo-hopper-2d/" /><link rel="prev" title="MO-Highway-Fast" href="../mo-highway-fast/" />
-        <link rel="canonical" href="https://mo-gymnasium.farama.org/environments/mo-hopper.html" />
+    <meta property="og:url" content="https://mo-gymnasium.farama.org/tutorials/custom_env.html" /><meta property="og:image" content="https://mo-gymnasium.farama.org/_static/img/MO-Gymnasium-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Citation" href="../../examples/citation/" /><link rel="prev" title="MORL Baselines" href="../../examples/morl_baselines/" />
+        <link rel="canonical" href="https://mo-gymnasium.farama.org/tutorials/custom_env.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
-        <title>MO-Hopper - MO-Gymnasium Documentation</title>
+        <title>Creating a custom environment - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a022fd11c0d7e10ac71ac296890386cea7a2fa24" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=093e2efd5a2c7b46ab7c7157e45f5f05a1e0a463" />
@@ -223,39 +223,39 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/api/">API</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../all-environments/">Available environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../breakable-bottles/">Breakable-Bottles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure/">Deep-Sea-Treasure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure-concave/">Deep-Sea-Treasure-Concave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../fishwood/">Fishwood</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../four-room/">Four-Room</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../fruit-tree/">Fruit-Tree</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../minecart/">Minecart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../minecart-deterministic/">Minecart-Deterministic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-halfcheetah/">MO-Halfcheetah</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-highway/">MO-Highway</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-highway-fast/">MO-Highway-Fast</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-Hopper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-hopper-2d/">MO-Hopper-2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander/">MO-Lunar-Lander</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-mountaincar/">MO-Mountaincar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-reacher/">MO-Reacher</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mo-supermario/">MO-Supermario</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resource-gathering/">Resource-Gathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../water-reservoir/">Water-Reservoir</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../environments/all-environments/">Available environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/breakable-bottles/">Breakable-Bottles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/deep-sea-treasure/">Deep-Sea-Treasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/deep-sea-treasure-concave/">Deep-Sea-Treasure-Concave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/fishwood/">Fishwood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/four-room/">Four-Room</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/fruit-tree/">Fruit-Tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/minecart/">Minecart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/minecart-deterministic/">Minecart-Deterministic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-halfcheetah/">MO-Halfcheetah</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-highway/">MO-Highway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-highway-fast/">MO-Highway-Fast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-hopper/">MO-Hopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-hopper-2d/">MO-Hopper-2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-lunar-lander/">MO-Lunar-Lander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-mountaincar/">MO-Mountaincar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-reacher/">MO-Reacher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-supermario/">MO-Supermario</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/resource-gathering/">Resource-Gathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/water-reservoir/">Water-Reservoir</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../wrappers/wrappers/">Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/morl_baselines/">MORL Baselines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/custom_env/">Creating a custom environment</a></li>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Citing</span></p>
 <ul>
@@ -292,7 +292,17 @@
             </svg>
             <span>Back to top</span>
           </a>
-          <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+          <div class="content-icon-container">
+      <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/edit/main/docs/tutorials/custom_env.py" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
               <button class="theme-toggle" title="Toggle color theme">
                 <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
                 <svg class="theme-icon-when-auto">
@@ -315,60 +325,42 @@
           </div>
           <article role="main">
             
-            <section id="mo-hopper">
-<h1>MO-Hopper<a class="headerlink" href="#mo-hopper" title="Permalink to this heading">#</a></h1>
-<figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="../../_images/mo-hopper.gif"><img alt="../../_images/mo-hopper.gif" src="../../_images/mo-hopper.gif" style="width: 200px;" /></a>
-</figure>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Action Space</p></td>
-<td><p>Box(-1.0, 1.0, (3,), float32)</p></td>
-</tr>
-<tr class="row-odd"><td><p>Observation Shape</p></td>
-<td><p>(11,)</p></td>
-</tr>
-<tr class="row-even"><td><p>Observation High</p></td>
-<td><p>inf</p></td>
-</tr>
-<tr class="row-odd"><td><p>Observation Low</p></td>
-<td><p>-inf</p></td>
-</tr>
-<tr class="row-even"><td><p>Reward Shape</p></td>
-<td><p>(3,)</p></td>
-</tr>
-<tr class="row-odd"><td><p>Reward High</p></td>
-<td><p>[inf inf inf]</p></td>
-</tr>
-<tr class="row-even"><td><p>Reward Low</p></td>
-<td><p>[-inf -inf -inf]</p></td>
-</tr>
-<tr class="row-odd"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-hopper-v4&quot;)</span></code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
-<p>Multi-objective version of the HopperEnv environment.</p>
-<p>See <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/hopper/">Gymnasium’s env</a> for more information.</p>
-</section>
-<section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Permalink to this heading">#</a></h2>
-<p>The reward is 3-dimensional:</p>
+            <section id="creating-a-custom-environment">
+<h1>Creating a custom environment<a class="headerlink" href="#creating-a-custom-environment" title="Permalink to this heading">#</a></h1>
+<p>This tutorials goes through the steps of creating a custom environment for MO-Gymnasium. Since MO-Gymnasium is closely tied to Gymnasium, we will refer to its documentation for some parts.</p>
+<section id="create-a-new-environment-class">
+<h2>1. Create a new environment class<a class="headerlink" href="#create-a-new-environment-class" title="Permalink to this heading">#</a></h2>
+<p>Create an environment class that inherits from <a class="reference external" href="https://gymnasium.farama.org/api/env/"><code class="docutils literal notranslate"><span class="pre">gymnasium.Env</span></code></a>. The class must implement the following methods:</p>
 <ul class="simple">
-<li><p>0: Reward for going forward on the x-axis</p></li>
-<li><p>1: Reward for jumping high on the z-axis</p></li>
-<li><p>2: Control cost of the action
-If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">...)</span></code> - The constructor of the class. It should initialize the environment and set the <code class="docutils literal notranslate"><span class="pre">self.action_space</span></code> and<code class="docutils literal notranslate"><span class="pre">self.observation_space</span></code> attributes as in classical Gymnasium (see <a class="reference external" href="https://gymnasium.farama.org/api/spaces/">Spaces</a>. Moreover, since we are dealing with multiple objective/rewards, you should define a <code class="docutils literal notranslate"><span class="pre">self.reward_space</span></code> attribute that defines the shape of the vector rewards returned by the environment, as well as <code class="docutils literal notranslate"><span class="pre">self.reward_dim</span></code> which is an integer defining the size of the reward vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reset(self,</span> <span class="pre">seed,</span> <span class="pre">**kwargs)</span></code> - Resets the environment and returns the initial observation and info.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step(self,</span> <span class="pre">action)</span></code> - Performs a step in the environment and returns the next observation, vector reward, termination flag, truncated flag, and info. The vector reward should be a numpy array of shape <code class="docutils literal notranslate"><span class="pre">self.reward_space.shape</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">render(self)</span></code> - Renders the environment.</p></li>
+<li><p>(optional) <code class="docutils literal notranslate"><span class="pre">pareto_front(self,</span> <span class="pre">gamma:</span> <span class="pre">float)</span></code> - Returns the discounted Pareto front of the environment if known. This is very useful for computing some multi-ojective metrics such as Inverted Generational Distance (IGD).</p></li>
 </ul>
+</section>
+<section id="register-the-environment">
+<h2>2. Register the environment<a class="headerlink" href="#register-the-environment" title="Permalink to this heading">#</a></h2>
+<p>Register the environment in the <a class="reference external" href="https://gymnasium.farama.org/api/registry/">registry</a>. This is done by adding the following line to the <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file in your env directory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnasium.envs.registration</span> <span class="kn">import</span> <span class="n">register</span>
+<span class="n">register</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_env_v0&#39;</span><span class="p">,</span>
+    <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;mo_gymnasium.envs.my_env_dir.my_env_file:MyEnv&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="test-the-environment">
+<h2>3. Test the environment<a class="headerlink" href="#test-the-environment" title="Permalink to this heading">#</a></h2>
+<p>If your environment is registered within the MO-Gymnasium repository (step 2), it should be automatically pulled for testing when you run <code class="docutils literal notranslate"><span class="pre">pytest</span></code>.</p>
+</section>
+<section id="instantiate-your-environment">
+<h2>4. Instantiate your environment<a class="headerlink" href="#instantiate-your-environment" title="Permalink to this heading">#</a></h2>
+<p>See our <a class="reference external" href="https://mo-gymnasium.farama.org/introduction/api/">API documentation</a>, but essentially:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mo_gymnasium</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;my_env_v0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -377,12 +369,12 @@ If the cost_objective flag is set to False, the reward is 2-dimensional, and the
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../mo-hopper-2d/">
+            <a class="next-page" href="../../examples/citation/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">MO-Hopper-2D</div>
+                <div class="title">Citation</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
@@ -429,9 +421,11 @@ If the cost_objective flag is set to False, the reward is 2-dimensional, and the
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">MO-Hopper</a><ul>
-<li><a class="reference internal" href="#description">Description</a></li>
-<li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#">Creating a custom environment</a><ul>
+<li><a class="reference internal" href="#create-a-new-environment-class">1. Create a new environment class</a></li>
+<li><a class="reference internal" href="#register-the-environment">2. Register the environment</a></li>
+<li><a class="reference internal" href="#test-the-environment">3. Test the environment</a></li>
+<li><a class="reference internal" href="#instantiate-your-environment">4. Instantiate your environment</a></li>
 </ul>
 </li>
 </ul>
