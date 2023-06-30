@@ -17,6 +17,13 @@ examples/morl_baselines
 
 ```{toctree}
 :hidden:
+:caption: Tutorials
+
+tutorials/custom_env
+```
+
+```{toctree}
+:hidden:
 :caption: Citing
 
 examples/citation
