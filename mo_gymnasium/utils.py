@@ -29,7 +29,7 @@ def make(env_name: str, disable_env_checker: bool = True, **kwargs) -> gym.Env:
     return gym.make(env_name, disable_env_checker=disable_env_checker, **kwargs)
 
 
-class LinearReward(gym.Wrapper, EzPickle):
+class LinearReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
     """Makes the env return a scalar reward, which is the dot-product between the reward vector and the weight vector."""
 
     def __init__(self, env: gym.Env, weight: np.ndarray = None):
@@ -39,8 +39,8 @@ class LinearReward(gym.Wrapper, EzPickle):
             env: env to wrap
             weight: weight vector to use in the dot product
         """
-        super().__init__(env)
-        EzPickle.__init__(self, env, weight)
+        gym.utils.RecordConstructorArgs.__init__(self, weight=weight)
+        gym.Wrapper.__init__(self, env)
         if weight is None:
             weight = np.ones(shape=env.reward_space.shape)
         self.set_weight(weight)
