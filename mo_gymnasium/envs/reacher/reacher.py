@@ -2,7 +2,7 @@ from typing import Optional
 
 import numpy as np
 from gymnasium import spaces
-from gymnasium.utils import EzPickle
+from gymnasium.utils import EzPickle, seeding
 from pybulletgym.envs.roboschool.envs.env_bases import BaseBulletEnv
 from pybulletgym.envs.roboschool.robots.robot_bases import MJCFBasedRobot
 from pybulletgym.envs.roboschool.scenes.scene_bases import SingleRobotEmptyScene
@@ -87,6 +87,8 @@ class ReacherBulletEnv(BaseBulletEnv, EzPickle):
 
     def reset(self, seed=None, **kwargs):
         self._seed(seed)
+        if seed is not None:
+            self._np_random, seed = seeding.np_random(seed)
         obs = super().reset()
         if self.render_mode == "human":
             self._render(mode="human")
