@@ -712,7 +712,7 @@ class Mine:
         means = np.zeros(len(self.distributions))
 
         for i, dist in enumerate(self.distributions):
-            mean, std = dist.mean(), dist.std()
+            mean, std = dist.args
             means[i] = truncated_mean(mean, std, 0, float("inf"))
             if np.isnan(means[i]):
                 means[i] = 0
