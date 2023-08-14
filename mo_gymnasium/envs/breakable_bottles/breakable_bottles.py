@@ -321,7 +321,7 @@ if __name__ == "__main__":
     env = mo_gym.make("breakable-bottles-v0", render_mode="human")
 
     done = False
-    obs = env.reset()
+    obs, info = env.reset()
     while True:
         obs, r, terminated, truncated, info = env.step(env.action_space.sample())
         if terminated or truncated:
