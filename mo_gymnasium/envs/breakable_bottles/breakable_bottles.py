@@ -1,6 +1,9 @@
+from os import path
 from typing import Optional
 
+import gymnasium as gym
 import numpy as np
+import pygame
 from gymnasium import Env
 from gymnasium.spaces import Box, Dict, Discrete, MultiBinary
 from gymnasium.utils import EzPickle
@@ -47,9 +50,12 @@ class BreakableBottles(Env, EzPickle):
 
     ## Credits
     This environment was originally a contribution of Robert Klassert
+    The home asset is from https://limezu.itch.io/serenevillagerevamped
+    The gold, enemy and gem assets are from https://ninjikin.itch.io/treasure
+    The bottles pixel art was created with the assistance of DALL·E 2.
     """
 
-    metadata = {"render_modes": ["human"]}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     # actions
     LEFT = 0
@@ -103,7 +109,25 @@ class BreakableBottles(Env, EzPickle):
         self.reward_space = Box(np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward * 2, 0]))
         self.reward_dim = 3
 
+        # pygame
+        self.cell_size = (64, 64)
+        self.window_size = (
+            self.size * self.cell_size[1],
+            1 * self.cell_size[0],
+        )
+        self.clock = None
+        self.elf_images = []
+        self.home_img = None
+        self.bottle_img = None
+        self.mountain_bg_img = []
+        self.window = None
+        self.last_action = None
+        self.direction = self.RIGHT
+
     def step(self, action):
+        self.last_action = action
+        if self.last_action != self.PICKUP:
+            self.direction = self.last_action
         observation_old = self._get_obs()
         old_potential = self.potential(observation_old)
         terminal = False
@@ -207,12 +231,80 @@ class BreakableBottles(Env, EzPickle):
         }
 
     def render(self):
-        if self.render_mode == "human":
-            print("-----")
-            print(
-                f"Location: {self.location}\nCarrying {self.bottles_carrying} bottles.\nDelivered {self.bottles_delivered} so far.\nBottles have been dropped at tiles {'1' if self.bottles_dropped[0] > 0 else ''} {'2' if self.bottles_dropped[1] > 0 else ''} {'3' if self.bottles_dropped[2] > 0 else ''}"
+        if self.render_mode is None:
+            assert self.spec is not None
+            gym.logger.warn(
+                "You are calling render method without specifying any render mode. "
+                "You can specify the render_mode at initialization, "
+                f'e.g. mo_gym.make("{self.spec.id}", render_mode="rgb_array")'
             )
-            print("-----")
+            return
+
+        if self.window is None:
+            pygame.init()
+
+            if self.render_mode == "human":
+                pygame.display.init()
+                pygame.display.set_caption("Breakable Bottles")
+                self.window = pygame.display.set_mode(self.window_size)
+            else:
+                self.window = pygame.Surface(self.window_size)
+
+            if self.clock is None:
+                self.clock = pygame.time.Clock()
+
+            if not self.elf_images:
+                hikers = [
+                    path.join(path.dirname(__file__), "assets/elf_left.png"),
+                    path.join(path.dirname(__file__), "assets/elf_right.png"),
+                ]
+                self.elf_images = [pygame.transform.scale(pygame.image.load(f_name), self.cell_size) for f_name in hikers]
+            if not self.mountain_bg_img:
+                bg_imgs = [
+                    path.join(path.dirname(__file__), "assets/mountain_bg1.png"),
+                    path.join(path.dirname(__file__), "assets/mountain_bg2.png"),
+                ]
+                self.mountain_bg_img = [
+                    pygame.transform.scale(pygame.image.load(f_name), self.cell_size) for f_name in bg_imgs
+                ]
+            if self.home_img is None:
+                self.home_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/home.png")),
+                    self.cell_size,
+                )
+            if self.bottle_img is None:
+                self.bottle_img = pygame.transform.scale(
+                    pygame.image.load(path.join(path.dirname(__file__), "assets/bottle.png")),
+                    (32, 32),
+                )
+            self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 10)
+
+        for i in range(self.size):
+            self.window.blit(
+                self.mountain_bg_img[i % 2],
+                np.array([i, 0]) * self.cell_size[0],
+            )
+            if i == 0:
+                for k in range(4):
+                    self.window.blit(self.bottle_img, np.array([i, 0]) * self.cell_size[0] + np.array([k * 10, 0]))
+            if i == self.size - 1:
+                self.window.blit(self.home_img, np.array([i, 0]) * self.cell_size[0])
+            if i == self.location:
+                self.window.blit(self.elf_images[self.direction], np.array([i, 0]) * self.cell_size[0])
+            if i in range(1, self.size - 1):
+                if self.bottles_dropped[i - 1] > 0:
+                    self.window.blit(self.bottle_img, np.array([i, 0]) * self.cell_size[0])
+        img = self.font.render(f"Carrying: {self.bottles_carrying}", True, (0, 0, 0))
+        self.window.blit(img, np.array([self.location, 0]) * self.cell_size + np.array([5, 50]))
+        img = self.font.render(f"Delivered: {self.bottles_delivered}", True, (0, 0, 0))
+        self.window.blit(img, np.array([self.size - 1, 0]) * self.cell_size + np.array([4, 5]))
+
+        if self.render_mode == "human":
+            pygame.event.pump()
+            pygame.display.update()
+            self.clock.tick(self.metadata["render_fps"])
+        elif self.render_mode == "rgb_array":  # rgb_array
+            return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
 
     def close(self):
         pass
@@ -224,16 +316,13 @@ class BreakableBottles(Env, EzPickle):
 
 
 if __name__ == "__main__":
-    from gymnasium.spaces.utils import flatdim
+    import mo_gymnasium as mo_gym
 
-    env = BreakableBottles(size=5, prob_drop=0.1)
-    assert flatdim(env.action_space) == 3
-    assert flatdim(env.observation_space) == 13
+    env = mo_gym.make("breakable-bottles-v0", render_mode="human")
 
     done = False
     obs = env.reset()
     while True:
-        env.render()
-        obs, r, done, info = env.step(env.action_space.sample())
-        if done:
+        obs, r, terminated, truncated, info = env.step(env.action_space.sample())
+        if terminated or truncated:
             break
