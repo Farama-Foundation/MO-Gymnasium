@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -7,15 +7,15 @@
     <meta property="og:title" content="MO-Gymnasium Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)" />
-    <meta property="og:url" content="https://mo-gymnasium.farama.org/release_notes.html" /><meta property="og:image" content="https://mo-gymnasium.farama.org/_static/img/MO-Gymnasium-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta property="og:url" content="https://mo-gymnasium.farama.org/release_notes.html" /><meta property="og:image" content="https://mo-gymnasium.farama.org/_static/img/MO-Gymnasium-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="prev" title="Community" href="../community/community/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/release_notes.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
+    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
         <title>Release Notes - MO-Gymnasium Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=cfd2cc3354364f303ef4a892d279bfffada5835d" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=6342a809aabeb35cfac296000cfa245808bc1d78" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -53,18 +53,6 @@
               <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
               <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
             </svg>
-            <!-- <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <line x1="0.5" y1="4.5" x2="23.5" y2="4.5" style="fill: none; "></line>
-              <line x1="0.5" y1="12" x2="14" y2="12" ></line>
-              <line x1="0.5" y1="19.5" x2="23.5" y2="19.5"></line>
-              <polyline style="stroke-width: 0px;" points="17 7 22 12 17 17"></polyline>
-            </svg> -->
-            <!-- <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:20px">
-              <defs></defs>
-              <rect y="1" width="22" height="22" rx="2" ry="2" style="fill: none;" x="1"></rect>
-              <line x1="8" y1="1" x2="8" y2="23"></line>
-              <polyline style="stroke-linecap: round; fill: none; stroke-linejoin: round;" points="13 7 17 12 13 17"></polyline>
-            </svg> -->
           </label>
         </div>
         <div class="farama-header__left farama-header__center--mobile">
@@ -226,7 +214,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/api/">API</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../environments/all-environments/">Available environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../environments/all-environments/">Available environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../environments/breakable-bottles/">Breakable-Bottles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/deep-sea-treasure/">Deep-Sea-Treasure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/deep-sea-treasure-concave/">Deep-Sea-Treasure-Concave</a></li>
@@ -252,6 +240,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../wrappers/wrappers/">Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/morl_baselines/">MORL Baselines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/custom_env/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Citing</span></p>
 <ul>
@@ -321,9 +313,36 @@
           <article role="main">
             
             <section id="release-notes">
-<h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<section id="release-v1-0-1">
+<h2>v1.0.1: MO-Gymnasium 1.0.1 Release: Support Gymnasium 0.29, breakable-bottles pygame render, and more<a class="headerlink" href="#release-v1-0-1" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-08-24 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.0.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.0.1/">PyPI</a></em></p>
+<h2>Environments</h2>
+<ul>
+<li>Add pygame render to breakable-bottles by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1848890637" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/75" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/75/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/75">#75</a></li>
+</ul>
+<h2>Wrapper</h2>
+<ul>
+<li>Add MOMaxAndSkipObservation Wrapper by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1865796417" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/76" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/76/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/76">#76</a></li>
+</ul>
+<h2>Other improvements and utils</h2>
+<ul>
+<li>Modify LinearReward to return reward weights as part of info_dict by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ianleongudri/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ianleongudri">@ianleongudri</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1757550104" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/69" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/69/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/69">#69</a></li>
+<li>Add warning for order of wrapping in the MORecordEpisodeStatistics Wrapper by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1767247871" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/70" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/70/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/70">#70</a></li>
+<li>Support Gymnasium 0.29 by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1814510001" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/73" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/73/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/73">#73</a></li>
+</ul>
+<h2>Documentation</h2>
+<ul>
+<li>Add tuto for custom env creation by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1782060887" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/72" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/72/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/72">#72</a></li>
+</ul>
+<h2>Bug fixes</h2>
+<ul>
+<li>Fix test worker by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1756673430" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/67" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/67/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/67">#67</a></li>
+<li>Fix PF and CCS computation of minecart-deterministic-v0 by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1820772914" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/74" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/74/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/74">#74</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v1.0.0...v1.0.1"><tt>v1.0.0...v1.0.1</tt></a></p></section>
 <section id="release-v1-0-0">
-<h2>v1.0.0: MO-Gymnasium becomes mature<a class="headerlink" href="#release-v1-0-0" title="Permalink to this heading">#</a></h2>
+<h2>v1.0.0: MO-Gymnasium becomes mature<a class="headerlink" href="#release-v1-0-0" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-06-12 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.0.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.0.0/">PyPI</a></em></p>
 <h1>MO-Gymnasium 1.0.0 Release Notes</h1>
 <p>We are thrilled to introduce the mature release of <a href="https://mo-gymnasium.farama.org/" rel="nofollow">MO-Gymnasium</a>, a standardized API and collection of environments designed for Multi-Objective Reinforcement Learning (MORL).</p>
@@ -389,7 +408,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v0.3.4...v1.0.0"><tt>v0.3.4...v1.0.0</tt></a></p></section>
 <section id="release-v0-3-4">
-<h2>v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation<a class="headerlink" href="#release-v0-3-4" title="Permalink to this heading">#</a></h2>
+<h2>v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation<a class="headerlink" href="#release-v0-3-4" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-03-14 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v0.3.4">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v0.3.4/">PyPI</a></em></p>
 <h2>Changelogs</h2>
 <h3>Environments</h3>
@@ -414,7 +433,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v0.3.3...0.3.4"><tt>v0.3.3...0.3.4</tt></a></p></section>
 <section id="release-v0-3-3">
-<h2>v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page<a class="headerlink" href="#release-v0-3-3" title="Permalink to this heading">#</a></h2>
+<h2>v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page<a class="headerlink" href="#release-v0-3-3" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-02-13 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v0.3.3">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v0.3.3/">PyPI</a></em></p>
 <h2>New improvements/features</h2>
 <ul>
@@ -433,7 +452,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.2...v0.3.3"><tt>0.3.2...v0.3.3</tt></a></p></section>
 <section id="release-0-3-2">
-<h2>MO-Gymnasium 0.3.2 Release: Bug fixes, improved webpage<a class="headerlink" href="#release-0-3-2" title="Permalink to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.2 Release: Bug fixes, improved webpage<a class="headerlink" href="#release-0-3-2" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-02-03 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.2/">PyPI</a></em></p>
 <h2>Bug fixes</h2>
 <ul>
@@ -446,7 +465,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.1...0.3.2"><tt>0.3.1...0.3.2</tt></a></p></section>
 <section id="release-0-3-1">
-<h2>MO-Gymnasium 0.3.1 Release: Improved documentation and MuJoco MO-Reacher environment<a class="headerlink" href="#release-0-3-1" title="Permalink to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.1 Release: Improved documentation and MuJoco MO-Reacher environment<a class="headerlink" href="#release-0-3-1" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-02-02 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.1/">PyPI</a></em></p>
 <p>This minor release adds "mo-reacher-v4", a MuJoco version of the Reacher environment, fixes a bug in Lunar Lander and improves the library documentation.</p>
 <h2>Environments</h2>
@@ -465,7 +484,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.0...0.3.1"><tt>0.3.0...0.3.1</tt></a></p></section>
 <section id="release-0-3-0">
-<h2>MO-Gymnasium 0.3.0 Release: Migrate to Gymnasium<a class="headerlink" href="#release-0-3-0" title="Permalink to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.0 Release: Migrate to Gymnasium<a class="headerlink" href="#release-0-3-0" title="Link to this heading">#</a></h2>
 <p><em>Released on 2023-01-23 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.0/">PyPI</a></em></p>
 <p>This release marks our first release as part of the <a href="https://farama.org/" rel="nofollow">Farama Foundation</a>. Benefitting the Farama structure,  this library should reach a higher level of quality and more integration with the tools from the RL community.</p>
 <h2>Breaking changes</h2>
@@ -488,7 +507,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.2.1...0.3.0"><tt>0.2.1...0.3.0</tt></a></p></section>
 <section id="release-0-2-1">
-<h2>0.2.1<a class="headerlink" href="#release-0-2-1" title="Permalink to this heading">#</a></h2>
+<h2>0.2.1<a class="headerlink" href="#release-0-2-1" title="Link to this heading">#</a></h2>
 <p><em>Released on 2022-12-09 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.2.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.2.1/">PyPI</a></em></p>
 <ul>
 <li>5 new environments: <code>fishwood-v0</code> (ESR), <code>mo-MountainCarContinuous-v0</code>, <code>water-reservoir-v0</code>, <code>mo-highway-v0</code> and <code>mo-highway-fast-v0</code>;</li>
@@ -498,15 +517,15 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 <li>Few bugfixes.</li>
 </ul></section>
 <section id="release-0-2-0">
-<h2>0.2.0<a class="headerlink" href="#release-0-2-0" title="Permalink to this heading">#</a></h2>
+<h2>0.2.0<a class="headerlink" href="#release-0-2-0" title="Link to this heading">#</a></h2>
 <p><em>Released on 2022-09-25 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.2.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.2.0/">PyPI</a></em></p>
 <p>Support for new Gym&gt;=0.26 API</p></section>
 <section id="release-0-1-2">
-<h2>0.1.2<a class="headerlink" href="#release-0-1-2" title="Permalink to this heading">#</a></h2>
+<h2>0.1.2<a class="headerlink" href="#release-0-1-2" title="Link to this heading">#</a></h2>
 <p><em>Released on 2022-09-25 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.1.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.1.2/">PyPI</a></em></p>
 </section>
 <section id="release-0-1-1">
-<h2>0.1.1<a class="headerlink" href="#release-0-1-1" title="Permalink to this heading">#</a></h2>
+<h2>0.1.1<a class="headerlink" href="#release-0-1-1" title="Link to this heading">#</a></h2>
 <p><em>Released on 2022-08-24 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.1.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.1.1/">PyPI</a></em></p>
 </section>
 </section>
@@ -559,6 +578,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-v1-0-1">v1.0.1: MO-Gymnasium 1.0.1 Release: Support Gymnasium 0.29, breakable-bottles pygame render, and more</a></li>
 <li><a class="reference internal" href="#release-v1-0-0">v1.0.0: MO-Gymnasium becomes mature</a></li>
 <li><a class="reference internal" href="#release-v0-3-4">v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation</a></li>
 <li><a class="reference internal" href="#release-v0-3-3">v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page</a></li>
@@ -603,12 +623,43 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
     
     
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/documentation_options.js?v=c8e69ae7"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
+
+      const createProjectsList = (projects, displayImages) => {
+        const ulElem = Object.assign(document.createElement('ul'),
+          {
+            className:'farama-header-menu-list',
+          }
+        )
+        for (let project of projects) {
+          const liElem = document.createElement("li");
+          const aElem = Object.assign(document.createElement("a"),
+            {
+              href: project.link
+            }
+          );
+          liElem.appendChild(aElem);
+          if (displayImages) {
+            const imgElem = Object.assign(document.createElement("img"),
+              {
+                src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                alt: `${project.name} logo`,
+                className: "farama-black-logo-invert"
+              }
+            );
+            aElem.appendChild(imgElem);
+          }
+          aElem.appendChild(document.createTextNode(project.name));
+          ulElem.appendChild(liElem);
+        }
+        return ulElem;
+      }
+
       // Create menu with Farama projects by using the API at farama.org/api/projects.json
       const createCORSRequest = (method, url) => {
         let xhr = new XMLHttpRequest();
@@ -635,9 +686,15 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
       xhr.onload = () => {
         const jsonResponse = xhr.response;
         const sections = {
-          "Documentation": [],
-          "Mature Projects": [],
-          "Incubating Projects": [],
+          "Core Projects": [],
+          "Mature Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
           "Foundation": [
             {
               name: "About",
@@ -653,28 +710,38 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
             }
           ]
         }
+
+        // Categorize projects
         Object.keys(jsonResponse).forEach(key => {
           projectJson = jsonResponse[key];
           if (projectJson.website !== null) {
             projectJson.link = projectJson.website;
-            sections["Documentation"].push(projectJson)
-          } else if (projectJson.type == "mature") {
-            projectJson.link = projectJson.github;
-            sections["Mature Projects"].push(projectJson)
           } else {
             projectJson.link = projectJson.github;
-            sections["Incubating Projects"].push(projectJson)
+          }
+          if (projectJson.type === "core") {
+            sections["Core Projects"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            if (projectJson.website !== null) {
+              sections["Mature Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Mature Projects"]["Repositories"].push(projectJson)
+            }
+          } else {
+            if (projectJson.website !== null) {
+              sections["Incubating Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Incubating Projects"]["Repositories"].push(projectJson)
+            }
           }
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
 
         Object.keys(sections).forEach((key, i) => {
-          projects = sections[key];
           const sectionElem = Object.assign(
             document.createElement('div'), {
               className:'farama-header-menu__section',
-              style: "padding-left: 24px"
             }
           )
           sectionElem.appendChild(Object.assign(document.createElement('span'),
@@ -683,33 +750,37 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
               innerText: key
             }
           ))
-          const ulElem = Object.assign(document.createElement('ul'),
-            {
-              className:'farama-header-menu-list',
-            }
-          )
-          for (let project of projects) {
-            const liElem = document.createElement("li");
-            const aElem = Object.assign(document.createElement("a"),
-              {
-                href: project.link
-              }
-            );
-            liElem.appendChild(aElem);
-            if (key !== "Foundation") {
-              const imgElem = Object.assign(document.createElement("img"),
-                {
-                  src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
-                  alt: `${project.name} logo`,
-                  className: "farama-black-logo-invert"
+          // is not a list
+          if (sections[key].constructor !== Array) {
+            const subSections = sections[key];
+            const subSectionContainerElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsections-container',
+                  style: 'display: flex'
                 }
-              );
-              aElem.appendChild(imgElem);
-            }
-            aElem.appendChild(document.createTextNode(project.name));
-            ulElem.appendChild(liElem);
+            )
+            Object.keys(subSections).forEach((subKey, i) => {
+              const subSectionElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsection',
+                }
+              )
+              subSectionElem.appendChild(Object.assign(document.createElement('span'),
+                {
+                  className:'farama-header-menu__subsection-title' ,
+                  innerText: subKey
+                }
+              ))
+              const ulElem = createProjectsList(subSections[subKey], key !== 'Foundation');
+              subSectionElem.appendChild(ulElem);
+              subSectionContainerElem.appendChild(subSectionElem);
+            })
+            sectionElem.appendChild(subSectionContainerElem);
+          } else {
+            const projects = sections[key];
+            const ulElem = createProjectsList(projects, true);
+            sectionElem.appendChild(ulElem);
           }
-          sectionElem.appendChild(ulElem);
           menuContainer.appendChild(sectionElem)
         });
       }
