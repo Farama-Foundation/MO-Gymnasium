@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Minecart" href="../minecart/" /><link rel="prev" title="Four-Room" href="../four-room/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/environments/fruit-tree.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
         <title>Fruit-Tree - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -304,7 +304,7 @@
           <article role="main">
             
             <section id="fruit-tree">
-<h1>Fruit-Tree<a class="headerlink" href="#fruit-tree" title="Permalink to this heading">#</a></h1>
+<h1>Fruit-Tree<a class="headerlink" href="#fruit-tree" title="Link to this heading">#</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -341,28 +341,28 @@
 </table>
 </div>
 <section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
 <p>Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water.
 From <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p>
 </section>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
 <p>Discrete space of size 2^d-1, where d is the depth of the tree.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
 <p>The agent can chose to go left or right at every node. The action space is therefore a discrete space of size 2.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Permalink to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
 <p>Each leaf node contains a 6-dimensional vector containing the nutrients of the fruit. The agent receives a reward for each nutrient it collects.</p>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Permalink to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
 <p>The agent starts at the root node (0, 0).</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Permalink to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
 <p>The episode terminates when the agent reaches a leaf node.</p>
 </section>
 </section>
@@ -465,9 +465,9 @@ From <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Y
     
     
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=e2824c69"></script>
+    <script src="../../_static/documentation_options.js?v=3596a5a1"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

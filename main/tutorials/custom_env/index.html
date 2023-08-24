@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Citation" href="../../examples/citation/" /><link rel="prev" title="MORL Baselines" href="../../examples/morl_baselines/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/tutorials/custom_env.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
         <title>Creating a custom environment - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -314,10 +314,10 @@
           <article role="main">
             
             <section id="creating-a-custom-environment">
-<h1>Creating a custom environment<a class="headerlink" href="#creating-a-custom-environment" title="Permalink to this heading">#</a></h1>
+<h1>Creating a custom environment<a class="headerlink" href="#creating-a-custom-environment" title="Link to this heading">#</a></h1>
 <p>This tutorials goes through the steps of creating a custom environment for MO-Gymnasium. Since MO-Gymnasium is closely tied to Gymnasium, we will refer to its documentation for some parts.</p>
 <section id="create-a-new-environment-class">
-<h2>1. Create a new environment class<a class="headerlink" href="#create-a-new-environment-class" title="Permalink to this heading">#</a></h2>
+<h2>1. Create a new environment class<a class="headerlink" href="#create-a-new-environment-class" title="Link to this heading">#</a></h2>
 <p>Create an environment class that inherits from <a class="reference external" href="https://gymnasium.farama.org/api/env/"><code class="docutils literal notranslate"><span class="pre">gymnasium.Env</span></code></a>. The class must implement the following methods:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">...)</span></code> - The constructor of the class. It should initialize the environment and set the <code class="docutils literal notranslate"><span class="pre">self.action_space</span></code> and<code class="docutils literal notranslate"><span class="pre">self.observation_space</span></code> attributes as in classical Gymnasium (see <a class="reference external" href="https://gymnasium.farama.org/api/spaces/">Spaces</a>. Moreover, since we are dealing with multiple objective/rewards, you should define a <code class="docutils literal notranslate"><span class="pre">self.reward_space</span></code> attribute that defines the shape of the vector rewards returned by the environment, as well as <code class="docutils literal notranslate"><span class="pre">self.reward_dim</span></code> which is an integer defining the size of the reward vector.</p></li>
@@ -328,7 +328,7 @@
 </ul>
 </section>
 <section id="register-the-environment">
-<h2>2. Register the environment<a class="headerlink" href="#register-the-environment" title="Permalink to this heading">#</a></h2>
+<h2>2. Register the environment<a class="headerlink" href="#register-the-environment" title="Link to this heading">#</a></h2>
 <p>Register the environment in the <a class="reference external" href="https://gymnasium.farama.org/api/registry/">registry</a>. This is done by adding the following line to the <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file in your env directory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnasium.envs.registration</span> <span class="kn">import</span> <span class="n">register</span>
 <span class="n">register</span><span class="p">(</span>
@@ -339,11 +339,11 @@
 </div>
 </section>
 <section id="test-the-environment">
-<h2>3. Test the environment<a class="headerlink" href="#test-the-environment" title="Permalink to this heading">#</a></h2>
+<h2>3. Test the environment<a class="headerlink" href="#test-the-environment" title="Link to this heading">#</a></h2>
 <p>If your environment is registered within the MO-Gymnasium repository (step 2), it should be automatically pulled for testing when you run <code class="docutils literal notranslate"><span class="pre">pytest</span></code>.</p>
 </section>
 <section id="instantiate-your-environment">
-<h2>4. Instantiate your environment<a class="headerlink" href="#instantiate-your-environment" title="Permalink to this heading">#</a></h2>
+<h2>4. Instantiate your environment<a class="headerlink" href="#instantiate-your-environment" title="Link to this heading">#</a></h2>
 <p>See our <a class="reference external" href="https://mo-gymnasium.farama.org/introduction/api/">API documentation</a>, but essentially:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mo_gymnasium</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">mo_gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;my_env_v0&#39;</span><span class="p">)</span>
@@ -448,9 +448,9 @@
     
     
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=e2824c69"></script>
+    <script src="../../_static/documentation_options.js?v=3596a5a1"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
