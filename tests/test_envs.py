@@ -100,13 +100,13 @@ def test_env_determinism_rollout(env_spec: EnvSpec):
 
 def _test_reward_bounds(env: gym.Env):
     """Test that the reward bounds are respected."""
-    assert env.reward_dim is not None
-    assert env.reward_space is not None
+    assert env.unwrapped.reward_dim is not None
+    assert env.unwrapped.reward_space is not None
     env.reset()
     for _ in range(NUM_STEPS):
         action = env.action_space.sample()
         _, reward, terminated, truncated, _ = env.step(action)
-        assert env.reward_space.contains(reward)
+        assert env.unwrapped.reward_space.contains(reward)
         if terminated or truncated:
             env.reset()
 
