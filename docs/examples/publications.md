@@ -11,3 +11,4 @@ MO-Gymnasium (formerly MO-Gym) was first published in:
 
 List of publications & submissions using MO-Gymnasium (please open a pull request to add missing entries):
 - [Sample-Efficient Multi-Objective Learning via Generalized Policy Improvement Prioritization](https://arxiv.org/abs/2301.07784) (Alegre et al., AAMAS 2023)
+- [Hyperparameter Optimization for Multi-Objective Reinforcement Learning](https://arxiv.org/abs/2310.16487v1) (Felten et al., MODeM Workshop 2023)
