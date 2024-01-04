@@ -72,6 +72,7 @@ class JoypadSpace(Wrapper):
             - (dict) a dictionary of extra information
 
         """
+        action = int(action)
         # take the step and record the output
         return self.env.step(self._action_map[action])
 
