@@ -68,6 +68,23 @@ CONCAVE_FRONT = [
     np.array([124.0, -19]),
 ]
 
+# As in Felten et al. 2022, same PF as concave, just harder map
+MIRRORED_MAP = np.array(
+    [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, -10, -10, 2.0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, -10, -10, -10, -10, 3.0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, -10, -10, -10, -10, -10, -10, 5.0, 8.0, 16.0, 0, 0, 0, 0],
+        [0, 0, 0, 0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0, 0],
+        [0, 0, 0, 0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0, 0],
+        [0, 0, 0, 0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 24.0, 50.0, 0, 0],
+        [0, 0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 0, 0],
+        [0, 0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 74.0, 0],
+        [0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 124.0],
+    ]
+)
+
 
 class DeepSeaTreasure(gym.Env, EzPickle):
     """
@@ -96,7 +113,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
     The episode terminates when the agent reaches a treasure.
 
     ## Arguments
-    - dst_map: the map of the deep sea treasure. Default is the convex map from Yang et al. (2019). To change, use `mo_gymnasium.make("DeepSeaTreasure-v0", dst_map=CONCAVE_MAP).`
+    - dst_map: the map of the deep sea treasure. Default is the convex map from Yang et al. (2019). To change, use `mo_gymnasium.make("DeepSeaTreasure-v0", dst_map=CONCAVE_MAP | MIRRORED_MAP).`
     - float_state: if True, the state is a 2D continuous box with values in [0.0, 1.0] for the x and y coordinates of the submarine.
 
     ## Credits
@@ -115,8 +132,19 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
-        self._pareto_front = CONVEX_FRONT if np.all(dst_map == DEFAULT_MAP) else CONCAVE_FRONT
-        assert self.sea_map.shape == DEFAULT_MAP.shape, "The map's shape must be 11x11"
+        if dst_map.shape[0] == DEFAULT_MAP.shape[0] and dst_map.shape[1] == DEFAULT_MAP.shape[1]:
+            if np.all(dst_map == DEFAULT_MAP):
+                self.map_name = "convex"
+            elif np.all(dst_map == CONCAVE_MAP):
+                self.map_name = "concave"
+            else:
+                raise ValueError("Invalid map")
+        elif np.all(dst_map == MIRRORED_MAP):
+            self.map_name = "mirrored"
+        else:
+            raise ValueError("Invalid map")
+        print(f"Using {self.map_name} map")
+        self._pareto_front = CONVEX_FRONT if self.map_name == "convex" else CONCAVE_FRONT
 
         self.dir = {
             0: np.array([-1, 0], dtype=np.int32),  # up
@@ -130,7 +158,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         if self.float_state:
             self.observation_space = Box(low=0.0, high=1.0, shape=(2,), dtype=obs_type)
         else:
-            self.observation_space = Box(low=0, high=10, shape=(2,), dtype=obs_type)
+            self.observation_space = Box(low=0, high=len(self.sea_map[0]), shape=(2,), dtype=obs_type)
 
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_space = Discrete(4)
@@ -144,11 +172,15 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         self.current_state = np.array([0, 0], dtype=np.int32)
 
         # pygame
-        self.window_size = (min(64 * self.sea_map.shape[1], 512), min(64 * self.sea_map.shape[0], 512))
+        ratio = self.sea_map.shape[1] / self.sea_map.shape[0]
+        padding = 10
+        self.pix_inside = (min(64 * self.sea_map.shape[1], 512) * ratio, min(64 * self.sea_map.shape[0], 512))
+        # adding some padding on the sides
+        self.window_size = (self.pix_inside[0] + 2 * padding, self.pix_inside[1])
         # The size of a single grid square in pixels
         self.pix_square_size = (
-            self.window_size[1] // self.sea_map.shape[1] + 1,
-            self.window_size[0] // self.sea_map.shape[0] + 1,
+            self.pix_inside[0] // self.sea_map.shape[1] + 1,
+            self.pix_inside[1] // self.sea_map.shape[0] + 1,  # watch out for axis inversions here
         )
         self.window = None
         self.clock = None
@@ -257,7 +289,12 @@ class DeepSeaTreasure(gym.Env, EzPickle):
     def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
 
-        self.current_state = np.array([0, 0], dtype=np.int32)
+        if self.map_name == "convex" or self.map_name == "concave":
+            self.current_state = np.array([0, 0], dtype=np.int32)
+        elif self.map_name == "mirrored":
+            self.current_state = np.array([0, 10], dtype=np.int32)
+        else:
+            raise ValueError("Invalid map")
         self.step_count = 0.0
         state = self._get_state()
         if self.render_mode == "human":
