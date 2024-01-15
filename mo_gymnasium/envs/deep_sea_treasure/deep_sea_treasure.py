@@ -137,6 +137,8 @@ class DeepSeaTreasure(gym.Env, EzPickle):
                 self.map_name = "convex"
             elif np.all(dst_map == CONCAVE_MAP):
                 self.map_name = "concave"
+            else:
+                raise ValueError("Invalid map")
         elif np.all(dst_map == MIRRORED_MAP):
             self.map_name = "mirrored"
         else:
