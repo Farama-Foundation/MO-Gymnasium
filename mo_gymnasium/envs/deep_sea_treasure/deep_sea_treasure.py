@@ -132,10 +132,11 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
         # The map of the deep sea treasure (convex version)
         self.sea_map = dst_map
-        if np.all(dst_map == DEFAULT_MAP):
-            self.map_name = "convex"
-        elif np.all(dst_map == CONCAVE_MAP):
-            self.map_name = "concave"
+        if dst_map.shape[0] == DEFAULT_MAP.shape[0] and dst_map.shape[1] == DEFAULT_MAP.shape[1]:
+            if np.all(dst_map == DEFAULT_MAP):
+                self.map_name = "convex"
+            elif np.all(dst_map == CONCAVE_MAP):
+                self.map_name = "concave"
         elif np.all(dst_map == MIRRORED_MAP):
             self.map_name = "mirrored"
         else:
