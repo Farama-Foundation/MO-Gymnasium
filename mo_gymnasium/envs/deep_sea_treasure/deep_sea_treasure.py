@@ -144,7 +144,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         else:
             raise ValueError("Invalid map")
         print(f"Using {self.map_name} map")
-        self._pareto_front = CONVEX_FRONT if np.all(dst_map == DEFAULT_MAP) else CONCAVE_FRONT
+        self._pareto_front = CONVEX_FRONT if self.map_name == "convex" else CONCAVE_FRONT
 
         self.dir = {
             0: np.array([-1, 0], dtype=np.int32),  # up
