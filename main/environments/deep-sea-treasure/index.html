@@ -218,6 +218,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../breakable-bottles/">Breakable-Bottles</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Deep-Sea-Treasure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure-concave/">Deep-Sea-Treasure-Concave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure-mirrored/">Deep-Sea-Treasure-Mirrored</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fishwood/">Fishwood</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../four-room/">Four-Room</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fruit-tree/">Fruit-Tree</a></li>
@@ -323,7 +324,7 @@
 <td><p>(2,)</p></td>
 </tr>
 <tr class="row-even"><td><p>Observation High</p></td>
-<td><p>[10 10]</p></td>
+<td><p>[11 11]</p></td>
 </tr>
 <tr class="row-odd"><td><p>Observation Low</p></td>
 <td><p>[0 0]</p></td>
@@ -380,7 +381,7 @@
 <section id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>dst_map: the map of the deep sea treasure. Default is the convex map from Yang et al. (2019). To change, use <code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;DeepSeaTreasure-v0&quot;,</span> <span class="pre">dst_map=CONCAVE_MAP).</span></code></p></li>
+<li><p>dst_map: the map of the deep sea treasure. Default is the convex map from Yang et al. (2019). To change, use <code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;DeepSeaTreasure-v0&quot;,</span> <span class="pre">dst_map=CONCAVE_MAP</span> <span class="pre">|</span> <span class="pre">MIRRORED_MAP).</span></code></p></li>
 <li><p>float_state: if True, the state is a 2D continuous box with values in [0.0, 1.0] for the x and y coordinates of the submarine.</p></li>
 </ul>
 </section>
