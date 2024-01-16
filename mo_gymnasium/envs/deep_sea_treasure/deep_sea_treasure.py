@@ -143,7 +143,6 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             self.map_name = "mirrored"
         else:
             raise ValueError("Invalid map")
-        print(f"Using {self.map_name} map")
         self._pareto_front = CONVEX_FRONT if self.map_name == "convex" else CONCAVE_FRONT
 
         self.dir = {
