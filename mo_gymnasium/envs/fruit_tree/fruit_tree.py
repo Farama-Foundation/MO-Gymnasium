@@ -399,7 +399,6 @@ class FruitTreeEnv(gym.Env, EzPickle):
 
         for ind, node in enumerate(self.tree):
             row, index_in_row = self.ind_to_state(ind)
-
             if (row, index_in_row) == tuple(self.current_state):
                 img = self.agent_img
                 font_color = (255, 0, 0)  # Red digits for agent node
