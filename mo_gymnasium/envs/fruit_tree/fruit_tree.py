@@ -400,14 +400,6 @@ class FruitTreeEnv(gym.Env, EzPickle):
         for ind, node in enumerate(self.tree):
             row, index_in_row = self.ind_to_state(ind)
             
-            node_pos = self.get_pos_in_window(row, index_in_row)
-
-            # Get childerns' positions for drawing branches
-            child1_pos = self.get_pos_in_window(row + 1, 2 * index_in_row)
-            child2_pos = self.get_pos_in_window(row + 1, 2 * index_in_row + 1)
-
-            half_square = self.node_square_size / 2
-            
             if (row, index_in_row) == tuple(self.current_state):
                 img = self.agent_img
                 font_color = (255, 0, 0) # Red digits for agent node
@@ -415,13 +407,19 @@ class FruitTreeEnv(gym.Env, EzPickle):
                 img = self.node_img
                 font_color = (0, 255, 0) # Green digits for non-agent nodes
 
-            if row != self.tree_depth:
+            node_pos = self.get_pos_in_window(row, index_in_row)
+
+            self.window.blit(img, np.array(node_pos))
+
+            if row < self.tree_depth:
+                # Get childerns' positions and draw branches
+                child1_pos = self.get_pos_in_window(row + 1, 2 * index_in_row)
+                child2_pos = self.get_pos_in_window(row + 1, 2 * index_in_row + 1)
+                half_square = self.node_square_size / 2
                 pygame.draw.line(self.window, (255,255,255), node_pos + half_square, child1_pos + half_square, 1)
                 pygame.draw.line(self.window, (255,255,255), node_pos + half_square, child2_pos + half_square, 1)
-                
-            
-            self.window.blit(img, np.array(node_pos))
-            if row == self.tree_depth:
+            else:
+                # Print node values at the bottom of the tree
                 values_imgs = [self.font.render(f'{val:.2f}', True, font_color) for val in node]
                 for i, val_img in enumerate(values_imgs):
                     self.window.blit(val_img, node_pos + np.array([- 5, (i+1)*self.font_size]))
