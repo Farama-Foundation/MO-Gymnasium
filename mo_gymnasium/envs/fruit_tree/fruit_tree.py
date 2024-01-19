@@ -376,6 +376,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
 
         if self.window is None:
             pygame.init()
+            pygame.font.init()
 
             if self.render_mode == "human":
                 pygame.display.init()
