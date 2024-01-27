@@ -452,7 +452,14 @@ class FruitTreeEnv(gym.Env, EzPickle):
             pygame.display.update()
             self.clock.tick(self.metadata["render_fps"])
         elif self.render_mode == "rgb_array":
-            return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
+            return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+
+        background = pygame.Surface(self.window_size)
+        background.fill((255, 255, 255))  # White
+
+        background.blit(canvas, (0, self.top_margin))
+
+        self.window.blit(background, (0, 0))
 
 
 if __name__ == "__main__":
