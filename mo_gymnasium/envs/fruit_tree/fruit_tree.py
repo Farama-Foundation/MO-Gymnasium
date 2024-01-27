@@ -301,7 +301,8 @@ class FruitTreeEnv(gym.Env, EzPickle):
         self.node_square_size = np.array([10, 10], dtype=np.int32)
         self.window_padding = 15  # padding on the left and right of the window
         self.font_size = 12
-        self.font = pygame.font.Font(None, self.font_size)
+        pygame.font.init()
+        self.font = pygame.font.SysFont(None, self.font_size)
 
         self.window = None
         self.node_img = None
@@ -376,7 +377,6 @@ class FruitTreeEnv(gym.Env, EzPickle):
 
         if self.window is None:
             pygame.init()
-            pygame.font.init()
 
             if self.render_mode == "human":
                 pygame.display.init()
