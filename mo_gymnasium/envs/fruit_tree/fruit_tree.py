@@ -247,21 +247,17 @@ class FruitTreeEnv(gym.Env, EzPickle):
     """
     ## Description
 
-    Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with
-    a value for the nutrients Protein, Carbs, Fats, Vitamins,
-    Minerals and Water.
+    Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water.
     From [Yang et al. 2019](https://arxiv.org/pdf/1908.08342.pdf).
 
     ## Observation Space
     Discrete space of size 2^d-1, where d is the depth of the tree.
 
     ## Action Space
-    The agent can chose to go left or right at every node.
-    The action space is therefore a discrete space of size 2.
+    The agent can chose to go left or right at every node. The action space is therefore a discrete space of size 2.
 
     ## Reward Space
-    Each leaf node contains a 6-dimensional vector containing the nutrients of
-    the fruit. The agent receives a reward for each nutrient it collects.
+    Each leaf node contains a 6-dimensional vector containing the nutrients of the fruit. The agent receives a reward for each nutrient it collects.
 
     ## Starting State
     The agent starts at the root node (0, 0).
@@ -281,8 +277,6 @@ class FruitTreeEnv(gym.Env, EzPickle):
         self.tree_depth = depth  # zero based depth
         branches = np.zeros((int(2**self.tree_depth - 1), self.reward_dim))
         fruits = np.array(FRUITS[str(depth)])
-        # fruits = np.random.randn(2**self.tree_depth, self.reward_dim)
-        # fruits = np.abs(fruits) / np.linalg.norm(fruits, 2, 1, True)
         self.tree = np.concatenate([branches, fruits])
 
         self.max_reward = 10.0
@@ -302,8 +296,8 @@ class FruitTreeEnv(gym.Env, EzPickle):
 
         # Add margin at the bottom to account for the node rewards
         self.window_size = (1200, self.row_height * self.tree_depth + 150)
-        self.node_square_size = np.array([10, 10], dtype=np.int32)
         self.window_padding = 15  # padding on the left and right of the window
+        self.node_square_size = np.array([10, 10], dtype=np.int32)
         self.font_size = 12
         pygame.font.init()
         self.font = pygame.font.SysFont(None, self.font_size)
@@ -467,7 +461,7 @@ if __name__ == "__main__":
 
     import mo_gymnasium as mo_gym
 
-    env = mo_gym.make("fruit-tree", depth=7, render_mode="human")
+    env = mo_gym.make("fruit-tree", depth=6, render_mode="human")
     env.reset()
     while True:
         env.render()
