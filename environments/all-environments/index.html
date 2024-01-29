@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Breakable-Bottles" href="../breakable-bottles/" /><link rel="prev" title="API" href="../../introduction/api/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/environments/all-environments.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
         <title>Available environments - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -218,6 +218,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../breakable-bottles/">Breakable-Bottles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure/">Deep-Sea-Treasure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure-concave/">Deep-Sea-Treasure-Concave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep-sea-treasure-mirrored/">Deep-Sea-Treasure-Mirrored</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fishwood/">Fishwood</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../four-room/">Four-Room</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fruit-tree/">Fruit-Tree</a></li>
@@ -312,7 +313,7 @@
           </div>
           <article role="main">
             
-            <section id="available-environments">
+            <section class="tex2jax_ignore mathjax_ignore" id="available-environments">
 <h1>Available environments<a class="headerlink" href="#available-environments" title="Link to this heading">#</a></h1>
 <p>MO-Gymnasium includes environments taken from the MORL literature, as well as multi-objective version of classical environments, such as Mujoco.</p>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -335,77 +336,82 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">[treasure,</span> <span class="pre">time_penalty]</span></code></p></td>
 <td><p>Agent is a submarine that must collect a treasure while taking into account a time penalty. Treasures values taken from <a class="reference external" href="https://link.springer.com/article/10.1007/s10994-010-5232-5">Vamplew et al. 2010</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/resource-gathering/"><code class="docutils literal notranslate"><span class="pre">resource-gathering-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/resource-gathering.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/deep-sea-treasure-mirrored/"><code class="docutils literal notranslate"><span class="pre">deep-sea-treasure-mirrored-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/deep-sea-treasure-mirrored.gif" width="200px"></p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[treasure,</span> <span class="pre">time_penalty]</span></code></p></td>
+<td><p>Harder version of the concave DST <a class="reference external" href="https://www.scitepress.org/Papers/2022/109891/109891.pdf">Felten et al. 2022</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/resource-gathering/"><code class="docutils literal notranslate"><span class="pre">resource-gathering-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/resource-gathering.gif" width="200px"></p></td>
 <td><p>Discrete / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[enemy,</span> <span class="pre">gold,</span> <span class="pre">gem]</span></code></p></td>
 <td><p>Agent must collect gold or gem. Enemies have a 10% chance of killing the agent. From <a class="reference external" href="https://dl.acm.org/doi/10.1145/1390156.1390162">Barret &amp; Narayanan 2008</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/fishwood/"><code class="docutils literal notranslate"><span class="pre">fishwood-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/screenshots/fishwood.png" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/fishwood/"><code class="docutils literal notranslate"><span class="pre">fishwood-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/screenshots/fishwood.png" width="200px"></p></td>
 <td><p>Discrete / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[fish_amount,</span> <span class="pre">wood_amount]</span></code></p></td>
 <td><p>ESR environment, the agent must collect fish and wood to light a fire and eat. From <a class="reference external" href="https://www.researchgate.net/publication/328718263_Multi-objective_Reinforcement_Learning_for_the_Expected_Utility_of_the_Return">Roijers et al. 2018</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/breakable-bottles/"><code class="docutils literal notranslate"><span class="pre">breakable-bottles-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/breakable-bottles.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/breakable-bottles/"><code class="docutils literal notranslate"><span class="pre">breakable-bottles-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/breakable-bottles.gif" width="200px"></p></td>
 <td><p>Discrete (Dictionary) / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">bottles_delivered,</span> <span class="pre">potential]</span></code></p></td>
 <td><p>Gridworld with 5 cells. The agents must collect bottles from the source location and deliver to the destination. From <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0952197621000336">Vamplew et al. 2021</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/fruit-tree/"><code class="docutils literal notranslate"><span class="pre">fruit-tree-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/screenshots/fruit-tree.png" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/fruit-tree/"><code class="docutils literal notranslate"><span class="pre">fruit-tree-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/screenshots/fruit-tree.png" width="200px"></p></td>
 <td><p>Discrete / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[nutri1,</span> <span class="pre">...,</span> <span class="pre">nutri6]</span></code></p></td>
 <td><p>Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water. From <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/water-reservoir/"><code class="docutils literal notranslate"><span class="pre">water-reservoir-v0</span></code></a>   <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/water-reservoir.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/water-reservoir/"><code class="docutils literal notranslate"><span class="pre">water-reservoir-v0</span></code></a>   <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/water-reservoir.gif" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[cost_flooding,</span> <span class="pre">deficit_water]</span></code></p></td>
 <td><p>A Water reservoir environment. The agent executes a continuous action, corresponding to the amount of water released by the dam. From <a class="reference external" href="https://iwaponline.com/jh/article/15/2/258/3425/Tree-based-fitted-Q-iteration-for-multi-objective">Pianosi et al. 2013</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/four-room/"><code class="docutils literal notranslate"><span class="pre">four-room-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/four-room.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/four-room/"><code class="docutils literal notranslate"><span class="pre">four-room-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/four-room.gif" width="200px"></p></td>
 <td><p>Discrete / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[item1,</span> <span class="pre">item2,</span> <span class="pre">item3]</span></code></p></td>
 <td><p>Agent must collect three different types of items in the map and reach the goal. From <a class="reference external" href="https://proceedings.mlr.press/v162/alegre22a.html">Alegre et al. 2022</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincar/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincar-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincar.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincar/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincar-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincar.gif" width="200px"></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">reverse_penalty,</span> <span class="pre">forward_penalty]</span></code></p></td>
 <td><p>Classic Mountain Car env, but with extra penalties for the forward and reverse actions. From <a class="reference external" href="https://www.researchgate.net/publication/220343783_Empirical_evaluation_methods_for_multiobjective_reinforcement_learning_algorithms">Vamplew et al. 2011</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincarcontinuous/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincarcontinuous-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincarcontinuous.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincarcontinuous/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincarcontinuous-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincarcontinuous.gif" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">fuel_consumption_penalty]</span></code></p></td>
 <td><p>Continuous Mountain Car env, but with penalties for fuel consumption.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-lunar-lander/"><code class="docutils literal notranslate"><span class="pre">mo-lunar-lander-v2</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-lunar-lander.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-lunar-lander/"><code class="docutils literal notranslate"><span class="pre">mo-lunar-lander-v2</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-lunar-lander.gif" width="200px"></p></td>
 <td><p>Continuous / Discrete or Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[landed,</span> <span class="pre">shaped_reward,</span> <span class="pre">main_engine_fuel,</span> <span class="pre">side_engine_fuel]</span></code></p></td>
 <td><p>MO version of the <code class="docutils literal notranslate"><span class="pre">LunarLander-v2</span></code> <a class="reference external" href="https://gymnasium.farama.org/environments/box2d/lunar_lander/">environment</a>. Objectives defined similarly as in <a class="reference external" href="https://openreview.net/forum?id=AwWaBXLIJE">Hung et al. 2022</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/minecart/"><code class="docutils literal notranslate"><span class="pre">minecart-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/minecart.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/minecart/"><code class="docutils literal notranslate"><span class="pre">minecart-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/minecart.gif" width="200px"></p></td>
 <td><p>Continuous or Image / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[ore1,</span> <span class="pre">ore2,</span> <span class="pre">fuel]</span></code></p></td>
 <td><p>Agent must collect two types of ores and minimize fuel consumption. From <a class="reference external" href="https://arxiv.org/abs/1809.07803v2">Abels et al. 2019</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-highway/"><code class="docutils literal notranslate"><span class="pre">mo-highway-v0</span></code></a> and <code class="docutils literal notranslate"><span class="pre">mo-highway-fast-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-highway.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-highway/"><code class="docutils literal notranslate"><span class="pre">mo-highway-v0</span></code></a> and <code class="docutils literal notranslate"><span class="pre">mo-highway-fast-v0</span></code> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-highway.gif" width="200px"></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[speed,</span> <span class="pre">right_lane,</span> <span class="pre">collision]</span></code></p></td>
 <td><p>The agent’s objective is to reach a high speed while avoiding collisions with neighbouring vehicles and staying on the rightest lane. From <a class="reference external" href="https://github.com/eleurent/highway-env">highway-env</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-supermario/"><code class="docutils literal notranslate"><span class="pre">mo-supermario-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-supermario.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-supermario/"><code class="docutils literal notranslate"><span class="pre">mo-supermario-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-supermario.gif" width="200px"></p></td>
 <td><p>Image / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[x_pos,</span> <span class="pre">time,</span> <span class="pre">death,</span> <span class="pre">coin,</span> <span class="pre">enemy]</span></code></p></td>
 <td><p>[:warning: SuperMarioBrosEnv support is limited.] Multi-objective version of <a class="reference external" href="https://github.com/Kautenja/gym-super-mario-bros">SuperMarioBrosEnv</a>. Objectives are defined similarly as in <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-reacher/"><code class="docutils literal notranslate"><span class="pre">mo-reacher-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-reacher.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-reacher/"><code class="docutils literal notranslate"><span class="pre">mo-reacher-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-reacher.gif" width="200px"></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[target_1,</span> <span class="pre">target_2,</span> <span class="pre">target_3,</span> <span class="pre">target_4]</span></code></p></td>
 <td><p>Mujoco version of <code class="docutils literal notranslate"><span class="pre">mo-reacher-v0</span></code>, based on <code class="docutils literal notranslate"><span class="pre">Reacher-v4</span></code> <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/reacher/">environment</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-hopper/"><code class="docutils literal notranslate"><span class="pre">mo-hopper-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-hopper.gif" width="200px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-hopper/"><code class="docutils literal notranslate"><span class="pre">mo-hopper-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-hopper.gif" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[velocity,</span> <span class="pre">height,</span> <span class="pre">energy]</span></code></p></td>
 <td><p>Multi-objective version of <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/hopper/">Hopper-v4</a> env.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-halfcheetah/"><code class="docutils literal notranslate"><span class="pre">mo-halfcheetah-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-halfcheetah.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-halfcheetah/"><code class="docutils literal notranslate"><span class="pre">mo-halfcheetah-v4</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-halfcheetah.gif" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[velocity,</span> <span class="pre">energy]</span></code></p></td>
 <td><p>Multi-objective version of <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/half_cheetah/">HalfCheetah-v4</a> env. Similar to <a class="reference external" href="https://github.com/mit-gfx/PGMORL">Xu et al. 2020</a>.</p></td>
