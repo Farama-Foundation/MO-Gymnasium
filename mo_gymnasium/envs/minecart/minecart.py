@@ -1,7 +1,6 @@
 import itertools
 import json
 import math
-from copy import deepcopy
 from math import ceil
 from pathlib import Path
 from typing import List, Optional
@@ -566,7 +565,7 @@ class Minecart(gym.Env, EzPickle):
         super().reset(seed=seed)
 
         if self.screen is None and self.image_observation:
-            self.render(mode="rgb_array")  # init pygame
+            self.render()  # init pygame
 
         if self.image_observation:
             self.render_pygame()
@@ -674,13 +673,6 @@ class Minecart(gym.Env, EzPickle):
         if self.screen is not None:
             pygame.display.quit()
             pygame.quit()
-
-    def __deepcopy__(self, memo):
-        this_copy = Minecart(self.image_observation, self.config)
-        this_copy.cart = deepcopy(self.cart)
-        this_copy.mines = deepcopy(self.mines)
-        this_copy.end = self.end
-        return this_copy
 
 
 class Mine:
