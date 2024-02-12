@@ -27,7 +27,7 @@ repos:
     hooks:
       - id: flake8
         args:
-          - '--per-file-ignores=*/__init__.py:F401'
+          - "--per-file-ignores=*/__init__.py:F401"
           - --ignore=E203,W503,E741
           - --max-complexity=30
           - --max-line-length=456
@@ -64,6 +64,6 @@ repos:
         language: node
         pass_filenames: false
         types: [python]
-        additional_dependencies: ["pyright"]
+        additional_dependencies: ["pyright@1.1.347"]
         args:
           - --project=pyproject.toml

@@ -64,8 +64,8 @@ def test_env_determinism_rollout(env_spec: EnvSpec):
     if env_spec.nondeterministic is True:
         return
 
-    env_1 = env_spec.make(disable_env_checker=True)
-    env_2 = env_spec.make(disable_env_checker=True)
+    env_1 = mo_gym.make(env_spec.id)
+    env_2 = mo_gym.make(env_spec.id)
     env_1 = mo_gym.LinearReward(env_1)
     env_2 = mo_gym.LinearReward(env_2)
 
