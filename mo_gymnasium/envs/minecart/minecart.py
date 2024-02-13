@@ -638,8 +638,6 @@ class Minecart(gym.Env, EzPickle):
             return np.transpose(np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2))
 
     def render_pygame(self):
-        pygame.event.get()
-
         self.mine_sprites.update()
 
         # Clear canvas
