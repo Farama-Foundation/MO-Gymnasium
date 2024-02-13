@@ -146,6 +146,8 @@ class Minecart(gym.Env, EzPickle):
 
         self.render_mode = render_mode
         self.screen = None
+        self.canvas = None
+        self.clock = None
         self.last_render_mode_used = None
         self.config = config
         self.frame_skip = frame_skip
@@ -422,9 +424,17 @@ class Minecart(gym.Env, EzPickle):
         self.mine_rects = []
         for mine in self.mines:
             mine_sprite = pygame.sprite.Sprite()
-            mine_sprite.image = pygame.transform.rotozoom(
-                pygame.image.load(MINE_IMG), mine.rotation, MINE_SCALE
-            ).convert_alpha()
+            # mine_sprite.image = pygame.transform.rotozoom(
+            #    pygame.image.load(MINE_IMG), mine.rotation, MINE_SCALE,
+            # ).convert_alpha()
+            mine_sprite.image = pygame.image.load(MINE_IMG)
+            mine_sprite.image = pygame.transform.scale(
+                mine_sprite.image,
+                (int(mine_sprite.image.get_width() * MINE_SCALE), int(mine_sprite.image.get_height() * MINE_SCALE)),
+            )
+            mine_sprite.image = pygame.transform.rotate(mine_sprite.image, mine.rotation)
+            if self.render_mode == "human":
+                mine_sprite.image = mine_sprite.image.convert_alpha()
             self.mine_sprites.add(mine_sprite)
             mine_sprite.rect = mine_sprite.image.get_rect()
             mine_sprite.rect.centerx = (mine.pos[0] * (1 - 2 * MARGIN)) * WIDTH + MARGIN * WIDTH
@@ -517,7 +527,7 @@ class Minecart(gym.Env, EzPickle):
             np.array -- array of pixels, with shape (width, height, channels)
         """
         if update:
-            self.pixels = pygame.surfarray.array3d(self.screen)
+            self.pixels = np.transpose(np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2))
 
         return self.pixels
 
@@ -564,7 +574,7 @@ class Minecart(gym.Env, EzPickle):
         """
         super().reset(seed=seed)
 
-        if self.screen is None and self.image_observation:
+        if self.canvas is None and self.image_observation:
             self.render()  # init pygame
 
         if self.image_observation:
@@ -590,33 +600,42 @@ class Minecart(gym.Env, EzPickle):
         return string
 
     def render(self):
-        if self.screen is None or self.last_render_mode_used != self.render_mode:
+        if self.canvas is None or self.last_render_mode_used != self.render_mode:
             self.last_render_mode_used = self.render_mode
             pygame.init()
-            self.screen = pygame.display.set_mode(
-                (WIDTH, HEIGHT),
-                flags=pygame.HIDDEN if self.render_mode == "rgb_array" else 0,
-            )
-            self.clock = pygame.time.Clock()
+            self.canvas = pygame.Surface((WIDTH, HEIGHT))
+            if self.render_mode == "human":
+                pygame.display.init()
+                self.screen = pygame.display.set_mode(
+                    (WIDTH, HEIGHT),
+                )
+
+            if self.clock is None and self.render_mode == "human":
+                self.clock = pygame.time.Clock()
 
             self.initialize_mines()
 
             self.cart_sprite = pygame.sprite.Sprite()
             self.cart_sprites = pygame.sprite.Group()
             self.cart_sprites.add(self.cart_sprite)
-            self.cart_image = pygame.transform.rotozoom(pygame.image.load(CART_IMG).convert_alpha(), 0, CART_SCALE)
+            self.cart_image = pygame.image.load(CART_IMG)
+            if self.render_mode == "human":
+                self.cart_image = self.cart_image.convert_alpha()
+            self.cart_image = pygame.transform.scale(
+                self.cart_image,
+                (int(self.cart_image.get_width() * CART_SCALE), int(self.cart_image.get_height() * CART_SCALE)),
+            )
 
         if not self.image_observation:
             self.render_pygame()  # if the obs is not an image, then step would not have rendered the screen
 
         if self.render_mode == "human":
-            self.clock.tick(FPS)
+            self.screen.blit(self.canvas, self.canvas.get_rect())
+            pygame.event.pump()
             pygame.display.update()
+            self.clock.tick(FPS)
         elif self.render_mode == "rgb_array":
-            string_image = pygame.image.tostring(self.screen, "RGB")
-            temp_surf = pygame.image.fromstring(string_image, (WIDTH, HEIGHT), "RGB")
-            tmp_arr = pygame.surfarray.array3d(temp_surf)
-            return tmp_arr
+            return np.transpose(np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2))
 
     def render_pygame(self):
         pygame.event.get()
@@ -624,18 +643,18 @@ class Minecart(gym.Env, EzPickle):
         self.mine_sprites.update()
 
         # Clear canvas
-        self.screen.fill(GRAY)
+        self.canvas.fill(GRAY)
 
         # Draw Home
         pygame.draw.circle(
-            self.screen,
+            self.canvas,
             RED,
             (int(WIDTH * HOME_X), int(HEIGHT * HOME_Y)),
             int(WIDTH / 3 * BASE_SCALE),
         )
 
         # Draw Mines
-        self.mine_sprites.draw(self.screen)
+        self.mine_sprites.draw(self.canvas)
 
         # Draw cart
         self.cart_sprite.image = rot_center(self.cart_image, -self.cart.angle).copy()
@@ -647,7 +666,7 @@ class Minecart(gym.Env, EzPickle):
 
         self.cart_sprites.update()
 
-        self.cart_sprites.draw(self.screen)
+        self.cart_sprites.draw(self.canvas)
 
         # Draw cart content
         width = self.cart_sprite.rect.width / (2 * self.ore_cnt)
@@ -659,7 +678,7 @@ class Minecart(gym.Env, EzPickle):
 
             if rect_height >= 1:
                 pygame.draw.rect(
-                    self.screen,
+                    self.canvas,
                     self.ore_colors[i],
                     (
                         self.cart_sprite.rect.left + offset + i * (width + 1),

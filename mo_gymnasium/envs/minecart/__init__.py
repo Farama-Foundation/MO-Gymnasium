@@ -13,6 +13,7 @@ register(
     id="minecart-rgb-v0",
     entry_point="mo_gymnasium.envs.minecart.minecart:Minecart",
     kwargs={"image_observation": True},
+    nondeterministic=True,  # This is a nondeterministic environment due to the random placement of the mines
     max_episode_steps=1000,
 )
 
