@@ -10,10 +10,20 @@ lastpage:
 
 introduction/install
 introduction/api
-environments/all-environments
 wrappers/wrappers
 examples/morl_baselines
 ```
+
+```{toctree}
+:hidden:
+:caption: Environments
+
+environments/discrete-state
+environments/continuous-state
+environments/image-state
+environments/mujoco
+```
+
 
 ```{toctree}
 :hidden:
