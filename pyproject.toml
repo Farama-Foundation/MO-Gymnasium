@@ -34,7 +34,7 @@ dynamic = ["version"]
 # Update dependencies in `all` if any are added or removed
 mario = ["nes-py", "gym-super-mario-bros"]
 minecart = ["scipy >=1.7.3  "]
-mujoco = ["mujoco ==2.3.2", "imageio >=2.14.1"]
+mujoco = ["mujoco >=2.2.0", "imageio >=2.14.1"]
 highway = ["highway-env >=1.8"]
 box2d = ["box2d-py ==2.3.5", "pygame ==2.1.3.dev8", "swig ==4.*"]
 all = [
@@ -47,7 +47,7 @@ all = [
     "scipy >=1.7.3",
     # mujoco
     "imageio >=2.14.1",
-    "mujoco ==2.3.2",
+    "mujoco >=2.2.0",
     # highway
     "highway-env >= 1.8",
     # box2d
