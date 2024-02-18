@@ -18,6 +18,8 @@ Multi-objective versions of Mujoco environments.
 :glob:
 :caption: MO-Gymnasium Environments
 
-./mujoco/*
+./mo-reacher
+./mo-hopper
+./mo-halfcheetah
 
 ```
