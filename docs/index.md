@@ -19,8 +19,8 @@ examples/morl_baselines
 :caption: Environments
 
 environments/discrete-state
-environments/continuous-state
-environments/image-state
+environments/classical
+environments/misc
 environments/mujoco
 ```
 

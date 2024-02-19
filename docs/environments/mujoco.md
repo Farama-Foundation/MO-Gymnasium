@@ -1,8 +1,8 @@
 ---
-title: "Mujoco"
+title: "MuJoCo"
 ---
 
-# Mujoco
+# MuJoCo
 
 Multi-objective versions of Mujoco environments.
 

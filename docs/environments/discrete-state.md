@@ -1,8 +1,8 @@
 ---
-title: "Discrete Observation"
+title: "Grid-World"
 ---
 
-# Discrete Observation
+# Grid-World
 
 Environments with discrete observation spaces.
 
