@@ -18,7 +18,7 @@ examples/morl_baselines
 :hidden:
 :caption: Environments
 
-environments/discrete-state
+environments/grid-world
 environments/classical
 environments/misc
 environments/mujoco
