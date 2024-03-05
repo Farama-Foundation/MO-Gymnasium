@@ -32,6 +32,12 @@ register(
     max_episode_steps=1000,
 )
 
+register(
+    id="mo-ant-2d-v4",
+    entry_point="mo_gymnasium.envs.mujoco.ant:MOAntEnv",
+    max_episode_steps=1000,
+    kwargs={"cost_objective": False},
+)
 
 register(
     id="mo-swimmer-v4",
