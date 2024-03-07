@@ -35,6 +35,7 @@ class MOAntEnv(AntEnv, EzPickle):
         healthy_reward = info["reward_survive"]
 
         if self.cost_objetive:
+            cost /= self._ctrl_cost_weight  # Ignore the weight in the original AntEnv
             vec_reward = np.array([x_velocity, y_velocity, cost], dtype=np.float32)
         else:
             vec_reward = np.array([x_velocity, y_velocity], dtype=np.float32)
