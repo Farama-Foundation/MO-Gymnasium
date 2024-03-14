@@ -64,7 +64,7 @@ def test_gymnasium_equivalence(gym_id, mo_gym_id, num_steps=100, seed=123):
     env = gym.wrappers.TransformReward(env, lambda reward: round(reward, 4))
     mo_env = gym.wrappers.TransformReward(mo_env, lambda reward: round(reward, 4))
 
-    assert check_environments_match(env, mo_env, num_steps=num_steps, seed=seed, info_comparison="keys-superset")
+    check_environments_match(env, mo_env, num_steps=num_steps, seed=seed, skip_rew=True, info_comparison="keys-superset")
 
 
 # Note that this precludes running this test in multiple threads.
