@@ -47,7 +47,7 @@ def test_all_env_passive_env_checker(spec):
         ("MountainCar-v0", "mo-mountaincar-v0"),
         ("MountainCarContinuous-v0", "mo-mountaincarcontinuous-v0"),
         ("LunarLander-v2", "mo-lunar-lander-v2"),
-        ("Reacher-v4", "mo-reacher-v4"),
+        # ("Reacher-v4", "mo-reacher-v4"),  # use a different model and action space
         ("Hopper-v4", "mo-hopper-v4"),
         ("HalfCheetah-v4", "mo-halfcheetah-v4"),
         ("Walker2d-v4", "mo-walker2d-v4"),
