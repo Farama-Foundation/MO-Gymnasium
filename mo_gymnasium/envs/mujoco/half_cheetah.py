@@ -11,6 +11,11 @@ class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/half_cheetah/) for more information.
 
+    The original Gymnasium's 'HalfCheetah-v4' is recovered by the following linear scalarization:
+
+    env = mo_gym.make('mo-halfcheetah-v4')
+    LinearReward(env, weight=np.array([1.0, 1.0]))
+
     ## Reward Space
     The reward is 2-dimensional:
     - 0: Reward for running forward
