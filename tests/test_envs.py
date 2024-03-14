@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from gymnasium.envs.registration import EnvSpec
 from gymnasium.utils.env_checker import check_env, data_equivalence
+from gymnasium.utils.env_match import check_environments_match
 
 import mo_gymnasium as mo_gym
 
@@ -38,6 +39,32 @@ def test_all_env_passive_env_checker(spec):
     env.reset()
     env.step(env.action_space.sample())
     env.close()
+
+
+@pytest.mark.parametrize(
+    "gym_id, mo_gym_id",
+    [
+        ("MountainCar-v0", "mo-mountaincar-v0"),
+        ("MountainCarContinuous-v0", "mo-mountaincarcontinuous-v0"),
+        ("LunarLander-v2", "mo-lunar-lander-v2"),
+        ("Reacher-v4", "mo-reacher-v4"),
+        ("Hopper-v4", "mo-hopper-v4"),
+        ("HalfCheetah-v4", "mo-halfcheetah-v4"),
+        ("Walker2d-v4", "mo-walker2d-v4"),
+        ("Ant-v4", "mo-ant-v4"),
+        ("Swimmer-v4", "mo-swimmer-v4"),
+        ("Humanoid-v4", "mo-humanoid-v4"),
+    ],
+)
+def test_gymnasium_equivalence(gym_id, mo_gym_id, num_steps=100, seed=123):
+    env = gym.make(gym_id)
+    mo_env = mo_gym.LinearReward(mo_gym.make(mo_gym_id))
+
+    # for float rewards, then precision becomes an issue
+    env = gym.wrappers.TransformReward(env, lambda reward: round(reward, 4))
+    mo_env = gym.wrappers.TransformReward(mo_env, lambda reward: round(reward, 4))
+
+    assert check_environments_match(env, mo_env, num_steps=num_steps, seed=seed, info_comparison="keys-superset")
 
 
 # Note that this precludes running this test in multiple threads.
