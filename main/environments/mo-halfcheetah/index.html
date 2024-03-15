@@ -359,6 +359,9 @@
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
 <p>Multi-objective version of the HalfCheetahEnv environment.</p>
 <p>See <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/half_cheetah/">Gymnasium’s env</a> for more information.</p>
+<p>The original Gymnasium’s ‘HalfCheetah-v4’ is recovered by the following linear scalarization:</p>
+<p>env = mo_gym.make(‘mo-halfcheetah-v4’)
+LinearReward(env, weight=np.array([1.0, 1.0]))</p>
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
