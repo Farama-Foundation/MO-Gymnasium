@@ -11,6 +11,11 @@ class MOAntEnv(AntEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/ant/) for more information.
 
+    The original Gymnasium's 'Ant-v4' is recovered by the following linear scalarization:
+
+    env = mo_gym.make('mo-ant-v4', cost_objective=False)
+    LinearReward(env, weight=np.array([1.0, 0.0]))
+
     ## Reward Space
     The reward is 2- or 3-dimensional:
     - 0: x-velocity
