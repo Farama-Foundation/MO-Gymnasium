@@ -25,7 +25,7 @@ class BreakableBottles(Env, EzPickle):
     The observation space is a dictionary with 4 keys:
     - location: the current location of the agent
     - bottles_carrying: the number of bottles the agent is currently carrying (0, 1 or 2)
-    - bottles_delivered: the number of bottles the agent has delivered (0 or 1)
+    - bottles_delivered: the number of bottles the agent has delivered (0, 1 or 2)
     - bottles_dropped: for each location, a boolean flag indicating if that location currently contains a bottle
 
     ## Reward Space
@@ -96,11 +96,11 @@ class BreakableBottles(Env, EzPickle):
             {
                 "location": Discrete(self.size),
                 "bottles_carrying": Discrete(3),
-                "bottles_delivered": Discrete(2),
+                "bottles_delivered": Discrete(3),
                 "bottles_dropped": MultiBinary(self.size - 2),
             }
         )
-        self.num_observations = 240
+        self.num_observations = 360
 
         self.action_space = Discrete(3)  # LEFT, RIGHT, PICKUP
         self.num_actions = 3
