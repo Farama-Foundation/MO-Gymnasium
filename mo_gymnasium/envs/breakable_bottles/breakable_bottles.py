@@ -27,8 +27,8 @@ class BreakableBottles(Env, EzPickle):
     - bottles_carrying: the number of bottles the agent is currently carrying (0, 1 or 2)
     - bottles_delivered: the number of bottles the agent has delivered (0, 1 or 2)
     - bottles_dropped: for each location, a boolean flag indicating if that location currently contains a bottle
-    
-    Note that this observation space is different from that listed in the paper above. In the paper, bottles_delivered's possible values are listed as (0 or 1), 
+
+    Note that this observation space is different from that listed in the paper above. In the paper, bottles_delivered's possible values are listed as (0 or 1),
     rather than (0, 1 or 2). This is because the paper did not take the terminal state, in which 2 bottles have been delivered, into account when calculating
     the observation space. As such, the observation space of this implementation is larger than specified in the paper, having 360 possible states instead of 240.
 
