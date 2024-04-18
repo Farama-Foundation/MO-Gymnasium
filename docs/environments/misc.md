@@ -21,6 +21,8 @@ MO-Gymnasium also includes other miscellaneous multi-objective environments:
 
 ./water-reservoir
 ./minecart
+./minecart-deterministic
+./minecart-rgb
 ./mo-highway
 ./mo-supermario
 ```

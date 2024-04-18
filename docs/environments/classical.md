@@ -20,5 +20,6 @@ Multi-objective versions of classical Gymnasium's environments.
 ./mo-mountaincar
 ./mo-mountaincarcontinuous
 ./mo-lunar-lander
+./mo-lunar-lander-continuous
 
 ```
