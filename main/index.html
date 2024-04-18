@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Install" href="introduction/install/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/index.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.3.6 and Furo 2023.08.19.dev1 -->
         <title>MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=3e7f4c72" />
@@ -234,11 +234,14 @@
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-mountaincar/">MO-Mountaincar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-lunar-lander/">MO-Lunar-Lander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="environments/misc/">Miscellaneous</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Miscellaneous</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="environments/water-reservoir/">Water-Reservoir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/minecart/">Minecart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/minecart-deterministic/">Minecart-Deterministic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/minecart-rgb/">Minecart-Rgb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-highway/">MO-Highway</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-supermario/">MO-Supermario</a></li>
 </ul>
@@ -348,7 +351,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
 <p>MO-Gymnasium is an open source Python library for developing and comparing multi-objective reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/Gymnasium">Gymnasium API</a>, but return vectorized rewards as numpy arrays.</p>
 <p>The documentation website is at <a class="reference external" href="https://mo-gymnasium.farama.org">mo-gymnasium.farama.org</a>, and we have a public discord server (which we also use to coordinate development work) that you can join here: https://discord.gg/bnJ6kubTg6.</p>
 <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<h1>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h1>
 <p>As for Gymnasium, the MO-Gymnasium API models environments as simple Python <code class="docutils literal notranslate"><span class="pre">env</span></code> classes. Creating environment instances and interacting with them is very simple - here’s an example using the “minecart-v0” environment:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span> <span class="k">as</span> <span class="nn">gym</span>
 <span class="kn">import</span> <span class="nn">mo_gymnasium</span> <span class="k">as</span> <span class="nn">mo_gym</span>
@@ -369,7 +372,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
 <p>You can also check more examples in this colab notebook! <a class="reference external" href="https://colab.research.google.com/github/Farama-Foundation/MO-Gymnasium/blob/main/mo_gymnasium_demo.ipynb"><img alt="MO-Gym Demo in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 </section>
 <section id="install">
-<h1>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
+<h1>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h1>
 <p>To install MO-Gymnasium, use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mo-gymnasium
 </pre></div>
@@ -377,7 +380,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
 <p>This does not include dependencies for all families of environments (some can be problematic to install on certain systems). You can install these dependencies for one family like <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;mo-gymnasium[mujoco]&quot;</span></code> or use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;mo-gymnasium[all]&quot;</span></code> to install all dependencies.</p>
 </section>
 <section id="citing">
-<h1>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h1>
+<h1>Citing<a class="headerlink" href="#citing" title="Link to this heading">¶</a></h1>
 <p>If you use this repository in your research, please cite:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">felten_toolkit_2023</span><span class="p">,</span>
 <span class="w">	</span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Felten, Florian and Alegre, Lucas N. and Now{\&#39;e}, Ann and Bazzan, Ana L. C. and Talbi, El Ghazali and Danoy, Gr{\&#39;e}goire and Silva, Bruno C. {\relax da}}</span><span class="p">,</span>
@@ -454,7 +457,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
     
 
     <script src="_static/documentation_options.js?v=25d39d6f"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=7660844c"></script>
     

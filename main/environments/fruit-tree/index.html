@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Breakable-Bottles" href="../breakable-bottles/" /><link rel="prev" title="Four-Room" href="../four-room/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/environments/fruit-tree.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.6 and Furo 2023.08.19.dev1 -->
         <title>Fruit-Tree - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -234,11 +234,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../mo-mountaincar/">MO-Mountaincar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander/">MO-Lunar-Lander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../misc/">Miscellaneous</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Miscellaneous</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../water-reservoir/">Water-Reservoir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../minecart/">Minecart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minecart-deterministic/">Minecart-Deterministic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minecart-rgb/">Minecart-Rgb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-highway/">MO-Highway</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-supermario/">MO-Supermario</a></li>
 </ul>
@@ -316,7 +319,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="fruit-tree">
-<h1>Fruit-Tree<a class="headerlink" href="#fruit-tree" title="Link to this heading">#</a></h1>
+<h1>Fruit-Tree<a class="headerlink" href="#fruit-tree" title="Link to this heading">¶</a></h1>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../../_images/fruit-tree.gif"><img alt="../../_images/fruit-tree.gif" src="../../_images/fruit-tree.gif" style="width: 200px;" /></a>
 </figure>
@@ -356,28 +359,28 @@
 </table>
 </div>
 <section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>Full binary tree of depth d=5,6 or 7. Every leaf contains a fruit with a value for the nutrients Protein, Carbs, Fats, Vitamins, Minerals and Water.
 From <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Yang et al. 2019</a>.</p>
 </section>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>Discrete space of size 2^d-1, where d is the depth of the tree.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The agent can chose to go left or right at every node. The action space is therefore a discrete space of size 2.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
 <p>Each leaf node contains a 6-dimensional vector containing the nutrients of the fruit. The agent receives a reward for each nutrient it collects.</p>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The agent starts at the root node (0, 0).</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">¶</a></h2>
 <p>The episode terminates when the agent reaches a leaf node.</p>
 </section>
 </section>
@@ -481,7 +484,7 @@ From <a class="reference external" href="https://arxiv.org/pdf/1908.08342.pdf">Y
     
 
     <script src="../../_static/documentation_options.js?v=25d39d6f"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
