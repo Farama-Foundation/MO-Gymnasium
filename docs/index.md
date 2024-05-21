@@ -10,10 +10,20 @@ lastpage:
 
 introduction/install
 introduction/api
-environments/all-environments
 wrappers/wrappers
 examples/morl_baselines
 ```
+
+```{toctree}
+:hidden:
+:caption: Environments
+
+environments/grid-world
+environments/classical
+environments/misc
+environments/mujoco
+```
+
 
 ```{toctree}
 :hidden:

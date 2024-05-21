@@ -11,6 +11,11 @@ class MOHopperEnv(HopperEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/hopper/) for more information.
 
+    The original Gymnasium's 'Hopper-v4' is recovered by the following linear scalarization:
+
+    env = mo_gym.make('mo-hopper-v4', cost_objective=False)
+    LinearReward(env, weight=np.array([1.0, 0.0]))
+
     ## Reward Space
     The reward is 3-dimensional:
     - 0: Reward for going forward on the x-axis
