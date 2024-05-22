@@ -7,8 +7,8 @@ from typing import Iterator, Tuple, TypeVar
 import gymnasium as gym
 import numpy as np
 from gymnasium.vector import SyncVectorEnv
-from gymnasium.wrappers.normalize import RunningMeanStd
-from gymnasium.wrappers.record_episode_statistics import RecordEpisodeStatistics
+from gymnasium.wrappers.common import RecordEpisodeStatistics
+from gymnasium.wrappers.utils import RunningMeanStd
 
 
 ObsType = TypeVar("ObsType")

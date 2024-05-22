@@ -7,7 +7,8 @@ from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 from gymnasium.utils import EzPickle, seeding
 
 # from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
-from gymnasium.wrappers import GrayScaleObservation, ResizeObservation
+from gymnasium.wrappers import ResizeObservation
+from gymnasium.wrappers.transform_observation import GrayscaleObservation
 from nes_py.nes_env import SCREEN_SHAPE_24_BIT
 
 import mo_gymnasium as mo_gym
@@ -16,7 +17,7 @@ import mo_gymnasium as mo_gym
 from mo_gymnasium.envs.mario.joypad_space import JoypadSpace
 
 
-class MOSuperMarioBros(SuperMarioBrosEnv, EzPickle):
+class MOSuperMarioBros(gym.Env, SuperMarioBrosEnv, EzPickle):
     """
     ## Description
     Multi-objective version of the SuperMarioBro environment.
@@ -206,7 +207,7 @@ if __name__ == "__main__":
     env = JoypadSpace(env, SIMPLE_MOVEMENT)
     # env = MaxAndSkipEnv(env, 4)
     env = ResizeObservation(env, (84, 84))
-    env = GrayScaleObservation(env)
+    env = GrayscaleObservation(env)
     # env = FrameStack(env, 4)
     env = mo_gym.LinearReward(env)
 

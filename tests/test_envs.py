@@ -190,7 +190,7 @@ def test_ccs_dst():
         np.array([19.778, -17.383]),
     ]
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_ccs, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -200,7 +200,7 @@ def test_ccs_dst_no_discount():
 
     known_ccs = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONVEX_FRONT
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_ccs, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -223,7 +223,7 @@ def test_concave_pf_dst():
         np.array([124.0 * gamma**18, -17.383]),
     ]
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -233,7 +233,7 @@ def test_concave_pf_dst_no_discount():
 
     known_pf = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONCAVE_FRONT
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -244,7 +244,7 @@ def test_pf_fruit_tree():
 
     known_pf = np.array(mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]) * (0.99 ** (depth - 1))
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -255,6 +255,6 @@ def test_pf_fruit_tree_no_discount():
 
     known_pf = mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
