@@ -90,7 +90,7 @@ class ReacherBulletEnv(gym.Env, BaseBulletEnv, EzPickle):
         self._seed(seed)
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
-        obs = super().reset()
+        obs = self._reset()
         if self.render_mode == "human":
             self._render(mode="human")
         return obs, {}
