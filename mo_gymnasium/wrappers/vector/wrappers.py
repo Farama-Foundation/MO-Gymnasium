@@ -1,7 +1,7 @@
 """Vector wrappers."""
 import time
 from copy import deepcopy
-from typing import Any, Iterator, Tuple, Dict
+from typing import Any, Dict, Iterator, Tuple
 
 import gymnasium as gym
 import numpy as np
@@ -12,61 +12,6 @@ from gymnasium.vector.vector_env import ArrayType, VectorEnv
 from gymnasium.wrappers.vector import RecordEpisodeStatistics
 
 
-# class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
-#     """Wrapper to normalize the reward component at index idx. Does not touch other reward components."""
-#
-#     def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
-#         """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
-#
-#         Args:
-#             env (env): The environment to apply the wrapper
-#             idx (int): the index of the reward to normalize
-#             epsilon (float): A stability parameter
-#             gamma (float): The discount factor that is used in the exponential moving average.
-#         """
-#         gym.utils.RecordConstructorArgs.__init__(self, idx=idx, gamma=gamma, epsilon=epsilon)
-#         gym.Wrapper.__init__(self, env)
-#         self.idx = idx
-#         self.num_envs = getattr(env, "num_envs", 1)
-#         self.is_vector_env = getattr(env, "is_vector_env", False)
-#         self.return_rms = RunningMeanStd(shape=())
-#         self.returns = np.zeros(self.num_envs)
-#         self.gamma = gamma
-#         self.epsilon = epsilon
-#
-#     def step(self, action: ActType):
-#         """Steps through the environment, normalizing the rewards returned.
-#
-#         Args:
-#             action: action to perform
-#         Returns: obs, normalized_rewards, terminated, truncated, infos
-#         """
-#         obs, rews, terminated, truncated, infos = self.env.step(action)
-#         # Extracts the objective value to normalize
-#         to_normalize = rews[self.idx]
-#         if not self.is_vector_env:
-#             to_normalize = np.array([to_normalize])
-#         self.returns = self.returns * self.gamma + to_normalize
-#         # Defer normalization to gym implementation
-#         to_normalize = self.normalize(to_normalize)
-#         self.returns[terminated] = 0.0
-#         if not self.is_vector_env:
-#             to_normalize = to_normalize[0]
-#         # Injecting the normalized objective value back into the reward vector
-#         rews[self.idx] = to_normalize
-#         return obs, rews, terminated, truncated, infos
-#
-#     def normalize(self, rews):
-#         """Normalizes the rewards with the running mean rewards and their variance.
-#
-#         Args:
-#             rews: rewards
-#         Returns: the normalized reward
-#         """
-#         self.return_rms.update(self.returns)
-#         return rews / np.sqrt(self.return_rms.var + self.epsilon)
-#
-#
 class MOSyncVectorEnv(SyncVectorEnv):
     """Vectorized environment that serially runs multiple environments."""
 
@@ -109,7 +54,13 @@ class MOSyncVectorEnv(SyncVectorEnv):
                 self._terminations[i] = False
                 self._truncations[i] = False
             else:
-                (env_obs, self._rewards[i], self._terminations[i], self._truncations[i], env_info,) = self.envs[
+                (
+                    env_obs,
+                    self._rewards[i],
+                    self._terminations[i],
+                    self._truncations[i],
+                    env_info,
+                ) = self.envs[
                     i
                 ].step(action)
 
