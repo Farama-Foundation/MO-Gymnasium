@@ -1,17 +1,13 @@
 import numpy as np
 
 import mo_gymnasium as mo_gym
-from mo_gymnasium.wrappers.vector import (
-    MORecordEpisodeStatistics,
-    MOSyncVectorEnv,
-)
+from mo_gymnasium.wrappers.vector import MORecordEpisodeStatistics, MOSyncVectorEnv
 
 
 def test_mo_sync_wrapper():
     def make_env(env_id):
         def thunk():
             env = mo_gym.make(env_id)
-            env = MORecordEpisodeStatistics(env, gamma=0.97)
             return env
 
         return thunk

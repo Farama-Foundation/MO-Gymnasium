@@ -1,7 +1,7 @@
 """Vector wrappers."""
 import time
 from copy import deepcopy
-from typing import Any, Iterator
+from typing import Any, Iterator, Tuple, Dict
 
 import gymnasium as gym
 import numpy as np
@@ -92,7 +92,7 @@ class MOSyncVectorEnv(SyncVectorEnv):
             dtype=np.float32,
         )
 
-    def step(self, actions: ActType) -> tuple[ObsType, ArrayType, ArrayType, ArrayType, dict[str, Any]]:
+    def step(self, actions: ActType) -> Tuple[ObsType, ArrayType, ArrayType, ArrayType, Dict[str, Any]]:
         """Steps through each of the environments returning the batched results.
 
         Returns:
@@ -187,7 +187,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
         return obs, info
 
-    def step(self, actions: ActType) -> tuple[ObsType, ArrayType, ArrayType, ArrayType, dict]:
+    def step(self, actions: ActType) -> Tuple[ObsType, ArrayType, ArrayType, ArrayType, Dict[str, Any]]:
         """Steps through the environment, recording the episode statistics."""
         (
             observations,
@@ -229,8 +229,8 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
                 episode_time_length = np.round(time.perf_counter() - self.episode_start_times, 6)
                 infos[self._stats_key] = {
-                    "r": np.where(dones, self.episode_returns, np.zeros(self.rewards_shape, dtype=np.float32)),
-                    "dr": np.where(dones, self.disc_episode_returns, np.zeros(self.rewards_shape, dtype=np.float32)),
+                    "r": episode_return,
+                    "dr": disc_episode_return,
                     "l": np.where(dones, self.episode_lengths, 0),
                     "t": np.where(dones, episode_time_length, 0.0),
                 }
