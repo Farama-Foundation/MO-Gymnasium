@@ -50,7 +50,7 @@ obs, info = env.reset()
 next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))
 
 # Optionally, you can scalarize the reward function with the LinearReward wrapper
-env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
+env = mo_gym.wrappers.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
 ```
 For details on multi-objective MDP's (MOMDP's) and other MORL definitions, see [A practical guide to multi-objective reinforcement learning and planning](https://link.springer.com/article/10.1007/s10458-022-09552-y).
 

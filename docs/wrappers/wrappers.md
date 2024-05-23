@@ -11,29 +11,29 @@ A few wrappers inspired from Gymnasium's wrappers are available in MO-Gymnasium.
 
 
 ```{eval-rst}
-.. autoclass:: mo_gymnasium.LinearReward
+.. autoclass:: mo_gymnasium.wrappers.LinearReward
 ```
 
 ## `MONormalizeReward`
 
 ```{eval-rst}
-.. autoclass:: mo_gymnasium.MONormalizeReward
+.. autoclass:: mo_gymnasium.wrappers.MONormalizeReward
 ```
 
 ## `MOClipReward`
 
 ```{eval-rst}
-.. autoclass:: mo_gymnasium.MOClipReward
+.. autoclass:: mo_gymnasium.wrappers.MOClipReward
 ```
 
 ## `MOSyncVectorEnv`
 
 ```{eval-rst}
-.. autoclass:: mo_gymnasium.MOSyncVectorEnv
+.. autoclass:: mo_gymnasium.wrappers.MOSyncVectorEnv
 ```
 
 ## `MORecordEpisodeStatistics`
 
 ```{eval-rst}
-.. autoclass:: mo_gymnasium.MORecordEpisodeStatistics
+.. autoclass:: mo_gymnasium.wrappers.MORecordEpisodeStatistics
 ```

@@ -29,7 +29,7 @@ for env_spec in gym.envs.registry.values():
 def test_all_env_api(spec):
     """Check that all environments pass the environment checker."""
     env = mo_gym.make(spec.id)
-    env = mo_gym.LinearReward(env)
+    env = mo_gym.wrappers.LinearReward(env)
     check_env(env, skip_render_check=True)
     _test_reward_bounds(env.unwrapped)
     _test_pickle_env(env)
@@ -60,7 +60,7 @@ def test_all_env_passive_env_checker(spec):
 )
 def test_gymnasium_equivalence(gym_id, mo_gym_id, num_steps=100, seed=123):
     env = gym.make(gym_id)
-    mo_env = mo_gym.LinearReward(mo_gym.make(mo_gym_id))
+    mo_env = mo_gym.wrappers.LinearReward(mo_gym.make(mo_gym_id))
 
     # for float rewards, then precision becomes an issue
     env = gym.wrappers.TransformReward(env, lambda reward: round(reward, 4))
@@ -95,8 +95,8 @@ def test_env_determinism_rollout(env_spec: EnvSpec):
 
     env_1 = mo_gym.make(env_spec.id)
     env_2 = mo_gym.make(env_spec.id)
-    env_1 = mo_gym.LinearReward(env_1)
-    env_2 = mo_gym.LinearReward(env_2)
+    env_1 = mo_gym.wrappers.LinearReward(env_1)
+    env_2 = mo_gym.wrappers.LinearReward(env_2)
 
     initial_obs_1, initial_info_1 = env_1.reset(seed=SEED)
     initial_obs_2, initial_info_2 = env_2.reset(seed=SEED)
