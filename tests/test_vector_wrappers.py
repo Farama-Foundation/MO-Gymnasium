@@ -1,7 +1,10 @@
 import numpy as np
 
 import mo_gymnasium as mo_gym
-from mo_gymnasium.wrappers.vector import MORecordEpisodeStatistics, MOSyncVectorEnv
+from mo_gymnasium.wrappers.vector import (
+    MORecordEpisodeStatistics,
+    MOSyncVectorEnv,
+)
 
 
 def test_mo_sync_wrapper():
@@ -14,13 +17,7 @@ def test_mo_sync_wrapper():
         return thunk
 
     num_envs = 3
-    envs = MOSyncVectorEnv(
-        [
-            lambda: make_env("deep-sea-treasure-v0"),
-            lambda: make_env("deep-sea-treasure-v0"),
-            lambda: make_env("deep-sea-treasure-v0"),
-        ]
-    )
+    envs = MOSyncVectorEnv([make_env("deep-sea-treasure-v0") for _ in range(num_envs)])
 
     envs.reset()
     obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
