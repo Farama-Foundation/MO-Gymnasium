@@ -2,6 +2,7 @@
 
 # Envs
 import mo_gymnasium.envs
+from mo_gymnasium import wrappers
 
 # Utils
 from mo_gymnasium.utils import make

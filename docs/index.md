@@ -11,6 +11,7 @@ lastpage:
 introduction/install
 introduction/api
 wrappers/wrappers
+wrappers/vector_wrappers
 examples/morl_baselines
 ```
 

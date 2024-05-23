@@ -4,7 +4,7 @@ title: "Wrappers"
 
 # Wrappers
 
-A few wrappers inspired from Gymnasium's wrappers are available in MO-Gymnasium. They are all available directly from the `mo_gymnasium` module.
+A few wrappers inspired from Gymnasium's wrappers are available in MO-Gymnasium. They are all available directly from the `mo_gymnasium.wrappers` module.
 
 
 ## `LinearReward`
@@ -26,14 +26,14 @@ A few wrappers inspired from Gymnasium's wrappers are available in MO-Gymnasium.
 .. autoclass:: mo_gymnasium.wrappers.MOClipReward
 ```
 
-## `MOSyncVectorEnv`
-
-```{eval-rst}
-.. autoclass:: mo_gymnasium.wrappers.MOSyncVectorEnv
-```
-
 ## `MORecordEpisodeStatistics`
 
 ```{eval-rst}
 .. autoclass:: mo_gymnasium.wrappers.MORecordEpisodeStatistics
+```
+
+## `MOMaxAndSkipObservation`
+
+```{eval-rst}
+.. autoclass:: mo_gymnasium.wrappers.MOMaxAndSkipObservation
 ```
