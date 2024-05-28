@@ -9,7 +9,7 @@ readme = "README.md"
 requires-python = ">= 3.8"
 authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
 license = { text = "MIT License" }
-keywords = ["Reinforcement Learning", "Multi-Objective", "RL", "AI", "gymnasium"]
+keywords = ["Reinforcement Learning", "Multi-Objective", "RL", "AI", "Gymnasium"]
 classifiers = [
     "Development Status :: 4 - Beta",  # change to `5 - Production/Stable` when ready
     "License :: OSI Approved :: MIT License",
@@ -22,7 +22,7 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
 ]
 dependencies = [
-    "gymnasium>=0.28.1",
+    "gymnasium >=1.0.0a1",
     "numpy >=1.21.0",
     "pygame >=2.1.0",
     "scipy >=1.7.3",
