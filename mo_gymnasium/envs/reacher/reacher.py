@@ -1,5 +1,6 @@
 from typing import Optional
 
+import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 from gymnasium.utils import EzPickle, seeding
@@ -11,7 +12,7 @@ from pybulletgym.envs.roboschool.scenes.scene_bases import SingleRobotEmptyScene
 target_positions = list(map(lambda l: np.array(l), [(0.14, 0.0), (-0.14, 0.0), (0.0, 0.14), (0.0, -0.14)]))
 
 
-class ReacherBulletEnv(BaseBulletEnv, EzPickle):
+class ReacherBulletEnv(gym.Env, BaseBulletEnv, EzPickle):
     metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(
@@ -89,7 +90,7 @@ class ReacherBulletEnv(BaseBulletEnv, EzPickle):
         self._seed(seed)
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
-        obs = super().reset()
+        obs = self._reset()
         if self.render_mode == "human":
             self._render(mode="human")
         return obs, {}
