@@ -11,19 +11,19 @@ register(
     id="mo-mountaincar-3d-v0",
     entry_point="mo_gymnasium.envs.mountain_car.mountain_car:MOMountainCar",
     max_episode_steps=200,
-    kwargs={"add_speed_objective": True}
+    kwargs={"add_speed_objective": True},
 )
 
 register(
     id="mo-mountaincar-timemove-v0",
     entry_point="mo_gymnasium.envs.mountain_car.mountain_car:MOMountainCar",
     max_episode_steps=200,
-    kwargs={"merge_move_penalty": True}
+    kwargs={"merge_move_penalty": True},
 )
 
 register(
     id="mo-mountaincar-timespeed-v0",
     entry_point="mo_gymnasium.envs.mountain_car.mountain_car:MOMountainCar",
     max_episode_steps=200,
-    kwargs={"merge_move_penalty": True, "add_speed_objective": True}
+    kwargs={"merge_move_penalty": True, "add_speed_objective": True},
 )

@@ -18,13 +18,19 @@ class MOMountainCar(MountainCarEnv, EzPickle):
     - time penalty: -1.0 for each time step
     - reverse penalty: -1.0 for each time step the action is 0 (reverse)
     - forward penalty: -1.0 for each time step the action is 2 (forward)
-    
+
     Alternatively, the reward can be changed with the following options:
     - add_speed_objective: Add an extra objective corresponding to the speed of the car.
     - merge_move_penalty: Merge reverse and forward penalties into a single penalty.
     """
 
-    def __init__(self, render_mode: Optional[str] = None, add_speed_objective: bool = False, merge_move_penalty: bool = False, goal_velocity=0):
+    def __init__(
+        self,
+        render_mode: Optional[str] = None,
+        add_speed_objective: bool = False,
+        merge_move_penalty: bool = False,
+        goal_velocity=0,
+    ):
         super().__init__(render_mode, goal_velocity)
         EzPickle.__init__(self, render_mode, goal_velocity)
         self.add_speed_objective = add_speed_objective
@@ -59,7 +65,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
         terminated = bool(position >= self.goal_position and velocity >= self.goal_velocity)
 
         reward = np.zeros(self.reward_dim, dtype=np.float32)
-    
+
         reward[0] = 0.0 if terminated else -1.0  # time penalty
 
         if self.merge_move_penalty:
@@ -67,9 +73,9 @@ class MOMountainCar(MountainCarEnv, EzPickle):
         else:
             reward[1] = 0.0 if action != 0 else -1.0  # reverse penalty
             reward[2] = 0.0 if action != 2 else -1.0  # forward penalty
-        
+
         if self.add_speed_objective:
-            reward[-1] = 15*abs(velocity)
+            reward[-1] = 15 * abs(velocity)
 
         self.state = (position, velocity)
         if self.render_mode == "human":
