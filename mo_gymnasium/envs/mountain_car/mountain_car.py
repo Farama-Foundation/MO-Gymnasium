@@ -32,7 +32,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
         goal_velocity=0,
     ):
         super().__init__(render_mode, goal_velocity)
-        EzPickle.__init__(self, render_mode, goal_velocity)
+        EzPickle.__init__(self, render_mode, add_speed_objective, merge_move_penalty, goal_velocity)
         self.add_speed_objective = add_speed_objective
         self.merge_move_penalty = merge_move_penalty
 
