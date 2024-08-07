@@ -21,6 +21,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
 
     Alternatively, the reward can be changed with the following options:
     - add_speed_objective: Add an extra objective corresponding to the speed of the car.
+    - remove_move_penalty: Remove the reverse and forward objectives.
     - merge_move_penalty: Merge reverse and forward penalties into a single penalty.
     """
 
@@ -28,18 +29,24 @@ class MOMountainCar(MountainCarEnv, EzPickle):
         self,
         render_mode: Optional[str] = None,
         add_speed_objective: bool = False,
+        remove_move_penalty: bool = False,
         merge_move_penalty: bool = False,
         goal_velocity=0,
     ):
         super().__init__(render_mode, goal_velocity)
-        EzPickle.__init__(self, render_mode, add_speed_objective, merge_move_penalty, goal_velocity)
+        EzPickle.__init__(self, render_mode, add_speed_objective, remove_move_penalty, merge_move_penalty, goal_velocity)
         self.add_speed_objective = add_speed_objective
+        self.remove_move_penalty = remove_move_penalty
         self.merge_move_penalty = merge_move_penalty
 
         self.reward_dim = 3
+
         if self.add_speed_objective:
             self.reward_dim += 1
-        if self.merge_move_penalty:
+
+        if self.remove_move_penalty:
+            self.reward_dim -= 2
+        elif self.merge_move_penalty:
             self.reward_dim -= 1
 
         low = np.array([-1] * self.reward_dim)
@@ -68,11 +75,12 @@ class MOMountainCar(MountainCarEnv, EzPickle):
 
         reward[0] = 0.0 if terminated else -1.0  # time penalty
 
-        if self.merge_move_penalty:
-            reward[1] = 0.0 if action == 1 else -1.0
-        else:
-            reward[1] = 0.0 if action != 0 else -1.0  # reverse penalty
-            reward[2] = 0.0 if action != 2 else -1.0  # forward penalty
+        if not self.remove_move_penalty:
+            if self.merge_move_penalty:
+                reward[1] = 0.0 if action == 1 else -1.0
+            else:
+                reward[1] = 0.0 if action != 0 else -1.0  # reverse penalty
+                reward[2] = 0.0 if action != 2 else -1.0  # forward penalty
 
         if self.add_speed_objective:
             reward[-1] = 15 * abs(velocity)
