@@ -109,7 +109,6 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         """
         obs, rews, terminated, truncated, infos = self.env.step(action)
         # Extracts the objective value to normalize
-        print("Normalizing reward at index", self.idx)
         to_normalize = rews[self.idx]
 
         self.discounted_reward = self.discounted_reward * self.gamma * (1 - terminated) + float(to_normalize)
