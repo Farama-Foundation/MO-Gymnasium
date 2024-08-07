@@ -1,4 +1,5 @@
 """Vector wrappers."""
+
 import time
 from copy import deepcopy
 from typing import Any, Dict, Iterator, Tuple
@@ -13,7 +14,29 @@ from gymnasium.wrappers.vector import RecordEpisodeStatistics
 
 
 class MOSyncVectorEnv(SyncVectorEnv):
-    """Vectorized environment that serially runs multiple environments."""
+    """Vectorized environment that serially runs multiple environments.
+
+    Example:
+        >>> import mo_gymnasium as mo_gym
+
+        >>> envs = mo_gym.wrappers.vector.MOSyncVectorEnv([
+        ...     lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(4)
+        ... ])
+        >>> envs
+        MOSyncVectorEnv(num_envs=4)
+        >>> obs, infos = envs.reset()
+        >>> obs
+        array([[0, 0], [0, 0], [0, 0], [0, 0]], dtype=int32)
+        >>> _ = envs.action_space.seed(42)
+        >>> actions = envs.action_space.sample()
+        >>> obs, rewards, terminateds, truncateds, infos = envs.step([0, 1, 2, 3])
+        >>> obs
+        array([[0, 0], [1, 0], [0, 0], [0, 3]], dtype=int32)
+        >>> rewards
+        array([[0., -1.], [0.7, -1.], [0., -1.], [0., -1.]], dtype=float32)
+        >>> terminateds
+        array([False,  True, False, False])
+    """
 
     def __init__(
         self,
@@ -124,6 +147,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         """
         gym.utils.RecordConstructorArgs.__init__(self, buffer_length=buffer_length, stats_key=stats_key)
         RecordEpisodeStatistics.__init__(self, env, buffer_length=buffer_length, stats_key=stats_key)
+        self.disc_episode_returns = None
         self.reward_dim = self.env.unwrapped.reward_space.shape[0]
         self.rewards_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
@@ -156,12 +180,12 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         self.episode_lengths[self.prev_dones] = 0
         self.episode_start_times[self.prev_dones] = time.perf_counter()
         self.episode_returns[~self.prev_dones] += rewards[~self.prev_dones]
-        self.episode_lengths[~self.prev_dones] += 1
 
         # CHANGE: The discounted returns are also computed here
         self.disc_episode_returns += rewards * np.repeat(self.gamma**self.episode_lengths, self.reward_dim).reshape(
             self.episode_returns.shape
         )
+        self.episode_lengths[~self.prev_dones] += 1
 
         self.prev_dones = dones = np.logical_or(terminations, truncations)
         num_dones = np.sum(dones)
