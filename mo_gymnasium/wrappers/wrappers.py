@@ -59,6 +59,17 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
     """Wrapper to normalize the reward component at index idx. Does not touch other reward components.
 
     This code is heavily inspired on Gymnasium's except that it extracts the reward component at given idx, normalizes it, and reinjects it.
+
+    (!) This smoothes the moving average of the reward, which can be useful for training stability. But it does not "normalize" the reward in the sense of making it have a mean of 0 and a standard deviation of 1.
+
+    Example:
+        >>> import mo_gymnasium as mo_gym
+        >>> from mo_gymnasium.wrappers import MONormalizeReward
+        >>> env = mo_gym.make("deep-sea-treasure-v0")
+        >>> norm_treasure_env = MONormalizeReward(env, idx=0)
+        >>> both_norm_env = MONormalizeReward(norm_treasure_env, idx=1)
+        >>> both_norm_env.reset() # This one normalizes both rewards
+
     """
 
     def __init__(self, env: gym.Env, idx: int, gamma: float = 0.99, epsilon: float = 1e-8):
@@ -193,12 +204,12 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics, gym.utils.RecordConstru
             info, dict
         ), f"`info` dtype is {type(info)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
-        self.episode_lengths += 1
 
         # CHANGE: The discounted returns are also computed here
         self.disc_episode_returns += rewards * np.repeat(self.gamma**self.episode_lengths, self.reward_dim).reshape(
             self.episode_returns.shape
         )
+        self.episode_lengths += 1
 
         if terminated or truncated:
             assert self._stats_key not in info

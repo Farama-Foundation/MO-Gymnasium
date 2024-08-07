@@ -20,6 +20,8 @@ def go_to_8_3(env):
 
 
 def test_normalization_wrapper():
+    # Watch out that the wrapper does not normalize the rewards to have a mean of 0 and std of 1
+    # instead it smoothens the moving average of the rewards
     env = mo_gym.make("deep-sea-treasure-v0")
     norm_treasure_env = MONormalizeReward(env, idx=0)
     both_norm_env = MONormalizeReward(norm_treasure_env, idx=1)
@@ -27,18 +29,16 @@ def test_normalization_wrapper():
     # No normalization
     env.reset(seed=0)
     _, rewards, _, _, _ = env.step(1)
-    np.testing.assert_allclose(rewards, [0.7, -1.0], rtol=0, atol=1e-2)
+    np.testing.assert_almost_equal(rewards, [0.7, -1.0], decimal=2)
 
     # Tests for both rewards normalized
     for i in range(30):
         go_to_8_3(both_norm_env)
     both_norm_env.reset(seed=0)
     _, rewards, _, _, _ = both_norm_env.step(1)  # down
-    np.testing.assert_allclose(
-        rewards, [0.49, -1.24], rtol=0, atol=1e-2
-    )  # TODO PR check why we had to change those values @Mark?
+    np.testing.assert_almost_equal(rewards, [0.5, -1.24], decimal=2)
     rewards, _ = go_to_8_3(both_norm_env)
-    np.testing.assert_allclose(rewards, [4.73, -1.24], rtol=0, atol=1e-2)
+    np.testing.assert_almost_equal(rewards, [4.73, -1.24], decimal=2)
 
     # Tests for only treasure normalized
     for i in range(30):
@@ -46,9 +46,9 @@ def test_normalization_wrapper():
     norm_treasure_env.reset(seed=0)
     _, rewards, _, _, _ = norm_treasure_env.step(1)  # down
     # Time rewards are not normalized (-1)
-    np.testing.assert_allclose(rewards, [0.51, -1.0], rtol=0, atol=1e-2)
+    np.testing.assert_almost_equal(rewards, [0.51, -1.0], decimal=2)
     rewards, _ = go_to_8_3(norm_treasure_env)
-    np.testing.assert_allclose(rewards, [5.33, -1.0], rtol=0, atol=1e-2)
+    np.testing.assert_almost_equal(rewards, [5.33, -1.0], decimal=2)
 
 
 def test_clip_wrapper():

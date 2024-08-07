@@ -46,22 +46,28 @@ def test_mo_sync_autoreset():
 
 
 def test_mo_record_ep_statistic_vector_env():
-    num_envs = 3
+    num_envs = 2
     envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
-    envs = MORecordEpisodeStatistics(envs)
+    envs = MORecordEpisodeStatistics(envs, gamma=0.97)
 
     envs.reset()
     terminateds = np.array([False] * num_envs)
     info = {}
-    while not np.any(terminateds):
-        obs, rewards, terminateds, _, info = envs.step(envs.action_space.sample())
+    obs, rewards, terminateds, _, info = envs.step([0, 3])
+    obs, rewards, terminateds, _, info = envs.step([0, 1])
+    obs, rewards, terminateds, _, info = envs.step([0, 1])
 
     assert isinstance(info["episode"]["r"], np.ndarray)
     assert isinstance(info["episode"]["dr"], np.ndarray)
     # Episode records are vectorized because multiple environments
     assert info["episode"]["r"].shape == (num_envs, 2)
+    np.testing.assert_almost_equal(info["episode"]["r"][0], np.array([0.0, 0.0], dtype=np.float32), decimal=2)
+    np.testing.assert_almost_equal(info["episode"]["r"][1], np.array([8.2, -3.0], dtype=np.float32), decimal=2)
     assert info["episode"]["dr"].shape == (num_envs, 2)
+    np.testing.assert_almost_equal(info["episode"]["dr"][0], np.array([0.0, 0.0], dtype=np.float32), decimal=2)
+    np.testing.assert_almost_equal(info["episode"]["dr"][1], np.array([7.72, -2.91], dtype=np.float32), decimal=2)
     assert isinstance(info["episode"]["l"], np.ndarray)
+    np.testing.assert_almost_equal(info["episode"]["l"], np.array([0, 3], dtype=np.float32), decimal=2)
     assert isinstance(info["episode"]["t"], np.ndarray)
     envs.close()
 
