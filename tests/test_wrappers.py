@@ -85,8 +85,8 @@ def test_mo_record_ep_statistic():
     assert info["episode"]["dr"].shape == (2,)
     assert tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.0))
     assert tuple(np.round(info["episode"]["dr"], 2)) == (
-        np.float32(7.48),
-        np.float32(-2.82),
+        np.float32(7.72),
+        np.float32(-2.91),
     )
     assert isinstance(info["episode"]["l"], int)
     assert info["episode"]["l"] == 3

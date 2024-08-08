@@ -8,4 +8,4 @@ from mo_gymnasium import wrappers
 from mo_gymnasium.utils import make
 
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
