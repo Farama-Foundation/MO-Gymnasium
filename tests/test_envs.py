@@ -14,8 +14,7 @@ all_testing_env_specs = []
 for env_spec in gym.envs.registry.values():
     if type(env_spec.entry_point) is not str:
         continue
-    if "highway" in env_spec.entry_point:
-        continue
+
     # collect MO Gymnasium envs
     if env_spec.entry_point.split(".")[0] == "mo_gymnasium":
         all_testing_env_specs.append(env_spec)
