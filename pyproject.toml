@@ -49,7 +49,7 @@ all = [
     "imageio >=2.14.1",
     "mujoco >=2.2.0",
     # highway
-    "highway-env >= 1.8",
+    "highway-env >= 1.9.1",
     # box2d
     "box2d-py ==2.3.5",
     "pygame ==2.1.3.dev8",
