@@ -253,12 +253,13 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics, gym.utils.RecordConstru
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."
         self.episode_returns += rewards
-        self.episode_lengths += 1
 
         # CHANGE: The discounted returns are also computed here
         self.disc_episode_returns += rewards * np.repeat(self.gamma**self.episode_lengths, self.reward_dim).reshape(
             self.episode_returns.shape
         )
+
+        self.episode_lengths += 1
 
         dones = np.logical_or(terminations, truncations)
         num_dones = np.sum(dones)
