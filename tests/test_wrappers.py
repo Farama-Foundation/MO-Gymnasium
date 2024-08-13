@@ -13,9 +13,9 @@ def go_to_8_3(env):
     Goes to (8.2, -3) treasure, returns the rewards
     """
     env.reset()
-    env.step(3)  # right
-    env.step(1)  # down
-    _, rewards, _, _, infos = env.step(1)
+    env.step(3)  # action: right, rewards: [0, -1]
+    env.step(1)  # action: down, rewards: [0, -1]
+    _, rewards, _, _, infos = env.step(1)  # action: down, rewards: [8.2, -1]
     return rewards, infos
 
 
@@ -84,10 +84,9 @@ def test_mo_record_ep_statistic():
     assert info["episode"]["r"].shape == (2,)
     assert info["episode"]["dr"].shape == (2,)
     assert tuple(info["episode"]["r"]) == (np.float32(8.2), np.float32(-3.0))
-    assert tuple(np.round(info["episode"]["dr"], 2)) == (
-        np.float32(7.72),
-        np.float32(-2.91),
-    )
-    assert isinstance(info["episode"]["l"], int)
+    np.testing.assert_allclose(info["episode"]["dr"], [7.71538, -2.9109], rtol=0, atol=1e-2)
+    # 0 * 0.97**0 + 0 * 0.97**1 + 8.2 * 0.97**2 == 7.71538
+    # -1 * 0.97**0 + -1 * 0.97**1 + -1 * 0.97**2 == -2.9109
+    assert isinstance(info["episode"]["l"], np.int32)
     assert info["episode"]["l"] == 3
     assert isinstance(info["episode"]["t"], float)
