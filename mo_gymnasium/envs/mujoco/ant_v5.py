@@ -28,6 +28,7 @@ class MOAntEnv(AntEnv, EzPickle):
     - v5: Now includes contact forces in the reward and observation.
     See https://gymnasium.farama.org/environments/mujoco/ant/#version-history
     """
+
     def __init__(self, cost_objective=True, **kwargs):
         super().__init__(**kwargs)
         EzPickle.__init__(self, cost_objective, **kwargs)
