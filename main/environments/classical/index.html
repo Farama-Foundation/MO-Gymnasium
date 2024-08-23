@@ -345,12 +345,27 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">reverse_penalty,</span> <span class="pre">forward_penalty]</span></code></p></td>
 <td><p>Classic Mountain Car env, but with extra penalties for the forward and reverse actions. From <a class="reference external" href="https://www.researchgate.net/publication/220343783_Empirical_evaluation_methods_for_multiobjective_reinforcement_learning_algorithms">Vamplew et al. 2011</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincarcontinuous/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincarcontinuous-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincarcontinuous.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincar/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincar-3d-v0</span></code></a> ** <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincar.gif" width="200px"></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">move_penalty,</span> <span class="pre">speed_objective]</span></code></p></td>
+<td><p>The forward and backward penalties have been merged into the move penalty and a speed objective has been introduced which gives the positive reward equivalent to the car’s speed at that time step.*</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincar/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincar-timemove-v0</span></code></a> ** <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincar.gif" width="200px"></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">move_penalty]</span></code></p></td>
+<td><p>Class Mountain Car env but an extra penalty for moving backwards or forwards merged into a move penalty.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincar/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincar-timespeed-v0</span></code></a> ** <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincar.gif" width="200px"></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">speed_objective]</span></code></p></td>
+<td><p>Class Mountain Car env but an extra positive objective of speed which gives the positive reward equivalent to the car’s speed at that time step.*</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-mountaincarcontinuous/"><code class="docutils literal notranslate"><span class="pre">mo-mountaincarcontinuous-v0</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-mountaincarcontinuous.gif" width="200px"></p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[time_penalty,</span> <span class="pre">fuel_consumption_penalty]</span></code></p></td>
 <td><p>Continuous Mountain Car env, but with penalties for fuel consumption.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-lunar-lander/"><code class="docutils literal notranslate"><span class="pre">mo-lunar-lander-v2</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-lunar-lander.gif" width="200px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://mo-gymnasium.farama.org/environments/mo-lunar-lander/"><code class="docutils literal notranslate"><span class="pre">mo-lunar-lander-v2</span></code></a> <br><img src="https://raw.githubusercontent.com/Farama-Foundation/MO-Gymnasium/main/docs/_static/videos/mo-lunar-lander.gif" width="200px"></p></td>
 <td><p>Continuous / Discrete or Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[landed,</span> <span class="pre">shaped_reward,</span> <span class="pre">main_engine_fuel,</span> <span class="pre">side_engine_fuel]</span></code></p></td>
 <td><p>MO version of the <code class="docutils literal notranslate"><span class="pre">LunarLander-v2</span></code> <a class="reference external" href="https://gymnasium.farama.org/environments/box2d/lunar_lander/">environment</a>. Objectives defined similarly as in <a class="reference external" href="https://openreview.net/forum?id=AwWaBXLIJE">Hung et al. 2022</a>.</p></td>
@@ -358,6 +373,9 @@
 </tbody>
 </table>
 </div>
+<p>*An additional objective was introduced to prevent the agent from converging to the local maxima due to a lack of reward signal for the static action.</p>
+<p>**Read more about these environments and the detailed reasoning behind them in <a class="reference external" href="https://drive.google.com/file/d/1yT6hlavYZGmoB2phaIBX_5hbibA3Illa/view?usp=sharing"><code class="docutils literal notranslate"><span class="pre">Pranav</span> <span class="pre">Gupta's</span> <span class="pre">Dissertation</span></code></a></p>
+<!Can be removed if required, work is currently in place to write a research paper though may take a while->
 <div class="toctree-wrapper compound">
 </div>
 </section>
