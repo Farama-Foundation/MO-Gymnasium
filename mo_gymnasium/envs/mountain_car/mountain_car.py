@@ -19,7 +19,7 @@ class MOMountainCar(MountainCarEnv, EzPickle):
     - reverse penalty: -1.0 for each time step the action is 0 (reverse)
     - forward penalty: -1.0 for each time step the action is 2 (forward)
 
-    Alternatively, the reward can be changed with the following options:
+    #Alternatively, the reward can be changed with the following options:
     - add_speed_objective: Add an extra objective corresponding to the speed of the car.
     - remove_move_penalty: Remove the reverse and forward objectives.
     - merge_move_penalty: Merge reverse and forward penalties into a single penalty.
