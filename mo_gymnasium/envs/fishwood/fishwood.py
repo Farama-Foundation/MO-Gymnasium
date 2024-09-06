@@ -42,8 +42,8 @@ class FishWood(gym.Env, EzPickle):
     """
 
     metadata = {"render_modes": ["human"]}
-    FISH = 0
-    WOOD = 1
+    FISH = np.array([0])
+    WOOD = np.array([1])
     MAX_TS = 200
 
     def __init__(self, render_mode: Optional[str] = None, fishproba=0.1, woodproba=0.9):
@@ -55,7 +55,7 @@ class FishWood(gym.Env, EzPickle):
 
         self.action_space = spaces.Discrete(2)  # 2 actions, go fish and go wood
         # 2 states, fishing and in the woods
-        self.observation_space = spaces.Discrete(2)
+        self.observation_space = spaces.Box(low=1, high=1, shape=(1,), dtype=np.int32)
         # 2 objectives, amount of fish and amount of wood
         self.reward_space = spaces.Box(low=np.array([0, 0]), high=np.array([1.0, 1.0]), dtype=np.float32)
         self.reward_dim = 2
@@ -89,7 +89,7 @@ class FishWood(gym.Env, EzPickle):
             rewards[self.FISH] = 1.0
 
         # Execute the action
-        self._state = action
+        self._state = np.array([action])
         self._timestep += 1
 
         if self.render_mode == "human":
