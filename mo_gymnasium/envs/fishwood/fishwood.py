@@ -42,8 +42,8 @@ class FishWood(gym.Env, EzPickle):
     """
 
     metadata = {"render_modes": ["human"]}
-    FISH = np.array([0])
-    WOOD = np.array([1])
+    FISH = np.array([0], dtype=np.int32)
+    WOOD = np.array([1], dtype=np.int32)
     MAX_TS = 200
 
     def __init__(self, render_mode: Optional[str] = None, fishproba=0.1, woodproba=0.9):
@@ -89,7 +89,7 @@ class FishWood(gym.Env, EzPickle):
             rewards[self.FISH] = 1.0
 
         # Execute the action
-        self._state = np.array([action])
+        self._state = np.array([action], dtype=np.int32)
         self._timestep += 1
 
         if self.render_mode == "human":
