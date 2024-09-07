@@ -55,17 +55,17 @@ class FishWood(gym.Env, EzPickle):
 
         self.action_space = spaces.Discrete(2)  # 2 actions, go fish and go wood
         # 2 states, fishing and in the woods
-        self.observation_space = spaces.Box(low=1, high=1, shape=(1,), dtype=np.int32)
+        self.observation_space = spaces.Box(low=0, high=1, shape=(1,), dtype=np.int32)
         # 2 objectives, amount of fish and amount of wood
         self.reward_space = spaces.Box(low=np.array([0, 0]), high=np.array([1.0, 1.0]), dtype=np.float32)
         self.reward_dim = 2
 
-        self._state = self.WOOD
+        self._state = self.WOOD.copy()
 
     def reset(self, seed=None, **kwargs):
         super().reset(seed=seed)
 
-        self._state = self.WOOD
+        self._state = self.WOOD.copy()
         self._timestep = 0
         if self.render_mode == "human":
             self.render()
