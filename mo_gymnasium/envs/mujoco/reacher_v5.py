@@ -3,7 +3,7 @@ from os import path
 import numpy as np
 from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
-from gymnasium.envs.mujoco.reacher_v4 import ReacherEnv
+from gymnasium.envs.mujoco.reacher_v5 import ReacherEnv
 from gymnasium.spaces import Box, Discrete
 
 
@@ -13,7 +13,7 @@ DEFAULT_CAMERA_CONFIG = {"trackbodyid": 0}
 class MOReacherEnv(ReacherEnv):
     """
     ## Description
-    Mujoco version of `mo-reacher-v0`, based on [`Reacher-v4` environment](https://gymnasium.farama.org/environments/mujoco/reacher/).
+    Multi-objective version of the [`Reacher-v4` environment](https://gymnasium.farama.org/environments/mujoco/reacher/).
 
     ## Observation Space
     The observation is 6-dimensional and contains:
@@ -29,6 +29,9 @@ class MOReacherEnv(ReacherEnv):
     ```math
         r_i = 1  - 4 * || finger_tip_coord - target_i ||^2
     ```
+
+    ## Version History:
+    See https://gymnasium.farama.org/environments/mujoco/reacher/#version-history
     """
 
     def __init__(self, **kwargs):
@@ -88,11 +91,11 @@ class MOReacherEnv(ReacherEnv):
         return self._get_obs()
 
     def _get_obs(self):
-        theta = self.data.qpos.flat[:2]
+        theta = self.data.qpos.flatten()[:2]
         return np.concatenate(
             [
                 np.cos(theta),
                 np.sin(theta),
-                self.data.qvel.flat[:2] * 0.1,
+                self.data.qvel.flatten()[:2] * 0.1,
             ]
         )
