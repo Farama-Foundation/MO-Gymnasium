@@ -215,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction/api/">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wrappers/wrappers/">Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrappers/vector_wrappers/">Vector Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/morl_baselines/">MORL Baselines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
@@ -252,6 +253,7 @@
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-walker2d/">MO-Walker2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-ant/">MO-Ant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mo-swimmer/">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/mo-humanoid/">MO-Humanoid</a></li>
 </ul>
 </li>
@@ -366,7 +368,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
 <span class="n">next_obs</span><span class="p">,</span> <span class="n">vector_reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">your_agent</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">obs</span><span class="p">))</span>
 
 <span class="c1"># Optionally, you can scalarize the reward function with the LinearReward wrapper</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">wrappers</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>For details on multi-objective MDP’s (MOMDP’s) and other MORL definitions, see <a class="reference external" href="https://link.springer.com/article/10.1007/s10458-022-09552-y">A practical guide to multi-objective reinforcement learning and planning</a>.</p>
@@ -457,7 +459,7 @@ MO-Gymnasium is a standardized API and a suite of environments for multi-objecti
     
     
 
-    <script src="_static/documentation_options.js?v=25d39d6f"></script>
+    <script src="_static/documentation_options.js?v=151cd43d"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=7660844c"></script>

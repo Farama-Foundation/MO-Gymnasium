@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="MO-Gymnasium is a standardized API and a suite of environments for multi-objective reinforcement learning (MORL)" />
     <meta property="og:url" content="https://mo-gymnasium.farama.org/wrappers/wrappers.html" /><meta property="og:image" content="https://mo-gymnasium.farama.org/_static/img/MO-Gymnasium-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MORL Baselines" href="../../examples/morl_baselines/" /><link rel="prev" title="API" href="../../introduction/api/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Vector Wrappers" href="../vector_wrappers/" /><link rel="prev" title="API" href="../../introduction/api/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/wrappers/wrappers.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
@@ -215,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/api/">API</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vector_wrappers/">Vector Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/morl_baselines/">MORL Baselines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
@@ -252,6 +253,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mo-walker2d/">MO-Walker2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mo-ant/">MO-Ant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mo-swimmer/">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mo-humanoid/">MO-Humanoid</a></li>
 </ul>
 </li>
@@ -329,12 +331,12 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="wrappers">
 <h1>Wrappers<a class="headerlink" href="#wrappers" title="Link to this heading">¶</a></h1>
-<p>A few wrappers inspired from Gymnasium’s wrappers are available in MO-Gymnasium. They are all available directly from the <code class="docutils literal notranslate"><span class="pre">mo_gymnasium</span></code> module.</p>
+<p>A few wrappers inspired from Gymnasium’s wrappers are available in MO-Gymnasium. They are all available directly from the <code class="docutils literal notranslate"><span class="pre">mo_gymnasium.wrappers</span></code> module.</p>
 <section id="linearreward">
 <h2><code class="docutils literal notranslate"><span class="pre">LinearReward</span></code><a class="headerlink" href="#linearreward" title="Link to this heading">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="mo_gymnasium.LinearReward">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">LinearReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.LinearReward" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mo_gymnasium.wrappers.LinearReward">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.wrappers.</span></span><span class="sig-name descname"><span class="pre">LinearReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.wrappers.LinearReward" title="Link to this definition">¶</a></dt>
 <dd><p>Makes the env return a scalar reward, which is the dot-product between the reward vector and the weight vector.</p>
 </dd></dl>
 
@@ -342,63 +344,59 @@
 <section id="monormalizereward">
 <h2><code class="docutils literal notranslate"><span class="pre">MONormalizeReward</span></code><a class="headerlink" href="#monormalizereward" title="Link to this heading">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="mo_gymnasium.MONormalizeReward">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">MONormalizeReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.MONormalizeReward" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mo_gymnasium.wrappers.MONormalizeReward">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.wrappers.</span></span><span class="sig-name descname"><span class="pre">MONormalizeReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.wrappers.MONormalizeReward" title="Link to this definition">¶</a></dt>
 <dd><p>Wrapper to normalize the reward component at index idx. Does not touch other reward components.</p>
+<p>This code is heavily inspired on Gymnasium’s except that it extracts the reward component at given idx, normalizes it, and reinjects it.</p>
+<p>(!) This smoothes the moving average of the reward, which can be useful for training stability. But it does not “normalize” the reward in the sense of making it have a mean of 0 and a standard deviation of 1.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mo_gymnasium</span> <span class="k">as</span> <span class="nn">mo_gym</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mo_gymnasium.wrappers</span> <span class="kn">import</span> <span class="n">MONormalizeReward</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;deep-sea-treasure-v0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm_treasure_env</span> <span class="o">=</span> <span class="n">MONormalizeReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">both_norm_env</span> <span class="o">=</span> <span class="n">MONormalizeReward</span><span class="p">(</span><span class="n">norm_treasure_env</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">both_norm_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span> <span class="c1"># This one normalizes both rewards</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
 <section id="moclipreward">
 <h2><code class="docutils literal notranslate"><span class="pre">MOClipReward</span></code><a class="headerlink" href="#moclipreward" title="Link to this heading">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="mo_gymnasium.MOClipReward">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">MOClipReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.MOClipReward" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mo_gymnasium.wrappers.MOClipReward">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.wrappers.</span></span><span class="sig-name descname"><span class="pre">MOClipReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.wrappers.MOClipReward" title="Link to this definition">¶</a></dt>
 <dd><p>Clip reward[idx] to [min, max].</p>
-</dd></dl>
-
-</section>
-<section id="mosyncvectorenv">
-<h2><code class="docutils literal notranslate"><span class="pre">MOSyncVectorEnv</span></code><a class="headerlink" href="#mosyncvectorenv" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="mo_gymnasium.MOSyncVectorEnv">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">MOSyncVectorEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">callable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.MOSyncVectorEnv" title="Link to this definition">¶</a></dt>
-<dd><p>Vectorized environment that serially runs multiple environments.</p>
 </dd></dl>
 
 </section>
 <section id="morecordepisodestatistics">
 <h2><code class="docutils literal notranslate"><span class="pre">MORecordEpisodeStatistics</span></code><a class="headerlink" href="#morecordepisodestatistics" title="Link to this heading">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="mo_gymnasium.MORecordEpisodeStatistics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.</span></span><span class="sig-name descname"><span class="pre">MORecordEpisodeStatistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deque_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.MORecordEpisodeStatistics" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mo_gymnasium.wrappers.MORecordEpisodeStatistics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.wrappers.</span></span><span class="sig-name descname"><span class="pre">MORecordEpisodeStatistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'episode'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.wrappers.MORecordEpisodeStatistics" title="Link to this definition">¶</a></dt>
 <dd><p>This wrapper will keep track of cumulative rewards and episode lengths.</p>
 <p>After the completion of an episode, <code class="docutils literal notranslate"><span class="pre">info</span></code> will look like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="s2">&quot;episode&quot;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">... </span>        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;cumulative reward (array)&gt;&quot;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;discounted reward (array)&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;episode length (scalar)&gt;&quot;</span><span class="p">,</span> <span class="c1"># contrary to Gymnasium, these are not a numpy array</span>
+<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;episode length (scalar)&gt;&quot;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;elapsed time since beginning of episode (scalar)&gt;&quot;</span>
 <span class="gp">... </span>    <span class="p">},</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-<p>For a vectorized environments the output will be in the form of (be careful to first wrap the env into vector before applying MORewordStatistics):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infos</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s2">&quot;final_observation&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of length num-envs&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s2">&quot;_final_observation&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s2">&quot;final_info&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of length num-envs&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s2">&quot;_final_info&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s2">&quot;episode&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of cumulative reward (2d array, shape (num_envs, dim_reward))&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of discounted reward (2d array, shape (num_envs, dim_reward))&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of episode length (array)&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;array of elapsed time since beginning of episode (array)&gt;&quot;</span>
-<span class="gp">... </span>    <span class="p">},</span>
-<span class="gp">... </span>    <span class="s2">&quot;_episode&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;boolean array of length num-envs&gt;&quot;</span>
-<span class="gp">... </span><span class="p">}</span>
-</pre></div>
-</div>
+</dd></dl>
+
+</section>
+<section id="momaxandskipobservation">
+<h2><code class="docutils literal notranslate"><span class="pre">MOMaxAndSkipObservation</span></code><a class="headerlink" href="#momaxandskipobservation" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mo_gymnasium.wrappers.MOMaxAndSkipObservation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mo_gymnasium.wrappers.</span></span><span class="sig-name descname"><span class="pre">MOMaxAndSkipObservation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Env</span><span class="p"><span class="pre">[</span></span><span class="pre">ObsType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ActType</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mo_gymnasium.wrappers.MOMaxAndSkipObservation" title="Link to this definition">¶</a></dt>
+<dd><p>This wrapper will return only every <code class="docutils literal notranslate"><span class="pre">skip</span></code>-th frame (frameskipping) and return the max between the two last observations.</p>
+<p>Note: This wrapper is based on the wrapper from stable-baselines3: <a class="reference external" href="https://stable-baselines3.readthedocs.io/en/master/_modules/stable_baselines3/common/atari_wrappers.html#MaxAndSkipEnv">https://stable-baselines3.readthedocs.io/en/master/_modules/stable_baselines3/common/atari_wrappers.html#MaxAndSkipEnv</a></p>
 </dd></dl>
 
 </section>
@@ -409,12 +407,12 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../../examples/morl_baselines/">
+            <a class="next-page" href="../vector_wrappers/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">MORL Baselines</div>
+                <div class="title">Vector Wrappers</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
@@ -475,23 +473,23 @@
               <ul>
 <li><a class="reference internal" href="#">Wrappers</a><ul>
 <li><a class="reference internal" href="#linearreward"><code class="docutils literal notranslate"><span class="pre">LinearReward</span></code></a><ul>
-<li><a class="reference internal" href="#mo_gymnasium.LinearReward"><code class="docutils literal notranslate"><span class="pre">LinearReward</span></code></a></li>
+<li><a class="reference internal" href="#mo_gymnasium.wrappers.LinearReward"><code class="docutils literal notranslate"><span class="pre">LinearReward</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#monormalizereward"><code class="docutils literal notranslate"><span class="pre">MONormalizeReward</span></code></a><ul>
-<li><a class="reference internal" href="#mo_gymnasium.MONormalizeReward"><code class="docutils literal notranslate"><span class="pre">MONormalizeReward</span></code></a></li>
+<li><a class="reference internal" href="#mo_gymnasium.wrappers.MONormalizeReward"><code class="docutils literal notranslate"><span class="pre">MONormalizeReward</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#moclipreward"><code class="docutils literal notranslate"><span class="pre">MOClipReward</span></code></a><ul>
-<li><a class="reference internal" href="#mo_gymnasium.MOClipReward"><code class="docutils literal notranslate"><span class="pre">MOClipReward</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#mosyncvectorenv"><code class="docutils literal notranslate"><span class="pre">MOSyncVectorEnv</span></code></a><ul>
-<li><a class="reference internal" href="#mo_gymnasium.MOSyncVectorEnv"><code class="docutils literal notranslate"><span class="pre">MOSyncVectorEnv</span></code></a></li>
+<li><a class="reference internal" href="#mo_gymnasium.wrappers.MOClipReward"><code class="docutils literal notranslate"><span class="pre">MOClipReward</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#morecordepisodestatistics"><code class="docutils literal notranslate"><span class="pre">MORecordEpisodeStatistics</span></code></a><ul>
-<li><a class="reference internal" href="#mo_gymnasium.MORecordEpisodeStatistics"><code class="docutils literal notranslate"><span class="pre">MORecordEpisodeStatistics</span></code></a></li>
+<li><a class="reference internal" href="#mo_gymnasium.wrappers.MORecordEpisodeStatistics"><code class="docutils literal notranslate"><span class="pre">MORecordEpisodeStatistics</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#momaxandskipobservation"><code class="docutils literal notranslate"><span class="pre">MOMaxAndSkipObservation</span></code></a><ul>
+<li><a class="reference internal" href="#mo_gymnasium.wrappers.MOMaxAndSkipObservation"><code class="docutils literal notranslate"><span class="pre">MOMaxAndSkipObservation</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -528,7 +526,7 @@
     
     
 
-    <script src="../../_static/documentation_options.js?v=25d39d6f"></script>
+    <script src="../../_static/documentation_options.js?v=151cd43d"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
