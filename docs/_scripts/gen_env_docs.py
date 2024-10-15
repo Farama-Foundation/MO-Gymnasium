@@ -41,7 +41,7 @@ def trim(docstring):
 
 pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
-gym.logger.set_level(gym.logger.DISABLED)
+# gym.logger.set_level(gym.logger.DISABLED)
 
 all_envs = list(gym.envs.registry.values())
 filtered_envs_by_type = {}
@@ -177,12 +177,12 @@ title: {title_env_name}
         else:
             env_table += f"| Observation Space | {env.observation_space} |\n"
 
-        if env.reward_space.shape:
-            env_table += f"| Reward Shape | {env.reward_space.shape} |\n"
-        if hasattr(env.reward_space, "high"):
-            env_table += f"| Reward High | {env.reward_space.high} |\n"
-        if hasattr(env.reward_space, "low"):
-            env_table += f"| Reward Low | {env.reward_space.low} |\n"
+        if env.unwrapped.reward_space.shape:
+            env_table += f"| Reward Shape | {env.unwrapped.reward_space.shape} |\n"
+        if hasattr(env.unwrapped.reward_space, "high"):
+            env_table += f"| Reward High | {env.unwrapped.reward_space.high} |\n"
+        if hasattr(env.unwrapped.reward_space, "low"):
+            env_table += f"| Reward Low | {env.unwrapped.reward_space.low} |\n"
 
         env_table += f'| Import | `mo_gymnasium.make("{env_spec.id}")` | \n'
 
