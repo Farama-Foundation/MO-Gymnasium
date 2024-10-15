@@ -249,9 +249,11 @@ class Minecart(gym.Env, EzPickle):
             queue = [
                 {
                     "speed": ACCELERATION * self.frame_skip,
-                    "dist": mine_distance - self.frame_skip * (self.frame_skip + 1) / 2 * ACCELERATION
-                    if self.incremental_frame_skip
-                    else mine_distance - ACCELERATION * self.frame_skip * self.frame_skip,
+                    "dist": (
+                        mine_distance - self.frame_skip * (self.frame_skip + 1) / 2 * ACCELERATION
+                        if self.incremental_frame_skip
+                        else mine_distance - ACCELERATION * self.frame_skip * self.frame_skip
+                    ),
                     "seq": [ACT_ACCEL],
                 }
             ]
