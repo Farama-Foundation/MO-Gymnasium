@@ -9,7 +9,7 @@ readme = "README.md"
 requires-python = ">= 3.8"
 authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
 license = { text = "MIT License" }
-keywords = ["Reinforcement Learning", "Multi-Objective", "RL", "AI", "gymnasium"]
+keywords = ["Reinforcement Learning", "Multi-Objective", "RL", "AI", "Gymnasium"]
 classifiers = [
     "Development Status :: 4 - Beta",  # change to `5 - Production/Stable` when ready
     "License :: OSI Approved :: MIT License",
@@ -22,8 +22,8 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
 ]
 dependencies = [
-    "gymnasium>=0.28.1,<0.30",
-    "numpy >=1.21.0,<2",
+    "gymnasium >=1.0.0",
+    "numpy >=1.21.0,<2.0",
     "pygame >=2.1.0",
     "scipy >=1.7.3",
     "pymoo >=0.6.0",
@@ -49,7 +49,7 @@ all = [
     "imageio >=2.14.1",
     "mujoco >=2.2.0",
     # highway
-    "highway-env >= 1.8",
+    "highway-env >= 1.9.1",
     # box2d
     "box2d-py ==2.3.5",
     "pygame ==2.1.3.dev8",
@@ -78,7 +78,6 @@ mo_gymnasium = [
 # Linters and Test tools #######################################################
 
 [tool.black]
-safe = true
 line-length = 127
 target-version = ['py38', 'py39', 'py310', 'py311']
 include = '\.pyi?$'

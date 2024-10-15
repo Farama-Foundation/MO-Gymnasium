@@ -10,6 +10,5 @@ import mo_gymnasium.envs.mario
 import mo_gymnasium.envs.minecart
 import mo_gymnasium.envs.mountain_car
 import mo_gymnasium.envs.mujoco
-import mo_gymnasium.envs.reacher
 import mo_gymnasium.envs.resource_gathering
 import mo_gymnasium.envs.water_reservoir
