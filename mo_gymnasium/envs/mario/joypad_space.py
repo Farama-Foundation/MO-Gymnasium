@@ -1,4 +1,5 @@
 """An environment wrapper to convert binary to discrete action space. This is a modified version of the original code from nes-py."""
+
 from typing import List
 
 import gymnasium as gym

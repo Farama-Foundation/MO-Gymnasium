@@ -14,6 +14,7 @@ all_testing_env_specs = []
 for env_spec in gym.envs.registry.values():
     if type(env_spec.entry_point) is not str:
         continue
+
     # collect MO Gymnasium envs
     if env_spec.entry_point.split(".")[0] == "mo_gymnasium":
         all_testing_env_specs.append(env_spec)
@@ -27,7 +28,7 @@ for env_spec in gym.envs.registry.values():
 def test_all_env_api(spec):
     """Check that all environments pass the environment checker."""
     env = mo_gym.make(spec.id)
-    env = mo_gym.LinearReward(env)
+    env = mo_gym.wrappers.LinearReward(env)
     check_env(env, skip_render_check=True)
     _test_reward_bounds(env.unwrapped)
     _test_pickle_env(env)
@@ -46,7 +47,7 @@ def test_all_env_passive_env_checker(spec):
     [
         ("MountainCar-v0", "mo-mountaincar-v0"),
         ("MountainCarContinuous-v0", "mo-mountaincarcontinuous-v0"),
-        ("LunarLander-v2", "mo-lunar-lander-v2"),
+        ("LunarLander-v3", "mo-lunar-lander-v3"),
         # ("Reacher-v4", "mo-reacher-v4"),  # use a different model and action space
         ("Hopper-v4", "mo-hopper-v4"),
         ("HalfCheetah-v4", "mo-halfcheetah-v4"),
@@ -58,7 +59,7 @@ def test_all_env_passive_env_checker(spec):
 )
 def test_gymnasium_equivalence(gym_id, mo_gym_id, num_steps=100, seed=123):
     env = gym.make(gym_id)
-    mo_env = mo_gym.LinearReward(mo_gym.make(mo_gym_id))
+    mo_env = mo_gym.wrappers.LinearReward(mo_gym.make(mo_gym_id))
 
     # for float rewards, then precision becomes an issue
     env = gym.wrappers.TransformReward(env, lambda reward: round(reward, 4))
@@ -93,8 +94,8 @@ def test_env_determinism_rollout(env_spec: EnvSpec):
 
     env_1 = mo_gym.make(env_spec.id)
     env_2 = mo_gym.make(env_spec.id)
-    env_1 = mo_gym.LinearReward(env_1)
-    env_2 = mo_gym.LinearReward(env_2)
+    env_1 = mo_gym.wrappers.LinearReward(env_1)
+    env_2 = mo_gym.wrappers.LinearReward(env_2)
 
     initial_obs_1, initial_info_1 = env_1.reset(seed=SEED)
     initial_obs_2, initial_info_2 = env_2.reset(seed=SEED)
@@ -156,7 +157,7 @@ def assert_equals(a, b, prefix=None):
         b: second data structure
         prefix: prefix for failed assertion message for types and dicts
     """
-    assert type(a) == type(b), f"{prefix}Differing types: {a} and {b}"
+    assert type(a) is type(b), f"{prefix}Differing types: {a} and {b}"
     if isinstance(a, dict):
         assert list(a.keys()) == list(b.keys()), f"{prefix}Key sets differ: {a} and {b}"
 
@@ -190,7 +191,7 @@ def test_ccs_dst():
         np.array([19.778, -17.383]),
     ]
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_ccs, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -200,7 +201,7 @@ def test_ccs_dst_no_discount():
 
     known_ccs = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONVEX_FRONT
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_ccs, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -223,7 +224,7 @@ def test_concave_pf_dst():
         np.array([124.0 * gamma**18, -17.383]),
     ]
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -233,7 +234,7 @@ def test_concave_pf_dst_no_discount():
 
     known_pf = mo_gym.envs.deep_sea_treasure.deep_sea_treasure.CONCAVE_FRONT
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -244,7 +245,7 @@ def test_pf_fruit_tree():
 
     known_pf = np.array(mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]) * (0.99 ** (depth - 1))
 
-    discounted_front = env.pareto_front(gamma=0.99)
+    discounted_front = env.unwrapped.pareto_front(gamma=0.99)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
@@ -255,6 +256,6 @@ def test_pf_fruit_tree_no_discount():
 
     known_pf = mo_gym.envs.fruit_tree.fruit_tree.FRUITS[str(depth)]
 
-    discounted_front = env.pareto_front(gamma=1.0)
+    discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
