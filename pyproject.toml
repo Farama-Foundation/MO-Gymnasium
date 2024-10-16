@@ -73,6 +73,7 @@ include = ["mo_gymnasium", "mo_gymnasium.*"]
 mo_gymnasium = [
     "**/*.json",
     "**/assets/*",
+    "py.typed"
 ]
 
 # Linters and Test tools #######################################################
