@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Fishwood" href="../fishwood/" /><link rel="prev" title="Fruit-Tree" href="../fruit-tree/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/environments/breakable-bottles.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Breakable-Bottles - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -215,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/api/">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../wrappers/wrappers/">Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wrappers/vector_wrappers/">Vector Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/morl_baselines/">MORL Baselines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
@@ -234,11 +235,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../mo-mountaincar/">MO-Mountaincar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander/">MO-Lunar-Lander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../misc/">Miscellaneous</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Miscellaneous</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../water-reservoir/">Water-Reservoir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../minecart/">Minecart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minecart-deterministic/">Minecart-Deterministic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minecart-rgb/">Minecart-Rgb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-highway/">MO-Highway</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-supermario/">MO-Supermario</a></li>
 </ul>
@@ -317,9 +321,10 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="breakable-bottles">
-<h1>Breakable-Bottles<a class="headerlink" href="#breakable-bottles" title="Link to this heading">#</a></h1>
+<h1>Breakable-Bottles<a class="headerlink" href="#breakable-bottles" title="Link to this heading">¶</a></h1>
 <figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="../../_images/breakable-bottles.gif"><img alt="../../_images/breakable-bottles.gif" src="../../_images/breakable-bottles.gif" style="width: 200px;" /></a>
+<a class="reference internal image-reference" href="../../_images/breakable-bottles.gif"><img alt="../../_images/breakable-bottles.gif" src="../../_images/breakable-bottles.gif" style="width: 200px;" />
+</a>
 </figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -333,7 +338,7 @@
 <td><p>Discrete(3)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Observation Space</p></td>
-<td><p>Dict(‘bottles_carrying’: Discrete(3), ‘bottles_delivered’: Discrete(2), ‘bottles_dropped’: MultiBinary(3), ‘location’: Discrete(5))</p></td>
+<td><p>Dict(‘bottles_carrying’: Discrete(3), ‘bottles_delivered’: Discrete(3), ‘bottles_dropped’: MultiBinary(3), ‘location’: Discrete(5))</p></td>
 </tr>
 <tr class="row-even"><td><p>Reward Shape</p></td>
 <td><p>(3,)</p></td>
@@ -351,12 +356,12 @@
 </table>
 </div>
 <section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>This environment implements the problems UnbreakableBottles and BreakableBottles defined in Section 4.1.2 of the paper
 <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0952197621000336">Potential-based multiobjective reinforcement learning approaches to low-impact agents for AI safety</a>.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is a discrete space with 3 actions:</p>
 <ul class="simple">
 <li><p>0: move left</p></li>
@@ -365,17 +370,20 @@
 </ul>
 </section>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>The observation space is a dictionary with 4 keys:</p>
 <ul class="simple">
 <li><p>location: the current location of the agent</p></li>
 <li><p>bottles_carrying: the number of bottles the agent is currently carrying (0, 1 or 2)</p></li>
-<li><p>bottles_delivered: the number of bottles the agent has delivered (0 or 1)</p></li>
+<li><p>bottles_delivered: the number of bottles the agent has delivered (0, 1 or 2)</p></li>
 <li><p>bottles_dropped: for each location, a boolean flag indicating if that location currently contains a bottle</p></li>
 </ul>
+<p>Note that this observation space is different from that listed in the paper above. In the paper, bottles_delivered’s possible values are listed as (0 or 1),
+rather than (0, 1 or 2). This is because the paper did not take the terminal state, in which 2 bottles have been delivered, into account when calculating
+the observation space. As such, the observation space of this implementation is larger than specified in the paper, having 360 possible states instead of 240.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
 <p>The reward space has 3 dimensions:</p>
 <ul class="simple">
 <li><p>time penalty: -1 for each time step</p></li>
@@ -384,15 +392,15 @@
 </ul>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The agent starts at location 0, carrying no bottles, having delivered no bottles and having dropped no bottles.</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">¶</a></h2>
 <p>The episode terminates when the agent has delivered 2 bottles.</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>size: the number of locations in the environment</p></li>
 <li><p>prob_drop: the probability of dropping a bottle while carrying 2 bottles</p></li>
@@ -403,7 +411,7 @@ otherwise a dropped bottle cannot be picked up.</p></li>
 </ul>
 </section>
 <section id="credits">
-<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h2>
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
 <p>This environment was originally a contribution of Robert Klassert
 The home asset is from https://limezu.itch.io/serenevillagerevamped
 The gold, enemy and gem assets are from https://ninjikin.itch.io/treasure
@@ -511,8 +519,8 @@ The bottles pixel art was created with the assistance of DALL·E 2.</p>
     
     
 
-    <script src="../../_static/documentation_options.js?v=25d39d6f"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=151cd43d"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="prev" title="Community" href="../community/community/" />
         <link rel="canonical" href="https://mo-gymnasium.farama.org/release_notes.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Release Notes - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=3e7f4c72" />
@@ -215,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction/install/">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/api/">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wrappers/wrappers/">Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wrappers/vector_wrappers/">Vector Wrappers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/morl_baselines/">MORL Baselines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
@@ -234,11 +235,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-mountaincar/">MO-Mountaincar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-mountaincarcontinuous/">MO-Mountaincarcontinuous</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-lunar-lander/">MO-Lunar-Lander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../environments/mo-lunar-lander-continuous/">MO-Lunar-Lander-Continuous</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../environments/misc/">Miscellaneous</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Miscellaneous</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../environments/water-reservoir/">Water-Reservoir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/minecart/">Minecart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../environments/minecart-deterministic/">Minecart-Deterministic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../environments/minecart-rgb/">Minecart-Rgb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-highway/">MO-Highway</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-supermario/">MO-Supermario</a></li>
 </ul>
@@ -326,9 +330,54 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="release-notes">
-<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">¶</a></h1>
+<section id="release-v1-2-0">
+<h2>v1.2.0: MO-Gymnasium 1.2.0 Release: Update Gymnasium to v1.0.0, New Mountaincar Environments, Documentation and Test Improvements, and more<a class="headerlink" href="#release-v1-2-0" title="Link to this heading">¶</a></h2>
+<p><em>Released on 2024-10-16 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.2.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.2.0/">PyPI</a></em></p>
+<h2>Breaking Changes</h2>
+<ul>
+<li>Similar to Gymnasium v1.0, <code>VecEnv</code>s now differ from normal <code>Env</code>s. The associated wrappers also differ. See <a href="https://gymnasium.farama.org/gymnasium_release_notes/#release-v1-0-0" rel="nofollow">Gymnasium 1.0.0 release notes</a>.</li>
+<li>Wrappers have been moved to their <code>wrappers</code> subpackage, e.g., <code>from mo_gymnasium import MORecordEpisodeStatistics</code> -&gt; <code>from mo_gymnasium.wrappers import MORecordEpisodeStatistics</code>. Vector wrappers can be found under <code>mo-gymnasium.wrappers.vector</code>. See the <a href="https://github.com/Farama-Foundation/MO-Gymnasium/tree/main/tests"><code>tests/</code></a> folder or our <a href="https://mo-gymnasium.farama.org/main/wrappers/vector_wrappers/" rel="nofollow">documentation</a> for example usage.</li>
+</ul>
+<h2>Environments</h2>
+<ul>
+<li>Update Gymnasium to v1.0.0 by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> &amp; <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2309364657" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/95" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/95/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/95">#95</a></li>
+<li>Add Gymnasium performance improvement to Lunar Lander by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pseudo-rnd-thoughts/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pseudo-rnd-thoughts">@pseudo-rnd-thoughts</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2186242648" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/89" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/89/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/89">#89</a></li>
+<li>Update Lunar lander step to match performance with Gymnasium by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pseudo-rnd-thoughts/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pseudo-rnd-thoughts">@pseudo-rnd-thoughts</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2186532635" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/91" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/91/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/91">#91</a></li>
+<li>Adding three different mo-mountain-car environments by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pranavg23/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pranavg23">@pranavg23</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2404903261" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/97" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/97/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/97">#97</a></li>
+<li><code>Lunar-Lander</code> is now v3 in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2309364657" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/95" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/95/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/95">#95</a></li>
+</ul>
+<h2>Documentation and Tests</h2>
+<ul>
+<li>Add pydoc on how to map the multi-objective reward to the original gymnasium reward by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2187137500" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/92" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/92/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/92">#92</a></li>
+<li>Documentation of new Mountain Car environments by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pranavg23/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pranavg23">@pranavg23</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2482622950" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/101" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/101/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/101">#101</a></li>
+<li>Add test that Gymnasium and MO-Gymnasium envs match by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pseudo-rnd-thoughts/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pseudo-rnd-thoughts">@pseudo-rnd-thoughts</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2186270304" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/90" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/90/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/90">#90</a></li>
+<li>Add forgotten envs to doc by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2249980106" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/94" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/94/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/94">#94</a></li>
+<li>Add py.typed to allow mypy type checking by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/sebimarkgraf/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/sebimarkgraf">@sebimarkgraf</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2591142803" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/107" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/107/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/107">#107</a></li>
+</ul>
+<h2>Bug Fixes</h2>
+<ul>
+<li>breakable-bottles observation space correction by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/scott-j-johnson/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/scott-j-johnson">@scott-j-johnson</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2239120665" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/93" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/93/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/93">#93</a></li>
+<li>Fix fishwood's inconsistent observation dimension by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/timondesch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/timondesch">@timondesch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2511267993" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/103" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/103/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/103">#103</a></li>
+<li>Fix Docs Generation by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/LucasAlegre/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/LucasAlegre">@LucasAlegre</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2589735336" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/106" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/106/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/106">#106</a></li>
+<li>
+<ul>
+<li>(Issue <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2438950351" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/99" data-hovercard-type="issue" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/issues/99/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/issues/99">#99</a>) Fix disc_episode_returns off-by-one error by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/Katze2664/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Katze2664">@Katze2664</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2438955123" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/100" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/100/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/100">#100</a></li>
+</ul>
+</li>
+<li>Bump deprecated action by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/ffelten/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/ffelten">@ffelten</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2555885086" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/105" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/105/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/105">#105</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/scott-j-johnson/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/scott-j-johnson">@scott-j-johnson</a> made their first contribution in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2239120665" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/93" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/93/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/93">#93</a></li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/pranavg23/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/pranavg23">@pranavg23</a> made their first contribution in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2404903261" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/97" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/97/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/97">#97</a></li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/Katze2664/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Katze2664">@Katze2664</a> made their first contribution in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2438955123" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/100" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/100/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/100">#100</a></li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/timondesch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/timondesch">@timondesch</a> made their first contribution in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2511267993" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/103" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/103/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/103">#103</a></li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/sebimarkgraf/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/sebimarkgraf">@sebimarkgraf</a> made their first contribution in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2591142803" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/MO-Gymnasium/issues/107" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/MO-Gymnasium/pull/107/hovercard" href="https://github.com/Farama-Foundation/MO-Gymnasium/pull/107">#107</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v1.1.0...v1.2.0"><tt>v1.1.0...v1.2.0</tt></a></p></section>
 <section id="release-v1-1-0">
-<h2>v1.1.0: MO-Gymnasium 1.1.0 Release: New MuJoCo environments, Mirrored Deep Sea Treasure, Fruit Tree rendering, and more<a class="headerlink" href="#release-v1-1-0" title="Link to this heading">#</a></h2>
+<h2>v1.1.0: MO-Gymnasium 1.1.0 Release: New MuJoCo environments, Mirrored Deep Sea Treasure, Fruit Tree rendering, and more<a class="headerlink" href="#release-v1-1-0" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2024-03-11 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.1.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.1.0/">PyPI</a></em></p>
 <h2>Environments</h2>
 <ul>
@@ -352,7 +401,7 @@
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v1.0.1...v1.1.0"><tt>v1.0.1...v1.1.0</tt></a></p></section>
 <section id="release-v1-0-1">
-<h2>v1.0.1: MO-Gymnasium 1.0.1 Release: Support Gymnasium 0.29, breakable-bottles pygame render, and more<a class="headerlink" href="#release-v1-0-1" title="Link to this heading">#</a></h2>
+<h2>v1.0.1: MO-Gymnasium 1.0.1 Release: Support Gymnasium 0.29, breakable-bottles pygame render, and more<a class="headerlink" href="#release-v1-0-1" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-08-24 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.0.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.0.1/">PyPI</a></em></p>
 <h2>Environments</h2>
 <ul>
@@ -379,7 +428,7 @@
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v1.0.0...v1.0.1"><tt>v1.0.0...v1.0.1</tt></a></p></section>
 <section id="release-v1-0-0">
-<h2>v1.0.0: MO-Gymnasium becomes mature<a class="headerlink" href="#release-v1-0-0" title="Link to this heading">#</a></h2>
+<h2>v1.0.0: MO-Gymnasium becomes mature<a class="headerlink" href="#release-v1-0-0" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-06-12 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.0.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.0.0/">PyPI</a></em></p>
 <h1>MO-Gymnasium 1.0.0 Release Notes</h1>
 <p>We are thrilled to introduce the mature release of <a href="https://mo-gymnasium.farama.org/" rel="nofollow">MO-Gymnasium</a>, a standardized API and collection of environments designed for Multi-Objective Reinforcement Learning (MORL).</p>
@@ -391,7 +440,7 @@ reward = forward_reward - ctrl_cost"><pre><span class="pl-s1">ctrl_cost</span> <
 <span class="pl-s1">reward</span> <span class="pl-c1">=</span> <span class="pl-s1">forward_reward</span> <span class="pl-c1">-</span> <span class="pl-s1">ctrl_cost</span></pre></div>
 <p>With MORL, users have the flexibility to determine the compromises they desire based on their preferences for each objective. Consequently, the environments in MO-Gymnasium do not have predefined weights. Thus, MO-Gymnasium extends the capabilities of <a href="https://gymnasium.farama.org/" rel="nofollow">Gymnasium</a> to the multi-objective setting, where the agents receives a vectorial reward.</p>
 <p>For example, here is an illustration of the multiple policies learned by an MORL agent for the <code>mo-halfcheetah</code> domain, balancing between saving battery and speed:</p>
-<a target="_blank" rel="noopener noreferrer" href="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTAxNjgzMDgsIm5iZiI6MTcxMDE2ODAwOCwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAzMTElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMzExVDE0NDAwOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWRiNjE0MmE3ZWE2YWUzOWFmMWIxYzUxYmVkYWQ5ZTJiMTY1MzQwNjAyYmM0NmUxYTI0YTZkNWI5ZGU0MzdkNTgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.MUwcVW7_1HG4_VvzJg7fSxv59uXUCD5z2W-waHmEzA8"><img src="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTAxNjgzMDgsIm5iZiI6MTcxMDE2ODAwOCwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAzMTElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMzExVDE0NDAwOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWRiNjE0MmE3ZWE2YWUzOWFmMWIxYzUxYmVkYWQ5ZTJiMTY1MzQwNjAyYmM0NmUxYTI0YTZkNWI5ZGU0MzdkNTgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.MUwcVW7_1HG4_VvzJg7fSxv59uXUCD5z2W-waHmEzA8" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
+<a target="_blank" rel="noopener noreferrer" href="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjkwODMwMTUsIm5iZiI6MTcyOTA4MjcxNSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDE2VDEyNDUxNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWQ4Njg5OWI1M2VjOTNlNjM3NmM0MmM3YzFjMTU3M2UyMGZkNTA3MmUxN2I3YWM1NDFlN2VmOTY5NDMwMWRkZDMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.5KSLvAAQ6afNE_f7SnTP7pmBEsRb32Ks4UYIIYZmCZ0"><img src="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjkwODMwMTUsIm5iZiI6MTcyOTA4MjcxNSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDE2VDEyNDUxNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWQ4Njg5OWI1M2VjOTNlNjM3NmM0MmM3YzFjMTU3M2UyMGZkNTA3MmUxN2I3YWM1NDFlN2VmOTY5NDMwMWRkZDMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.5KSLvAAQ6afNE_f7SnTP7pmBEsRb32Ks4UYIIYZmCZ0" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
 <p>This release marks the first mature version of MO-Gymnasium within Farama, indicating that the API is stable, and we have achieved a high level of quality in this library.</p>
 <h2>API</h2>
 <div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="import gymnasium as gym
@@ -445,7 +494,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v0.3.4...v1.0.0"><tt>v0.3.4...v1.0.0</tt></a></p></section>
 <section id="release-v0-3-4">
-<h2>v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation<a class="headerlink" href="#release-v0-3-4" title="Link to this heading">#</a></h2>
+<h2>v0.3.4: MO-Gymnasium 0.3.4 Release: Known Pareto Front, improved renders and documentation<a class="headerlink" href="#release-v0-3-4" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-03-14 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v0.3.4">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v0.3.4/">PyPI</a></em></p>
 <h2>Changelogs</h2>
 <h3>Environments</h3>
@@ -470,7 +519,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v0.3.3...0.3.4"><tt>v0.3.3...0.3.4</tt></a></p></section>
 <section id="release-v0-3-3">
-<h2>v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page<a class="headerlink" href="#release-v0-3-3" title="Link to this heading">#</a></h2>
+<h2>v0.3.3: MO-Gymnasium 0.3.3 Release: Policy Evaluation bug fix, better documentation page<a class="headerlink" href="#release-v0-3-3" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-02-13 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v0.3.3">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v0.3.3/">PyPI</a></em></p>
 <h2>New improvements/features</h2>
 <ul>
@@ -489,7 +538,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.2...v0.3.3"><tt>0.3.2...v0.3.3</tt></a></p></section>
 <section id="release-0-3-2">
-<h2>MO-Gymnasium 0.3.2 Release: Bug fixes, improved webpage<a class="headerlink" href="#release-0-3-2" title="Link to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.2 Release: Bug fixes, improved webpage<a class="headerlink" href="#release-0-3-2" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-02-03 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.2/">PyPI</a></em></p>
 <h2>Bug fixes</h2>
 <ul>
@@ -502,7 +551,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.1...0.3.2"><tt>0.3.1...0.3.2</tt></a></p></section>
 <section id="release-0-3-1">
-<h2>MO-Gymnasium 0.3.1 Release: Improved documentation and MuJoco MO-Reacher environment<a class="headerlink" href="#release-0-3-1" title="Link to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.1 Release: Improved documentation and MuJoco MO-Reacher environment<a class="headerlink" href="#release-0-3-1" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-02-02 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.1/">PyPI</a></em></p>
 <p>This minor release adds "mo-reacher-v4", a MuJoco version of the Reacher environment, fixes a bug in Lunar Lander and improves the library documentation.</p>
 <h2>Environments</h2>
@@ -521,7 +570,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.3.0...0.3.1"><tt>0.3.0...0.3.1</tt></a></p></section>
 <section id="release-0-3-0">
-<h2>MO-Gymnasium 0.3.0 Release: Migrate to Gymnasium<a class="headerlink" href="#release-0-3-0" title="Link to this heading">#</a></h2>
+<h2>MO-Gymnasium 0.3.0 Release: Migrate to Gymnasium<a class="headerlink" href="#release-0-3-0" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2023-01-23 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.3.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.3.0/">PyPI</a></em></p>
 <p>This release marks our first release as part of the <a href="https://farama.org/" rel="nofollow">Farama Foundation</a>. Benefitting the Farama structure,  this library should reach a higher level of quality and more integration with the tools from the RL community.</p>
 <h2>Breaking changes</h2>
@@ -544,7 +593,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 </ul>
 <p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/0.2.1...0.3.0"><tt>0.2.1...0.3.0</tt></a></p></section>
 <section id="release-0-2-1">
-<h2>0.2.1<a class="headerlink" href="#release-0-2-1" title="Link to this heading">#</a></h2>
+<h2>0.2.1<a class="headerlink" href="#release-0-2-1" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2022-12-09 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.2.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.2.1/">PyPI</a></em></p>
 <ul>
 <li>5 new environments: <code>fishwood-v0</code> (ESR), <code>mo-MountainCarContinuous-v0</code>, <code>water-reservoir-v0</code>, <code>mo-highway-v0</code> and <code>mo-highway-fast-v0</code>;</li>
@@ -554,15 +603,15 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
 <li>Few bugfixes.</li>
 </ul></section>
 <section id="release-0-2-0">
-<h2>0.2.0<a class="headerlink" href="#release-0-2-0" title="Link to this heading">#</a></h2>
+<h2>0.2.0<a class="headerlink" href="#release-0-2-0" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2022-09-25 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.2.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.2.0/">PyPI</a></em></p>
 <p>Support for new Gym&gt;=0.26 API</p></section>
 <section id="release-0-1-2">
-<h2>0.1.2<a class="headerlink" href="#release-0-1-2" title="Link to this heading">#</a></h2>
+<h2>0.1.2<a class="headerlink" href="#release-0-1-2" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2022-09-25 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.1.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.1.2/">PyPI</a></em></p>
 </section>
 <section id="release-0-1-1">
-<h2>0.1.1<a class="headerlink" href="#release-0-1-1" title="Link to this heading">#</a></h2>
+<h2>0.1.1<a class="headerlink" href="#release-0-1-1" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2022-08-24 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/0.1.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/0.1.1/">PyPI</a></em></p>
 </section>
 </section>
@@ -615,6 +664,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-v1-2-0">v1.2.0: MO-Gymnasium 1.2.0 Release: Update Gymnasium to v1.0.0, New Mountaincar Environments, Documentation and Test Improvements, and more</a></li>
 <li><a class="reference internal" href="#release-v1-1-0">v1.1.0: MO-Gymnasium 1.1.0 Release: New MuJoCo environments, Mirrored Deep Sea Treasure, Fruit Tree rendering, and more</a></li>
 <li><a class="reference internal" href="#release-v1-0-1">v1.0.1: MO-Gymnasium 1.0.1 Release: Support Gymnasium 0.29, breakable-bottles pygame render, and more</a></li>
 <li><a class="reference internal" href="#release-v1-0-0">v1.0.0: MO-Gymnasium becomes mature</a></li>
@@ -661,8 +711,8 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
     
     
 
-    <script src="../_static/documentation_options.js?v=25d39d6f"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=151cd43d"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=7660844c"></script>
     
