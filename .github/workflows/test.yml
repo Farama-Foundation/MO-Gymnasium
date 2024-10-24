@@ -21,10 +21,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install uv
-        uv pip install pytest
+        uv pip install --system pytest
         sudo apt-get update
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
-        uv pip install -e .[all]
+        uv pip install --system -e .[all]
     - name: Full Python tests
       run: |
         pytest tests/test_envs.py
