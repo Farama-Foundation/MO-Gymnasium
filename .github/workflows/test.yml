@@ -21,11 +21,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pytest
-        git clone https://github.com/benelot/pybullet-gym.git
-        pip install -e pybullet-gym
         sudo apt-get update
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
-        pip install gymnasium
         pip install -e .[all]
     - name: Full Python tests
       run: |
