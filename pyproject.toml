@@ -27,7 +27,6 @@ dependencies = [
     "numpy >=1.21.0,<2.0",
     "pygame >=2.1.0",
     "scipy >=1.7.3",
-    "pymoo >=0.6.0",
 ]
 dynamic = ["version"]
 
