@@ -29,9 +29,10 @@ class MOHumanoidEnv(HumanoidEnv, EzPickle):
     def step(self, action):
         observation, reward, terminated, truncated, info = super().step(action)
         velocity = info["x_velocity"]
-        negative_cost = 10 * info["reward_ctrl"] + info["reward_contact"]
+        negative_cost = info["reward_ctrl"] / self._ctrl_cost_weight  # Revert the scale applied in the original environment
         vec_reward = np.array([velocity, negative_cost], dtype=np.float32)
 
         vec_reward += self.healthy_reward  # All objectives are penalyzed when the agent falls
+        vec_reward += info["reward_contact"]  # Do not treat contact forces as a separate objective
 
         return observation, vec_reward, terminated, truncated, info
