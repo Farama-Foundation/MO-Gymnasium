@@ -41,17 +41,16 @@ class MOAntEnv(AntEnv, EzPickle):
         x_velocity = info["x_velocity"]
         y_velocity = info["y_velocity"]
         cost = info["reward_ctrl"]
-        contact_cost = info["reward_contact"]
         healthy_reward = info["reward_survive"]
 
         if self.cost_objetive:
             cost /= self._ctrl_cost_weight  # Ignore the weight in the original AntEnv
-            contact_cost /= self._contact_cost_weight
             vec_reward = np.array([x_velocity, y_velocity, cost], dtype=np.float32)
         else:
             vec_reward = np.array([x_velocity, y_velocity], dtype=np.float32)
-            vec_reward += cost + contact_cost
+            vec_reward += cost
 
         vec_reward += healthy_reward
+        vec_reward += info["reward_contact"]  # Do not treat contact forces as a separate objective
 
         return observation, vec_reward, terminated, truncated, info
