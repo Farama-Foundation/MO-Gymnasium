@@ -29,9 +29,9 @@ class MOWalker2dEnv(Walker2dEnv, EzPickle):
     def step(self, action):
         observation, reward, terminated, truncated, info = super().step(action)
         velocity = info["x_velocity"]
-        energy = -np.sum(np.square(action))
+        neg_energy_cost = info["reward_ctrl"] / self._ctrl_cost_weight
 
-        vec_reward = np.array([velocity, energy], dtype=np.float32)
+        vec_reward = np.array([velocity, neg_energy_cost], dtype=np.float32)
 
         vec_reward += self.healthy_reward  # All objectives are penalyzed when the agent falls
 
