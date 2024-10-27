@@ -33,7 +33,7 @@ register(
 )
 
 register(
-    id="mo-hopper-2d-v5",
+    id="mo-hopper-2obj-v5",
     entry_point="mo_gymnasium.envs.mujoco.hopper_v5:MOHopperEnv",
     max_episode_steps=1000,
     kwargs={"cost_objective": False},
@@ -41,7 +41,7 @@ register(
 
 register(
     id="mo-walker2d-v4",
-    entry_point="mo_gymnasium.envs.mujoco.walker2d:MOWalker2dEnv",
+    entry_point="mo_gymnasium.envs.mujoco.walker2d_v4:MOWalker2dEnv",
     max_episode_steps=1000,
 )
 
@@ -53,13 +53,13 @@ register(
 
 register(
     id="mo-ant-v4",
-    entry_point="mo_gymnasium.envs.mujoco.ant:MOAntEnv",
+    entry_point="mo_gymnasium.envs.mujoco.ant_v4:MOAntEnv",
     max_episode_steps=1000,
 )
 
 register(
     id="mo-ant-2d-v4",
-    entry_point="mo_gymnasium.envs.mujoco.ant:MOAntEnv",
+    entry_point="mo_gymnasium.envs.mujoco.ant_v4:MOAntEnv",
     max_episode_steps=1000,
     kwargs={"cost_objective": False},
 )
@@ -72,7 +72,7 @@ register(
 )
 
 register(
-    id="mo-ant-2d-v5",
+    id="mo-ant-2obj-v5",
     entry_point="mo_gymnasium.envs.mujoco.ant_v5:MOAntEnv",
     max_episode_steps=1000,
     kwargs={"cost_objective": False},
@@ -80,7 +80,7 @@ register(
 
 register(
     id="mo-swimmer-v4",
-    entry_point="mo_gymnasium.envs.mujoco.swimmer:MOSwimmerEnv",
+    entry_point="mo_gymnasium.envs.mujoco.swimmer_v4:MOSwimmerEnv",
     max_episode_steps=1000,
 )
 
@@ -92,7 +92,7 @@ register(
 
 register(
     id="mo-humanoid-v4",
-    entry_point="mo_gymnasium.envs.mujoco.humanoid:MOHumanoidEnv",
+    entry_point="mo_gymnasium.envs.mujoco.humanoid_v4:MOHumanoidEnv",
     max_episode_steps=1000,
 )
 

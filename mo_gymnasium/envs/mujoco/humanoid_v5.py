@@ -18,6 +18,7 @@ class MOHumanoidEnv(HumanoidEnv, EzPickle):
 
     ## Version History:
     - v5: Now includes contact forces. See: https://gymnasium.farama.org/environments/mujoco/humanoid/#version-history
+          The scales of the control cost has changed from v4.
     """
 
     def __init__(self, **kwargs):
@@ -29,8 +30,8 @@ class MOHumanoidEnv(HumanoidEnv, EzPickle):
     def step(self, action):
         observation, reward, terminated, truncated, info = super().step(action)
         velocity = info["x_velocity"]
-        negative_cost = info["reward_ctrl"] / self._ctrl_cost_weight  # Revert the scale applied in the original environment
-        vec_reward = np.array([velocity, negative_cost], dtype=np.float32)
+        neg_energy_cost = info["reward_ctrl"] / self._ctrl_cost_weight  # Revert the scale applied in the original environment
+        vec_reward = np.array([velocity, neg_energy_cost], dtype=np.float32)
 
         vec_reward += self.healthy_reward  # All objectives are penalyzed when the agent falls
         vec_reward += info["reward_contact"]  # Do not treat contact forces as a separate objective
