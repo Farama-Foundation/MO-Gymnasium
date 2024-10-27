@@ -30,12 +30,13 @@ class MOHopperEnv(HopperEnv, EzPickle):
         observation, reward, terminated, truncated, info = super().step(action)
         x_velocity = info["x_velocity"]
         height = 10 * info["z_distance_from_origin"]
-        energy_cost = np.sum(np.square(action))
-        if self.cost_objetive:
-            vec_reward = np.array([x_velocity, height, -energy_cost], dtype=np.float32)
+        neg_energy_cost = info["reward_ctrl"]
+        if self._cost_objetive:
+            neg_energy_cost /= self._ctrl_cost_weight  # Revert the scale applied in the original environment
+            vec_reward = np.array([x_velocity, height, neg_energy_cost], dtype=np.float32)
         else:
             vec_reward = np.array([x_velocity, height], dtype=np.float32)
-            vec_reward -= self._ctrl_cost_weight * energy_cost
+            vec_reward += neg_energy_cost
 
         vec_reward += info["reward_survive"]
 
