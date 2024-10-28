@@ -21,7 +21,7 @@ class MOWalker2dEnv(Walker2dEnv, EzPickle):
     - 0: Reward for running forward (x-velocity)
     - 1: Control cost of the action
 
-    # Version History
+    ## Version History
     - See https://gymnasium.farama.org/main/environments/mujoco/walker2d/#version-history
     """
 
