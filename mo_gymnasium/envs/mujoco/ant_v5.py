@@ -22,7 +22,7 @@ class MOAntEnv(AntEnv, EzPickle):
     - 1: y-velocity
     - 2: Control cost of the action
     If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.
-    A healthy reward is added to all objectives.
+    A healthy reward and a cost for contact forces is added to all objectives.
 
     ## Version History
     - v5: Now includes contact forces in the reward and observation.
