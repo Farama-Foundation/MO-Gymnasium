@@ -252,6 +252,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mo-hopper/">MO-Hopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-Walker2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-ant/">MO-Ant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-swimmer/">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-humanoid/">MO-Humanoid</a></li>
@@ -356,7 +357,7 @@
 <td><p>[-inf -inf]</p></td>
 </tr>
 <tr class="row-odd"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-walker2d-v4&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-walker2d-v5&quot;)</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -365,6 +366,9 @@
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>Multi-objective version of the Walker2dEnv environment.</p>
 <p>See <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/walker2d/">Gymnasium’s env</a> for more information.</p>
+<p>The original Gymnasium’s ‘Walker2d-v5’ is recovered by the following linear scalarization:</p>
+<p>env = mo_gym.make(‘mo-walker2d-v5’)
+LinearReward(env, weight=np.array([1.0, 1e-3]))</p>
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
@@ -374,6 +378,12 @@
 <li><p>1: Control cost of the action</p></li>
 </ul>
 </section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="version-history">
+<h1>Version History<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p>See https://gymnasium.farama.org/main/environments/mujoco/walker2d/#version-history</p></li>
+</ul>
 </section>
 
           </article>
@@ -440,6 +450,7 @@
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#version-history">Version History</a></li>
 </ul>
 
             </div>
@@ -472,7 +483,7 @@
     
     
 
-    <script src="../../_static/documentation_options.js?v=151cd43d"></script>
+    <script src="../../_static/documentation_options.js?v=0559ecf3"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
