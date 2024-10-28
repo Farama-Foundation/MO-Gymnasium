@@ -36,7 +36,7 @@ class MOAntEnv(AntEnv, EzPickle):
     def __init__(self, cost_objective=True, **kwargs):
         super().__init__(**kwargs)
         EzPickle.__init__(self, cost_objective, **kwargs)
-        self._cost_objetive = cost_objective
+        self._cost_objective = cost_objective
         self.reward_dim = 3 if cost_objective else 2
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.reward_dim,))
 
@@ -47,7 +47,7 @@ class MOAntEnv(AntEnv, EzPickle):
         cost = info["reward_ctrl"]
         healthy_reward = info["reward_survive"]
 
-        if self._cost_objetive:
+        if self._cost_objective:
             cost /= self._ctrl_cost_weight  # Ignore the weight in the original AntEnv
             vec_reward = np.array([x_velocity, y_velocity, cost], dtype=np.float32)
         else:

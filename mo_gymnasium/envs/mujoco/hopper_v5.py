@@ -34,7 +34,7 @@ class MOHopperEnv(HopperEnv, EzPickle):
     def __init__(self, cost_objective=True, **kwargs):
         super().__init__(**kwargs)
         EzPickle.__init__(self, cost_objective, **kwargs)
-        self._cost_objetive = cost_objective
+        self._cost_objective = cost_objective
         self.reward_dim = 3 if cost_objective else 2
         self.reward_space = Box(low=-np.inf, high=np.inf, shape=(self.reward_dim,))
 
@@ -43,7 +43,7 @@ class MOHopperEnv(HopperEnv, EzPickle):
         x_velocity = info["x_velocity"]
         height = 10 * info["z_distance_from_origin"]
         neg_energy_cost = info["reward_ctrl"]
-        if self._cost_objetive:
+        if self._cost_objective:
             neg_energy_cost /= self._ctrl_cost_weight  # Revert the scale applied in the original environment
             vec_reward = np.array([x_velocity, height, neg_energy_cost], dtype=np.float32)
         else:
