@@ -252,6 +252,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mo-hopper/">MO-Hopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-walker2d/">MO-Walker2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mo-walker2d/#version-history">Version History</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-ant/">MO-Ant</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-humanoid/">MO-Humanoid</a></li>
@@ -356,7 +357,7 @@
 <td><p>[-inf -inf]</p></td>
 </tr>
 <tr class="row-odd"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-swimmer-v4&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-swimmer-v5&quot;)</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -365,8 +366,8 @@
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>Multi-objective version of the SwimmerEnv environment.</p>
 <p>See <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/swimmer/">Gymnasium’s env</a> for more information.</p>
-<p>The original Gymnasium’s ‘Swimmer-v4’ is recovered by the following linear scalarization:</p>
-<p>env = mo_gym.make(‘mo-swimmer-v4’)
+<p>The original Gymnasium’s ‘Swimmer-v5’ is recovered by the following linear scalarization:</p>
+<p>env = mo_gym.make(‘mo-swimmer-v5’)
 LinearReward(env, weight=np.array([1.0, 1e-4]))</p>
 </section>
 <section id="reward-space">
@@ -376,6 +377,10 @@ LinearReward(env, weight=np.array([1.0, 1e-4]))</p>
 <li><p>0: Reward for moving forward (x-velocity)</p></li>
 <li><p>1: Control cost of the action</p></li>
 </ul>
+</section>
+<section id="version-history">
+<h2>Version History:<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h2>
+<p>See https://gymnasium.farama.org/main/environments/mujoco/swimmer/#version-history</p>
 </section>
 </section>
 
@@ -395,7 +400,19 @@ LinearReward(env, weight=np.array([1.0, 1e-4]))</p>
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            
+            <a class="prev-page" href="../mo-ant/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">MO-Ant</div>
+                
+              </div>
+            </a>
           </div>
           <div class="bottom-of-page">
             <div class="left-details">
@@ -439,6 +456,7 @@ LinearReward(env, weight=np.array([1.0, 1e-4]))</p>
 <li><a class="reference internal" href="#">MO-Swimmer</a><ul>
 <li><a class="reference internal" href="#description">Description</a></li>
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#version-history">Version History:</a></li>
 </ul>
 </li>
 </ul>

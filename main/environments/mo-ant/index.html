@@ -252,6 +252,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mo-hopper/">MO-Hopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-walker2d/">MO-Walker2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mo-walker2d/#version-history">Version History</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-Ant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-swimmer/">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mo-humanoid/">MO-Humanoid</a></li>
@@ -338,7 +339,7 @@
 <td><p>Box(-1.0, 1.0, (8,), float32)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Observation Shape</p></td>
-<td><p>(27,)</p></td>
+<td><p>(105,)</p></td>
 </tr>
 <tr class="row-even"><td><p>Observation High</p></td>
 <td><p>inf</p></td>
@@ -356,7 +357,7 @@
 <td><p>[-inf -inf -inf]</p></td>
 </tr>
 <tr class="row-odd"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-ant-v4&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mo_gymnasium.make(&quot;mo-ant-v5&quot;)</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -365,7 +366,7 @@
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>Multi-objective version of the AntEnv environment.</p>
 <p>See <a class="reference external" href="https://gymnasium.farama.org/environments/mujoco/ant/">Gymnasium’s env</a> for more information.</p>
-<p>The original Gymnasium’s ‘Ant-v4’ is recovered by the following linear scalarization:</p>
+<p>The original Gymnasium’s ‘Ant-v5’ is recovered by the following linear scalarization:</p>
 <p>env = mo_gym.make(‘mo-ant-v4’, cost_objective=False)
 LinearReward(env, weight=np.array([1.0, 0.0]))</p>
 </section>
@@ -377,7 +378,17 @@ LinearReward(env, weight=np.array([1.0, 0.0]))</p>
 <li><p>1: y-velocity</p></li>
 <li><p>2: Control cost of the action
 If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.
-A healthy reward is added to all objectives.</p></li>
+A healthy reward and a cost for contact forces is added to all objectives.</p></li>
+</ul>
+<p>A 2-objective version (without the cost objective as a separate objective) can be instantiated via:
+env = mo_gym.make(‘mo-ant-2obj-v5’)</p>
+</section>
+<section id="version-history">
+<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>v5: Now includes contact forces in the reward and observation.
+The 2-objective version has now id ‘mo-ant-2obj-v5’, instead of ‘mo-ant-2d-v4’.
+See https://gymnasium.farama.org/environments/mujoco/ant/#version-history</p></li>
 </ul>
 </section>
 </section>
@@ -398,7 +409,19 @@ A healthy reward is added to all objectives.</p></li>
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            
+            <a class="prev-page" href="../mo-walker2d/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">MO-Walker2D</div>
+                
+              </div>
+            </a>
           </div>
           <div class="bottom-of-page">
             <div class="left-details">
@@ -442,6 +465,7 @@ A healthy reward is added to all objectives.</p></li>
 <li><a class="reference internal" href="#">MO-Ant</a><ul>
 <li><a class="reference internal" href="#description">Description</a></li>
 <li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#version-history">Version History</a></li>
 </ul>
 </li>
 </ul>
