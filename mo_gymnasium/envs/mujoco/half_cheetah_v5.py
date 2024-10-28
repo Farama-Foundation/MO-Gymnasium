@@ -13,7 +13,7 @@ class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
 
     The original Gymnasium's 'HalfCheetah-v5' is recovered by the following linear scalarization:
 
-    env = mo_gym.make('mo-halfcheetah-v4')
+    env = mo_gym.make('mo-halfcheetah-v5')
     LinearReward(env, weight=np.array([1.0, 0.1]))
 
     ## Reward Space

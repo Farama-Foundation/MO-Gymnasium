@@ -11,9 +11,9 @@ class MOSwimmerEnv(SwimmerEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/swimmer/) for more information.
 
-    The original Gymnasium's 'Swimmer-v4' is recovered by the following linear scalarization:
+    The original Gymnasium's 'Swimmer-v5' is recovered by the following linear scalarization:
 
-    env = mo_gym.make('mo-swimmer-v4')
+    env = mo_gym.make('mo-swimmer-v5')
     LinearReward(env, weight=np.array([1.0, 1e-4]))
 
     ## Reward Space

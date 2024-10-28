@@ -11,6 +11,11 @@ class MOHumanoidEnv(HumanoidEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/humanoid/) for more information.
 
+    The original Gymnasium's 'Humanoid-v5' is recovered by the following linear scalarization:
+
+    env = mo_gym.make('mo-humanoid-v5')
+    LinearReward(env, weight=np.array([1.25, 0.1]))
+
     ## Reward Space
     The reward is 2-dimensional:
     - 0: Reward for running forward (x-velocity)
