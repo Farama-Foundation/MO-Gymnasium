@@ -252,7 +252,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-hopper/">MO-Hopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-halfcheetah/">MO-Halfcheetah</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-walker2d/">MO-Walker2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../environments/mo-walker2d/#version-history">Version History</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-ant/">MO-Ant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-swimmer/">MO-Swimmer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../environments/mo-humanoid/">MO-Humanoid</a></li>
@@ -332,6 +331,11 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">¶</a></h1>
+<section id="release-v1-3-1">
+<h2>v1.3.1 Doc fixes<a class="headerlink" href="#release-v1-3-1" title="Link to this heading">¶</a></h2>
+<p><em>Released on 2024-10-28 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.3.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.3.1/">PyPI</a></em></p>
+<p>Doc fixes</p>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/MO-Gymnasium/compare/v1.3.0...v1.3.1"><tt>v1.3.0...v1.3.1</tt></a></p></section>
 <section id="release-v1-3-0">
 <h2>v1.3.0: MO-Gymnasium 1.3.0 Release: New Mujoco v5 Environments<a class="headerlink" href="#release-v1-3-0" title="Link to this heading">¶</a></h2>
 <p><em>Released on 2024-10-28 - <a class="reference external" href="https://github.com/Farama-Foundation/MO-Gymnasium/releases/tag/v1.3.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/mo-gymnasium/v1.3.0/">PyPI</a></em></p>
@@ -462,7 +466,7 @@ reward = forward_reward - ctrl_cost"><pre><span class="pl-s1">ctrl_cost</span> <
 <span class="pl-s1">reward</span> <span class="pl-c1">=</span> <span class="pl-s1">forward_reward</span> <span class="pl-c1">-</span> <span class="pl-s1">ctrl_cost</span></pre></div>
 <p>With MORL, users have the flexibility to determine the compromises they desire based on their preferences for each objective. Consequently, the environments in MO-Gymnasium do not have predefined weights. Thus, MO-Gymnasium extends the capabilities of <a href="https://gymnasium.farama.org/" rel="nofollow">Gymnasium</a> to the multi-objective setting, where the agents receives a vectorial reward.</p>
 <p>For example, here is an illustration of the multiple policies learned by an MORL agent for the <code>mo-halfcheetah</code> domain, balancing between saving battery and speed:</p>
-<a target="_blank" rel="noopener noreferrer" href="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzAxMzg1MjksIm5iZiI6MTczMDEzODIyOSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDI4VDE3NTcwOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTE1YjlkMjViNzA0OTJjMDliYTJmZTZkNTBjNWMxZDZmNjRjYWE5ODhlMWY3MjYyZjc1ZjcwYzY2NDUyNmNjMTEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.VmBHyC0lvPVGhqq94tbFrqo7gfvt9drPP5Lc63lg7zk"><img src="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzAxMzg1MjksIm5iZiI6MTczMDEzODIyOSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDI4VDE3NTcwOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTE1YjlkMjViNzA0OTJjMDliYTJmZTZkNTBjNWMxZDZmNjRjYWE5ODhlMWY3MjYyZjc1ZjcwYzY2NDUyNmNjMTEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.VmBHyC0lvPVGhqq94tbFrqo7gfvt9drPP5Lc63lg7zk" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
+<a target="_blank" rel="noopener noreferrer" href="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzAxNDA2ODUsIm5iZiI6MTczMDE0MDM4NSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDI4VDE4MzMwNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTAzOWE1OGU2MmY2ZjUwNjFiZGE0YTZmMGU1NGFjYmNkYTcwMmZiNDRhMzJjOGQwMDdkYWE0YmU2MmZmMGY2ODQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.jsFM2ZRH_9gvwK7JdT1FiFrErgKixsEpZdYQ04sFeoo"><img src="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzAxNDA2ODUsIm5iZiI6MTczMDE0MDM4NSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEwMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMDI4VDE4MzMwNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTAzOWE1OGU2MmY2ZjUwNjFiZGE0YTZmMGU1NGFjYmNkYTcwMmZiNDRhMzJjOGQwMDdkYWE0YmU2MmZmMGY2ODQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.jsFM2ZRH_9gvwK7JdT1FiFrErgKixsEpZdYQ04sFeoo" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
 <p>This release marks the first mature version of MO-Gymnasium within Farama, indicating that the API is stable, and we have achieved a high level of quality in this library.</p>
 <h2>API</h2>
 <div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="import gymnasium as gym
@@ -686,6 +690,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-v1-3-1">v1.3.1 Doc fixes</a></li>
 <li><a class="reference internal" href="#release-v1-3-0">v1.3.0: MO-Gymnasium 1.3.0 Release: New Mujoco v5 Environments</a></li>
 <li><a class="reference internal" href="#release-v1-2-0">v1.2.0: MO-Gymnasium 1.2.0 Release: Update Gymnasium to v1.0.0, New Mountaincar Environments, Documentation and Test Improvements, and more</a></li>
 <li><a class="reference internal" href="#release-v1-1-0">v1.1.0: MO-Gymnasium 1.1.0 Release: New MuJoCo environments, Mirrored Deep Sea Treasure, Fruit Tree rendering, and more</a></li>
@@ -734,7 +739,7 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span cla
     
     
 
-    <script src="../_static/documentation_options.js?v=0559ecf3"></script>
+    <script src="../_static/documentation_options.js?v=f829d3b5"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=7660844c"></script>
