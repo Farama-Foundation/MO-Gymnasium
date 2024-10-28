@@ -24,8 +24,12 @@ class MOAntEnv(AntEnv, EzPickle):
     If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.
     A healthy reward and a cost for contact forces is added to all objectives.
 
+    A 2-objective version (without the cost objective as a separate objective) can be instantiated via:
+    env = mo_gym.make('mo-ant-2obj-v5')
+
     ## Version History
     - v5: Now includes contact forces in the reward and observation.
+          The 2-objective version has now id 'mo-ant-2obj-v5', instead of 'mo-ant-2d-v4'.
     See https://gymnasium.farama.org/environments/mujoco/ant/#version-history
     """
 

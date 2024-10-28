@@ -22,6 +22,13 @@ class MOHopperEnv(HopperEnv, EzPickle):
     - 1: Reward for jumping high on the z-axis
     - 2: Control cost of the action
     If the cost_objective flag is set to False, the reward is 2-dimensional, and the cost is added to other objectives.
+
+    A 2-objective version (without the cost objective as a separate objective) can be instantiated via:
+    env = mo_gym.make('mo-hopper-2obj-v5')
+
+    ## Version History
+    - v5: The 2-objective version has now id 'mo-hopper-2obj-v5', instead of 'mo-hopper-2d-v4'.
+    See https://gymnasium.farama.org/environments/mujoco/hopper/#version-history
     """
 
     def __init__(self, cost_objective=True, **kwargs):
