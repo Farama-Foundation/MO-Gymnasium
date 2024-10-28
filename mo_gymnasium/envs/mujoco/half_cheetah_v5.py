@@ -11,10 +11,19 @@ class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
 
     See [Gymnasium's env](https://gymnasium.farama.org/environments/mujoco/half_cheetah/) for more information.
 
+    The original Gymnasium's 'HalfCheetah-v5' is recovered by the following linear scalarization:
+
+    env = mo_gym.make('mo-halfcheetah-v4')
+    LinearReward(env, weight=np.array([1.0, 0.1]))
+
     ## Reward Space
     The reward is 2-dimensional:
     - 0: Reward for running forward
     - 1: Control cost of the action
+
+    ## Version History
+    - v5: The scales of the control cost has changed from v4.
+          See https://gymnasium.farama.org/environments/mujoco/half_cheetah/#version-history for other changes.
     """
 
     def __init__(self, **kwargs):
@@ -25,5 +34,7 @@ class MOHalfCheehtahEnv(HalfCheetahEnv, EzPickle):
 
     def step(self, action):
         observation, reward, terminated, truncated, info = super().step(action)
-        vec_reward = np.array([info["reward_forward"], info["reward_ctrl"]], dtype=np.float32)
+        x_velocity = info["x_velocity"]
+        neg_energy_cost = info["reward_ctrl"] / self._ctrl_cost_weight  # Revert the scale applied in the original environment
+        vec_reward = np.array([x_velocity, neg_energy_cost], dtype=np.float32)
         return observation, vec_reward, terminated, truncated, info
