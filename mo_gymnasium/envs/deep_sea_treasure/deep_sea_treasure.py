@@ -212,10 +212,16 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         return self.sea_map[pos[0]][pos[1]]
 
     def _is_valid_state(self, state):
-        if state[0] >= 0 and state[0] <= 10 and state[1] >= 0 and state[1] <= 10:
-            if self._get_map_value(state) != -10:
-                return True
-        return False
+        if self.map_name == "mirrored":
+            if state[0] >= 0 and state[0] <= 10 and state[1] >= 0 and state[1] <= 19:
+                if self._get_map_value(state) != -10:
+                    return True
+            return False
+        else:
+            if state[0] >= 0 and state[0] <= 10 and state[1] >= 0 and state[1] <= 10:
+                if self._get_map_value(state) != -10:
+                    return True
+            return False
 
     def render(self):
         if self.render_mode is None:
