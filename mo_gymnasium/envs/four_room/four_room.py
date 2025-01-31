@@ -187,7 +187,7 @@ class FourRoom(gym.Env, EzPickle):
             phi = np.ones(len(self.all_shapes), dtype=np.float32)
             terminated = True
             return self.state_to_array(self.state), phi, terminated, False, {}
-            
+
         # into a shape cell
         if s1 in self.shape_ids:
             shape_id = self.shape_ids[s1]
