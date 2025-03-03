@@ -179,6 +179,9 @@ class FourRoom(gym.Env, EzPickle):
         # can now move
         self.state = (s1, collected)
 
+        if self.render_mode == "human":
+            self.render()
+
         # into a goal cell
         if s1 == self.goal:
             phi = np.ones(len(self.all_shapes), dtype=np.float32)
@@ -205,9 +208,6 @@ class FourRoom(gym.Env, EzPickle):
                 self.state = (s1, collected)
                 phi = self.features(old_state, action, self.state)
                 return self.state_to_array(self.state), phi, terminated, False, {}
-
-        if self.render_mode == "human":
-            self.render()
 
         # into an empty cell
         return (
