@@ -345,6 +345,8 @@ class FourRoom(gym.Env, EzPickle):
         if self.window is not None:
             pygame.display.quit()
             pygame.quit()
+            self.window = None
+            self.clock = None
 
 
 def draw_line_dashed(surface, color, start_pos, end_pos, width=1, dash_length=3, exclude_corners=True):

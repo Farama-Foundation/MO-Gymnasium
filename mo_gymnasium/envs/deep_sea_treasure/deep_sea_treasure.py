@@ -324,6 +324,8 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         if self.window is not None:
             pygame.display.quit()
             pygame.quit()
+            self.window = None
+            self.clock = None
 
 
 if __name__ == "__main__":

@@ -692,6 +692,10 @@ class Minecart(gym.Env, EzPickle):
         if self.screen is not None:
             pygame.display.quit()
             pygame.quit()
+            self.screen = None
+            self.canvas = None
+            self.clock = None
+            self.last_render_mode_used = None
 
 
 class Mine:
