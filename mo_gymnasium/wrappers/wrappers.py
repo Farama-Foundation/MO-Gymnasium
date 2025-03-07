@@ -307,11 +307,8 @@ class MOMaxAndSkipObservation(gym.Wrapper):
         return max_frame, total_reward, terminated, truncated, info
 
 class RecordMarioVideo(gym.Wrapper, gym.utils.RecordConstructorArgs):
-    """This wrapper records rollouts as videos.
-    Allows intermittent recording of videos based on number of weights evaluted by specifying ``weight_trigger``.
-    To increased weight_number, call `env.reset(options={"weights": w, "step":s})` at the beginning of each evaluation. 
-    If weight trigger is activated, the video recorded file name will include the  current step `s` and evaluated weight `w` as a suffix. 
-    `w` must be a numpy array and `s` must be an integer.
+    """Custom wrapper that records rollouts in mo-supermario as videos. 
+    This is a modified version of the RecordVideo wrapper from Gymnasium which is not compatible with mo-supermario.
     """
 
     def __init__(
