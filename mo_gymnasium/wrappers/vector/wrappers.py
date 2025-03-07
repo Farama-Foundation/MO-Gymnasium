@@ -1,16 +1,27 @@
 """Vector wrappers."""
 
+import os
+import sys
 import time
+import traceback
 from copy import deepcopy
-from typing import Any, Dict, Iterator, Tuple
+from typing import Any, Callable, Dict, Iterator, Tuple, Sequence, Union
+
+import multiprocessing
+from multiprocessing import Array, Queue
+from multiprocessing.connection import Connection
+import numpy as np
 
 import gymnasium as gym
 import numpy as np
 from gymnasium.core import ActType, ObsType
-from gymnasium.vector import SyncVectorEnv
-from gymnasium.vector.utils import concatenate, iterate
-from gymnasium.vector.vector_env import ArrayType, VectorEnv
+from gymnasium.vector import SyncVectorEnv, AsyncVectorEnv
+from gymnasium.vector.async_vector_env import AsyncState
+from gymnasium.vector.utils import concatenate, iterate, create_empty_array, write_to_shared_memory
+from gymnasium.vector.vector_env import ArrayType, VectorEnv, AutoresetMode
 from gymnasium.wrappers.vector import RecordEpisodeStatistics
+from gymnasium.error import NoAsyncCallError
+from gymnasium.spaces.utils import is_space_dtype_shape_equiv
 
 
 class MOSyncVectorEnv(SyncVectorEnv):
@@ -99,6 +110,249 @@ class MOSyncVectorEnv(SyncVectorEnv):
             np.copy(self._rewards),
             np.copy(self._terminations),
             np.copy(self._truncations),
+            infos,
+        )
+    
+def _mo_async_worker(
+    index: int,
+    env_fn: callable,
+    pipe: Connection,
+    parent_pipe: Connection,
+    shared_memory: Union[Array, Dict[str, Any], Tuple[Any, ...]],
+    error_queue: Queue,
+    autoreset_mode: AutoresetMode,
+):
+    env = env_fn()
+    observation_space = env.observation_space
+    action_space = env.action_space
+    reward_space = env.unwrapped.reward_space
+    autoreset = False
+    observation = None
+
+    parent_pipe.close()
+
+    try:
+        while True:
+            command, data = pipe.recv()
+
+            if command == "reset":
+                observation, info = env.reset(**data)
+                if shared_memory:
+                    write_to_shared_memory(
+                        observation_space, index, observation, shared_memory
+                    )
+                    observation = None
+                    autoreset = False
+                pipe.send(((observation, info), True))
+            elif command == "reset-noop":
+                pipe.send(((observation, {}), True))
+            elif command == "step":
+                if autoreset_mode == AutoresetMode.NEXT_STEP:
+                    if autoreset:
+                        observation, info = env.reset()
+                        reward, terminated, truncated = np.zeros(reward_space.shape[0], dtype=np.float32), False, False
+                    else:
+                        (
+                            observation,
+                            reward,
+                            terminated,
+                            truncated,
+                            info,
+                        ) = env.step(data)
+                    autoreset = terminated or truncated
+                elif autoreset_mode == AutoresetMode.SAME_STEP:
+                    (
+                        observation,
+                        reward,
+                        terminated,
+                        truncated,
+                        info,
+                    ) = env.step(data)
+
+                    if terminated or truncated:
+                        reset_observation, reset_info = env.reset()
+
+                        info = {
+                            "final_info": info,
+                            "final_obs": observation,
+                            **reset_info,
+                        }
+                        observation = reset_observation
+                elif autoreset_mode == AutoresetMode.DISABLED:
+                    assert autoreset is False
+                    (
+                        observation,
+                        reward,
+                        terminated,
+                        truncated,
+                        info,
+                    ) = env.step(data)
+                else:
+                    raise ValueError(f"Unexpected autoreset_mode: {autoreset_mode}")
+
+                if shared_memory:
+                    write_to_shared_memory(
+                        observation_space, index, observation, shared_memory
+                    )
+                    observation = None
+
+                pipe.send(((observation, reward, terminated, truncated, info), True))
+            elif command == "close":
+                pipe.send((None, True))
+                break
+            elif command == "_call":
+                name, args, kwargs = data
+                if name in ["reset", "step", "close", "_setattr", "_check_spaces"]:
+                    raise ValueError(
+                        f"Trying to call function `{name}` with `call`, use `{name}` directly instead."
+                    )
+
+                attr = env.get_wrapper_attr(name)
+                if callable(attr):
+                    pipe.send((attr(*args, **kwargs), True))
+                else:
+                    pipe.send((attr, True))
+            elif command == "_setattr":
+                name, value = data
+                env.set_wrapper_attr(name, value)
+                pipe.send((None, True))
+            elif command == "_check_spaces":
+                obs_mode, single_obs_space, single_action_space = data
+
+                pipe.send(
+                    (
+                        (
+                            (
+                                single_obs_space == observation_space
+                                if obs_mode == "same"
+                                else is_space_dtype_shape_equiv(
+                                    single_obs_space, observation_space
+                                )
+                            ),
+                            single_action_space == action_space,
+                        ),
+                        True,
+                    )
+                )
+            else:
+                raise RuntimeError(
+                    f"Received unknown command `{command}`. Must be one of [`reset`, `step`, `close`, `_call`, `_setattr`, `_check_spaces`]."
+                )
+    except (KeyboardInterrupt, Exception):
+        error_type, error_message, _ = sys.exc_info()
+        trace = traceback.format_exc()
+
+        error_queue.put((index, error_type, error_message, trace))
+        pipe.send((None, False))
+    finally:
+        env.close()
+    
+class MOAsyncVectorEnv(AsyncVectorEnv):
+    """Vectorized environment that runs multiple environments in parallel.
+
+    It uses ``multiprocessing`` processes, and pipes for communication.
+
+    Mofified from gymnasium.vector.async_vector_env.AsyncVectorEnv to allow for multi-objective rewards.
+    
+    Example:
+        >>> import mo_gymnasium as mo_gym
+        >>> envs = mo_gym.wrappers.vector.MOAsyncVectorEnv([
+        ...     lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(4)
+        ... ])
+        >>> envs
+        MOAsyncVectorEnv(num_envs=4)
+        >>> obs, infos = envs.reset()
+        >>> obs
+        array([[0, 0], [0, 0], [0, 0], [0, 0]], dtype=int32)
+        >>> _ = envs.action_space.seed(42)
+        >>> actions = envs.action_space.sample()
+        >>> obs, rewards, terminateds, truncateds, infos = envs.step([0, 1, 2, 3])
+        >>> obs
+        array([[0, 0], [1, 0], [0, 0], [0, 3]], dtype=int32)
+        >>> rewards
+        array([[0., -1.], [0.7, -1.], [0., -1.], [0., -1.]], dtype=float32)
+        >>> terminateds
+        array([False,  True, False, False])
+    """
+    def __init__(
+        self,
+        env_fns: Sequence[Callable[[], gym.Env]],
+        **kwargs
+    ):
+        super().__init__(env_fns=env_fns, worker=_mo_async_worker, **kwargs)
+
+        # extract reward space from first vector env and create 2d array to store vector rewards
+        dummy_env = env_fns[0]()
+        self.reward_space = dummy_env.unwrapped.reward_space
+        dummy_env.close()
+        del dummy_env
+        self.rewards = create_empty_array(self.reward_space, n=self.num_envs, fn=np.zeros)
+
+    
+    def step_wait(
+        self, timeout: int | float | None = None
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, dict]:
+        """Wait for the calls to :obj:`step` in each sub-environment to finish.
+
+        Args:
+            timeout: Number of seconds before the call to :meth:`step_wait` times out. If ``None``, the call to :meth:`step_wait` never times out.
+
+        Returns:
+             The batched environment step information, (obs, reward, terminated, truncated, info)
+
+        Raises:
+            ClosedEnvironmentError: If the environment was closed (if :meth:`close` was previously called).
+            NoAsyncCallError: If :meth:`step_wait` was called without any prior call to :meth:`step_async`.
+            TimeoutError: If :meth:`step_wait` timed out.
+        """
+        self._assert_is_running()
+        if self._state != AsyncState.WAITING_STEP:
+            raise NoAsyncCallError(
+                "Calling `step_wait` without any prior call " "to `step_async`.",
+                AsyncState.WAITING_STEP.value,
+            )
+
+        if not self._poll_pipe_envs(timeout):
+            self._state = AsyncState.DEFAULT
+            raise multiprocessing.TimeoutError(
+                f"The call to `step_wait` has timed out after {timeout} second(s)."
+            )
+
+        observations, rewards, terminations, truncations, infos = [], [], [], [], {}
+        successes = []
+        for env_idx, pipe in enumerate(self.parent_pipes):
+            env_step_return, success = pipe.recv()
+
+            successes.append(success)
+            if success:
+                observations.append(env_step_return[0])
+                rewards.append(env_step_return[1])
+                terminations.append(env_step_return[2])
+                truncations.append(env_step_return[3])
+                infos = self._add_info(infos, env_step_return[4], env_idx)
+
+        self._raise_if_errors(successes)
+
+        if not self.shared_memory:
+            self.observations = concatenate(
+                self.single_observation_space,
+                observations,
+                self.observations,
+            )
+        
+        # modify to allow return of vector rewards
+        self.rewards = concatenate(
+            self.reward_space,
+            rewards,
+            self.rewards,
+        )
+
+        self._state = AsyncState.DEFAULT
+        return (
+            deepcopy(self.observations) if self.copy else self.observations,
+            deepcopy(self.rewards) if self.copy else self.rewards,
+            np.array(terminations, dtype=np.bool_),
+            np.array(truncations, dtype=np.bool_),
             infos,
         )
 
