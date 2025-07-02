@@ -1,5 +1,7 @@
 """Vector wrappers."""
 
+from __future__ import annotations
+
 import multiprocessing
 import sys
 import time
@@ -7,7 +9,7 @@ import traceback
 from copy import deepcopy
 from multiprocessing import Array, Queue
 from multiprocessing.connection import Connection
-from typing import Any, Callable, Dict, Iterator, Sequence, Tuple, Union
+from typing import Any, Callable, Iterator, Sequence
 
 import gymnasium as gym
 import numpy as np
@@ -73,7 +75,7 @@ class MOSyncVectorEnv(SyncVectorEnv):
             dtype=np.float32,
         )
 
-    def step(self, actions: ActType) -> Tuple[ObsType, ArrayType, ArrayType, ArrayType, Dict[str, Any]]:
+    def step(self, actions: ActType) -> tuple[ObsType, ArrayType, ArrayType, ArrayType, dict[str, Any]]:
         """Steps through each of the environments returning the batched results.
 
         Returns:
@@ -121,7 +123,7 @@ def _mo_async_worker(
     env_fn: callable,
     pipe: Connection,
     parent_pipe: Connection,
-    shared_memory: Union[Array, Dict[str, Any], Tuple[Any, ...]],
+    shared_memory: Array | dict[str, Any] | tuple[Any, ...],
     error_queue: Queue,
     autoreset_mode: AutoresetMode,
 ):
@@ -413,7 +415,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
 
         return obs, info
 
-    def step(self, actions: ActType) -> Tuple[ObsType, ArrayType, ArrayType, ArrayType, Dict[str, Any]]:
+    def step(self, actions: ActType) -> tuple[ObsType, ArrayType, ArrayType, ArrayType, dict[str, Any]]:
         """Steps through the environment, recording the episode statistics."""
         (
             observations,
