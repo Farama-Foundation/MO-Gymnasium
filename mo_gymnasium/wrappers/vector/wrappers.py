@@ -1,27 +1,29 @@
 """Vector wrappers."""
 
-import os
+import multiprocessing
 import sys
 import time
 import traceback
 from copy import deepcopy
-from typing import Any, Callable, Dict, Iterator, Tuple, Sequence, Union
-
-import multiprocessing
 from multiprocessing import Array, Queue
 from multiprocessing.connection import Connection
-import numpy as np
+from typing import Any, Callable, Dict, Iterator, Sequence, Tuple, Union
 
 import gymnasium as gym
 import numpy as np
 from gymnasium.core import ActType, ObsType
-from gymnasium.vector import SyncVectorEnv, AsyncVectorEnv
-from gymnasium.vector.async_vector_env import AsyncState
-from gymnasium.vector.utils import concatenate, iterate, create_empty_array, write_to_shared_memory
-from gymnasium.vector.vector_env import ArrayType, VectorEnv, AutoresetMode
-from gymnasium.wrappers.vector import RecordEpisodeStatistics
 from gymnasium.error import NoAsyncCallError
 from gymnasium.spaces.utils import is_space_dtype_shape_equiv
+from gymnasium.vector import AsyncVectorEnv, SyncVectorEnv
+from gymnasium.vector.async_vector_env import AsyncState
+from gymnasium.vector.utils import (
+    concatenate,
+    create_empty_array,
+    iterate,
+    write_to_shared_memory,
+)
+from gymnasium.vector.vector_env import ArrayType, AutoresetMode, VectorEnv
+from gymnasium.wrappers.vector import RecordEpisodeStatistics
 
 
 class MOSyncVectorEnv(SyncVectorEnv):
@@ -112,7 +114,8 @@ class MOSyncVectorEnv(SyncVectorEnv):
             np.copy(self._truncations),
             infos,
         )
-    
+
+
 def _mo_async_worker(
     index: int,
     env_fn: callable,
@@ -138,9 +141,7 @@ def _mo_async_worker(
             if command == "reset":
                 observation, info = env.reset(**data)
                 if shared_memory:
-                    write_to_shared_memory(
-                        observation_space, index, observation, shared_memory
-                    )
+                    write_to_shared_memory(observation_space, index, observation, shared_memory)
                     observation = None
                     autoreset = False
                 pipe.send(((observation, info), True))
@@ -150,7 +151,11 @@ def _mo_async_worker(
                 if autoreset_mode == AutoresetMode.NEXT_STEP:
                     if autoreset:
                         observation, info = env.reset()
-                        reward, terminated, truncated = np.zeros(reward_space.shape[0], dtype=np.float32), False, False
+                        reward, terminated, truncated = (
+                            np.zeros(reward_space.shape[0], dtype=np.float32),
+                            False,
+                            False,
+                        )
                     else:
                         (
                             observation,
@@ -191,9 +196,7 @@ def _mo_async_worker(
                     raise ValueError(f"Unexpected autoreset_mode: {autoreset_mode}")
 
                 if shared_memory:
-                    write_to_shared_memory(
-                        observation_space, index, observation, shared_memory
-                    )
+                    write_to_shared_memory(observation_space, index, observation, shared_memory)
                     observation = None
 
                 pipe.send(((observation, reward, terminated, truncated, info), True))
@@ -203,9 +206,7 @@ def _mo_async_worker(
             elif command == "_call":
                 name, args, kwargs = data
                 if name in ["reset", "step", "close", "_setattr", "_check_spaces"]:
-                    raise ValueError(
-                        f"Trying to call function `{name}` with `call`, use `{name}` directly instead."
-                    )
+                    raise ValueError(f"Trying to call function `{name}` with `call`, use `{name}` directly instead.")
 
                 attr = env.get_wrapper_attr(name)
                 if callable(attr):
@@ -225,9 +226,7 @@ def _mo_async_worker(
                             (
                                 single_obs_space == observation_space
                                 if obs_mode == "same"
-                                else is_space_dtype_shape_equiv(
-                                    single_obs_space, observation_space
-                                )
+                                else is_space_dtype_shape_equiv(single_obs_space, observation_space)
                             ),
                             single_action_space == action_space,
                         ),
@@ -246,14 +245,15 @@ def _mo_async_worker(
         pipe.send((None, False))
     finally:
         env.close()
-    
+
+
 class MOAsyncVectorEnv(AsyncVectorEnv):
     """Vectorized environment that runs multiple environments in parallel.
 
     It uses ``multiprocessing`` processes, and pipes for communication.
 
-    Mofified from gymnasium.vector.async_vector_env.AsyncVectorEnv to allow for multi-objective rewards.
-    
+    Modified from gymnasium.vector.async_vector_env.AsyncVectorEnv to allow for multi-objective rewards.
+
     Example:
         >>> import mo_gymnasium as mo_gym
         >>> envs = mo_gym.wrappers.vector.MOAsyncVectorEnv([
@@ -274,11 +274,13 @@ class MOAsyncVectorEnv(AsyncVectorEnv):
         >>> terminateds
         array([False,  True, False, False])
     """
-    def __init__(
-        self,
-        env_fns: Sequence[Callable[[], gym.Env]],
-        **kwargs
-    ):
+
+    def __init__(self, env_fns: Sequence[Callable[[], gym.Env]], **kwargs):
+        """Vectorized environment that runs multiple environments in parallel.
+
+        Args:
+            env_fns: env constructors
+        """
         super().__init__(env_fns=env_fns, worker=_mo_async_worker, **kwargs)
 
         # extract reward space from first vector env and create 2d array to store vector rewards
@@ -288,10 +290,7 @@ class MOAsyncVectorEnv(AsyncVectorEnv):
         del dummy_env
         self.rewards = create_empty_array(self.reward_space, n=self.num_envs, fn=np.zeros)
 
-    
-    def step_wait(
-        self, timeout: int | float | None = None
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, dict]:
+    def step_wait(self, timeout: int | float | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, dict]:
         """Wait for the calls to :obj:`step` in each sub-environment to finish.
 
         Args:
@@ -308,15 +307,13 @@ class MOAsyncVectorEnv(AsyncVectorEnv):
         self._assert_is_running()
         if self._state != AsyncState.WAITING_STEP:
             raise NoAsyncCallError(
-                "Calling `step_wait` without any prior call " "to `step_async`.",
+                "Calling `step_wait` without any prior call to `step_async`.",
                 AsyncState.WAITING_STEP.value,
             )
 
         if not self._poll_pipe_envs(timeout):
             self._state = AsyncState.DEFAULT
-            raise multiprocessing.TimeoutError(
-                f"The call to `step_wait` has timed out after {timeout} second(s)."
-            )
+            raise multiprocessing.TimeoutError(f"The call to `step_wait` has timed out after {timeout} second(s).")
 
         observations, rewards, terminations, truncations, infos = [], [], [], [], {}
         successes = []
@@ -339,7 +336,7 @@ class MOAsyncVectorEnv(AsyncVectorEnv):
                 observations,
                 self.observations,
             )
-        
+
         # modify to allow return of vector rewards
         self.rewards = concatenate(
             self.reward_space,

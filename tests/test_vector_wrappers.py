@@ -2,7 +2,19 @@ import gymnasium as gym
 import numpy as np
 
 import mo_gymnasium as mo_gym
-from mo_gymnasium.wrappers.vector import MORecordEpisodeStatistics, MOSyncVectorEnv
+from mo_gymnasium.wrappers.vector import (
+    MOAsyncVectorEnv,
+    MORecordEpisodeStatistics,
+    MOSyncVectorEnv,
+)
+
+
+def _test_logic(envs, num_envs: int):
+    obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
+    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
+    assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
+    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
+    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
 
 
 def test_mo_sync_wrapper():
@@ -10,18 +22,19 @@ def test_mo_sync_wrapper():
     envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
 
     envs.reset()
-    obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
-    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
-    assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
-    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
-    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
+    _test_logic(envs, num_envs)
     envs.close()
 
 
-def test_mo_sync_autoreset():
-    num_envs = 2
-    envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
+def test_mo_async_wrapper():
+    num_envs = 3
+    envs = MOAsyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
+    envs.reset()
+    _test_logic(envs, num_envs)
+    envs.close()
 
+
+def _test_autoreset_logic(envs):
     obs, infos = envs.reset()
     assert (obs[0] == [0, 0]).all()
     assert (obs[1] == [0, 0]).all()
@@ -42,14 +55,25 @@ def test_mo_sync_autoreset():
     assert (rewards[1] == [0.0, 0.0]).all()  # Reset step
     assert not terminateds[0]
     assert not terminateds[1]  # Not done anymore
+
+
+def test_mo_sync_autoreset():
+    num_envs = 2
+    envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
+
+    _test_autoreset_logic(envs)
     envs.close()
 
 
-def test_mo_record_ep_statistic_vector_env():
+def test_mo_async_autoreset():
     num_envs = 2
-    envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
-    envs = MORecordEpisodeStatistics(envs, gamma=0.97)
+    envs = MOAsyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
 
+    _test_autoreset_logic(envs)
+    envs.close()
+
+
+def _test_record_ep_statistic_logic(envs, num_envs: int):
     envs.reset()
     terminateds = np.array([False] * num_envs)
     info = {}
@@ -69,7 +93,32 @@ def test_mo_record_ep_statistic_vector_env():
     assert isinstance(info["episode"]["l"], np.ndarray)
     np.testing.assert_almost_equal(info["episode"]["l"], np.array([0, 3], dtype=np.float32), decimal=2)
     assert isinstance(info["episode"]["t"], np.ndarray)
+
+
+def test_mo_record_ep_statistic_vector_env():
+    num_envs = 2
+    envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
+    envs = MORecordEpisodeStatistics(envs, gamma=0.97)
+    _test_record_ep_statistic_logic(envs, num_envs)
     envs.close()
+
+
+def test_mo_record_ep_statistic_vector_env_async():
+    num_envs = 2
+    envs = MOAsyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(num_envs)])
+    envs = MORecordEpisodeStatistics(envs, gamma=0.97)
+    _test_record_ep_statistic_logic(envs, num_envs)
+    envs.close()
+
+
+def _test_gym_wrapper_and_vector_logic(envs, num_envs: int):
+    envs.reset()
+    for i in range(30):
+        obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
+    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
+    assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
+    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
+    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
 
 
 def test_gym_wrapper_and_vector():
@@ -78,12 +127,14 @@ def test_gym_wrapper_and_vector():
     envs = MOSyncVectorEnv(
         [lambda: gym.wrappers.NormalizeObservation(mo_gym.make("deep-sea-treasure-v0")) for _ in range(num_envs)]
     )
+    _test_gym_wrapper_and_vector_logic(envs, num_envs)
+    envs.close()
 
-    envs.reset()
-    for i in range(30):
-        obs, rewards, terminateds, truncateds, infos = envs.step(envs.action_space.sample())
-    assert len(obs) == num_envs, "Number of observations do not match the number of envs"
-    assert len(rewards) == num_envs, "Number of rewards do not match the number of envs"
-    assert len(terminateds) == num_envs, "Number of terminateds do not match the number of envs"
-    assert len(truncateds) == num_envs, "Number of truncateds do not match the number of envs"
+
+def test_gym_wrapper_and_vector_async():
+    num_envs = 2
+    envs = MOAsyncVectorEnv(
+        [lambda: gym.wrappers.NormalizeObservation(mo_gym.make("deep-sea-treasure-v0")) for _ in range(num_envs)]
+    )
+    _test_gym_wrapper_and_vector_logic(envs, num_envs)
     envs.close()
