@@ -7,4 +7,5 @@ from mo_gymnasium.wrappers.wrappers import (
     MOMaxAndSkipObservation,
     MONormalizeReward,
     MORecordEpisodeStatistics,
+    RecordMarioVideo
 )

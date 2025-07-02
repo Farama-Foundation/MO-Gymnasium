@@ -1,14 +1,16 @@
 """Wrappers."""
 
+import os
 import time
+import imageio
 from copy import deepcopy
-from typing import Tuple, TypeVar
+from typing import Tuple, TypeVar, Callable
 
 import gymnasium as gym
 import numpy as np
 from gymnasium.wrappers.common import RecordEpisodeStatistics
 from gymnasium.wrappers.utils import RunningMeanStd
-
+from gymnasium.utils.save_video import capped_cubic_video_schedule
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -303,3 +305,175 @@ class MOMaxAndSkipObservation(gym.Wrapper):
         max_frame = self._obs_buffer.max(axis=0)
 
         return max_frame, total_reward, terminated, truncated, info
+
+class RecordMarioVideo(gym.Wrapper, gym.utils.RecordConstructorArgs):
+    """Custom wrapper that records rollouts in mo-supermario as videos. 
+    This is a modified version of the RecordVideo wrapper from Gymnasium which is not compatible with mo-supermario.
+    """
+
+    def __init__(
+        self,
+        env: gym.Env,
+        video_folder: str,
+        episode_trigger: Callable[[int], bool] = None,
+        step_trigger: Callable[[int], bool] = None,
+        video_length: int = 0,
+        name_prefix: str = "rl-video",
+        disable_logger: bool = False,
+        fps: int = 30,
+    ):
+        """Wrapper records rollouts as videos.
+
+        Args:
+            env: The environment that will be wrapped
+            video_folder (str): The folder where the videos will be stored
+            episode_trigger: Function that accepts an integer and returns ``True`` iff a recording should be started at this episode
+            step_trigger: Function that accepts an integer and returns ``True`` iff a recording should be started at this step
+            video_length (int): The length of recorded episodes. If 0, entire episodes are recorded.
+                Otherwise, snippets of the specified length are captured
+            name_prefix (str): Will be prepended to the filename of the recordings
+            disable_logger (bool): Whether to disable logger or not.
+            fps (int): Frames per second for the video recording.
+        """
+        gym.utils.RecordConstructorArgs.__init__(
+            self,
+            video_folder=video_folder,
+            episode_trigger=episode_trigger,
+            step_trigger=step_trigger,
+            video_length=video_length,
+            name_prefix=name_prefix,
+            disable_logger=disable_logger,
+        )
+        gym.Wrapper.__init__(self, env)
+
+        if env.render_mode in {None, "human", "ansi", "ansi_list"}:
+            raise ValueError(
+                f"Render mode is {env.render_mode}, which is incompatible with"
+                f" RecordVideo. Initialize your environment with a render_mode"
+                f" that returns an image, such as rgb_array."
+            )
+
+        if episode_trigger is None and step_trigger is None:
+            episode_trigger = capped_cubic_video_schedule
+
+        trigger_count = sum(x is not None for x in [episode_trigger, step_trigger])
+        assert trigger_count == 1, "Must specify exactly one trigger"
+
+        self.episode_trigger = episode_trigger
+        self.step_trigger = step_trigger
+        self.disable_logger = disable_logger
+
+        self.video_folder = os.path.abspath(video_folder)
+        os.makedirs(self.video_folder, exist_ok=True)
+
+        self.name_prefix = name_prefix
+        self.step_id = 0
+        self.video_length = video_length
+        self.fps = env.metadata.get("render_fps", fps)
+
+        self.recording = False
+        self.terminated = False
+        self.truncated = False
+        self.video_writer = None
+        self.recorded_frames = 0
+        self.episode_id = 0
+
+        try:
+            self.is_vector_env = self.get_wrapper_attr("is_vector_env")
+        except AttributeError:
+            self.is_vector_env = False
+
+    def reset(self, **kwargs):
+        """Reset the environment and start video recording if enabled."""
+        observations = super().reset(**kwargs)
+        self.terminated = False
+        self.truncated = False
+        if self.recording:
+            assert self.video_writer is not None
+            self._capture_frame()
+            if self.video_length > 0:
+                if self.recorded_frames > self.video_length:
+                    self.close_video_writer()
+        if self._video_enabled():
+            self.start_video_recording()
+
+        return observations
+
+    def start_video_recording(self):
+        """Initialize video recording."""
+        self.close_video_writer()
+
+        video_name = f"{self.name_prefix}-step-{self.step_id}.mp4"
+        if self.episode_trigger:
+            video_name = f"{self.name_prefix}-episode-{self.episode_id}.mp4"
+        video_path = os.path.join(self.video_folder, video_name)
+
+        self.video_writer = imageio.get_writer(video_path, fps=self.fps, format='mp4')
+
+        self._capture_frame()
+        self.recording = True
+    
+    def _capture_frame(self):
+        """Capture a frame from the environment and add it to the video."""
+        frame = self.env.render()
+        self.video_writer.append_data(frame)
+        self.recorded_frames += 1
+
+    def _video_enabled(self):
+        if self.step_trigger:
+            return self.step_trigger(self.step_id)
+        elif self.episode_trigger:
+            return self.episode_trigger(self.episode_id)
+
+    def step(self, action):
+        """Steps through the environment using action, recording observations if :attr:`self.recording`."""
+        (
+            observations,
+            rewards,
+            terminateds,
+            truncateds,
+            infos,
+        ) = self.env.step(action)
+
+        if not (self.terminated or self.truncated):
+            self.step_id += 1
+            if not self.is_vector_env:
+                if terminateds or truncateds:
+                    self.episode_id += 1
+                    self.terminated = terminateds
+                    self.truncated = truncateds
+            elif terminateds[0] or truncateds[0]:
+                self.episode_id += 1
+                self.terminated = terminateds[0]
+                self.truncated = truncateds[0]
+
+            if self.recording:
+                assert self.video_writer is not None
+                self._capture_frame()
+                if self.video_length > 0:
+                    if self.recorded_frames >= self.video_length:
+                        self.close_video_writer()
+                else:
+                    if not self.is_vector_env:
+                        if terminateds or truncateds:
+                            self.close_video_writer()
+                    elif terminateds[0] or truncateds[0]:
+                        self.close_video_writer()
+            elif self._video_enabled():
+                self.start_video_recording()
+
+        return observations, rewards, terminateds, truncateds, infos
+
+    def close_video_writer(self):
+        """Close the video writer if it is open."""
+        if self.recording:
+            assert self.video_writer is not None
+            self.video_writer.close()
+            self.recording = False
+        self.recording = False
+        self.recorded_frames = 1
+
+    def close(self):
+        """Closes the wrapper and saves any ongoing video recording."""
+        super().close()
+        self.close_video_writer()
