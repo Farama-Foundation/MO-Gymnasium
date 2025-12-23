@@ -20,6 +20,8 @@ class MOSuperMarioBros(SuperMarioBrosEnv, gym.Env, EzPickle):
     ## Description
     Multi-objective version of the SuperMarioBro environment.
 
+    Obs: To run this environment, it is required numpy==1.21 due to nes-py dependency.
+
     See [gym-super-mario-bros](https://github.com/Kautenja/gym-super-mario-bros) for more information.
 
     ## Reward Space
