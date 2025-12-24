@@ -16,7 +16,7 @@ for env_spec in gym.envs.registry.values():
         continue
 
     # collect MO Gymnasium envs
-    if env_spec.entry_point.split(".")[0] == "mo_gymnasium":
+    if env_spec.entry_point.split(".")[0] == "mo_gymnasium" and "mario" not in env_spec.id:
         all_testing_env_specs.append(env_spec)
 
 
