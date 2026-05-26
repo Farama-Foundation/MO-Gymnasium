@@ -216,18 +216,19 @@ class Minecart(gym.Env, EzPickle):
         extended_policies = [origin] + policies
         return [policies[idx - 1] for idx in ConvexHull(extended_policies).vertices if idx != 0]
 
-    def pareto_front(self, gamma: float, symmetric: bool = True) -> List[np.ndarray]:
+    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**3) -> List[np.ndarray]:
         """
         Computes an approximate pareto front.
 
         Args:
             gamma (float): Discount factor to apply to rewards
             symmetric (bool): If true, we assume the pattern of accelerations from the base to the mine is the same as from the mine to the base. Default: True
-
+            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**3
         Returns:
             The pareto coverage set
         """
-        all_rewards = []
+        rewards_batch = []
+        pareto_rewards = []
         base_perimeter = BASE_RADIUS * BASE_SCALE
 
         # Empty mine just outside the base
@@ -389,11 +390,17 @@ class Minecart(gym.Env, EzPickle):
                 reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)
 
                 reward = np.dot(discount_map[: len(s)], reward)
-                all_rewards.append(reward)
+                rewards_batch.append(reward)
 
-            all_rewards = pareto_filter(all_rewards, minimize=False)
+                if len(rewards_batch) >= batch_size:
+                    pareto_batch = pareto_filter(rewards_batch, minimize=False)
+                    pareto_rewards.extend(pareto_batch)
+                    rewards_batch = []
+            
+        pareto_rewards.extend(rewards_batch)
+        pareto_rewards = pareto_filter(pareto_rewards, minimize=False)
 
-        return all_rewards
+        return pareto_rewards
 
     def generate_mines(self, mine_distributions=None):
         """
