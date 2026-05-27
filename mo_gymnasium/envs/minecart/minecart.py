@@ -201,7 +201,7 @@ class Minecart(gym.Env, EzPickle):
         )
         self.reward_dim = self.ore_cnt + 1
 
-    def convex_coverage_set(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> List[np.ndarray]:
+    def convex_coverage_set(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> np.ndarray:
         """
         Computes an approximate convex coverage set (CCS).
 
@@ -215,10 +215,13 @@ class Minecart(gym.Env, EzPickle):
         """
         policies = self.pareto_front(gamma, symmetric, batch_size)
         origin = np.min(policies, axis=0)
-        extended_policies = [origin] + policies
-        return [policies[idx - 1] for idx in ConvexHull(extended_policies).vertices if idx != 0]
+        extended_policies = np.concatenate([[origin], policies], axis=0)
+        hull = ConvexHull(extended_policies)
+        vertices = hull.vertices[hull.vertices != 0]
+        convex_policies = hull.points[vertices]
+        return convex_policies
 
-    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> List[np.ndarray]:
+    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> np.ndarray:
         """
         Computes an approximate pareto front.
 
@@ -405,7 +408,7 @@ class Minecart(gym.Env, EzPickle):
         pareto_batches.append(rewards_batch[:idx])
         pareto_concat = np.concatenate(pareto_batches, axis=0)
         pareto_mask = paretoset(pareto_concat, sense=["max"] * self.reward_dim)
-        pareto_rewards = list(pareto_concat[pareto_mask])
+        pareto_rewards = pareto_concat[pareto_mask]
 
         return pareto_rewards
 
