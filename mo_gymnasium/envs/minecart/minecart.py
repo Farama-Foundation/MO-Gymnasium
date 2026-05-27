@@ -11,6 +11,7 @@ import pygame
 import scipy.stats
 from gymnasium.spaces import Box, Discrete
 from gymnasium.utils import EzPickle
+from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
 
@@ -216,14 +217,14 @@ class Minecart(gym.Env, EzPickle):
         extended_policies = [origin] + policies
         return [policies[idx - 1] for idx in ConvexHull(extended_policies).vertices if idx != 0]
 
-    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**3) -> List[np.ndarray]:
+    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> List[np.ndarray]:
         """
         Computes an approximate pareto front.
 
         Args:
             gamma (float): Discount factor to apply to rewards
             symmetric (bool): If true, we assume the pattern of accelerations from the base to the mine is the same as from the mine to the base. Default: True
-            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**3
+            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**5
         Returns:
             The pareto coverage set
         """
@@ -393,12 +394,15 @@ class Minecart(gym.Env, EzPickle):
                 rewards_batch.append(reward)
 
                 if len(rewards_batch) >= batch_size:
-                    pareto_batch = pareto_filter(rewards_batch, minimize=False)
-                    pareto_rewards.extend(pareto_batch)
+                    rewards_arr = np.array(rewards_batch)
+                    pareto_mask = paretoset(rewards_arr, sense=["max"] * self.reward_dim)
+                    pareto_rewards.extend(rewards_arr[pareto_mask])
                     rewards_batch = []
-            
+
         pareto_rewards.extend(rewards_batch)
-        pareto_rewards = pareto_filter(pareto_rewards, minimize=False)
+        pareto_arr = np.array(pareto_rewards)
+        pareto_mask = paretoset(pareto_arr, sense=["max"] * self.reward_dim)
+        pareto_rewards = list(pareto_arr[pareto_mask])
 
         return pareto_rewards
 
@@ -833,29 +837,6 @@ def truncated_mean(mean, std, a, b):
 
     trunc_mean = mean + ((phia - phib) / (PHIB - PHIA)) * std
     return trunc_mean
-
-
-def pareto_filter(costs, minimize=True):
-    """
-    Find the pareto-efficient points
-    :param costs: An (n_points, n_costs) array
-    :param return_mask: True to return a mask
-    :return: An array of indices of pareto-efficient points.
-        If return_mask is True, this will be an (n_points, ) boolean array
-        Otherwise it will be a (n_efficient_points, ) integer array of indices.
-    from https://stackoverflow.com/a/40239615
-    """
-    costs_copy = np.copy(costs) if minimize else -np.copy(costs)
-    is_efficient = np.arange(costs_copy.shape[0])
-    next_point_index = 0  # Next index in the is_efficient array to search for
-    while next_point_index < len(costs_copy):
-        nondominated_point_mask = np.any(costs_copy < costs_copy[next_point_index], axis=1)
-        nondominated_point_mask[next_point_index] = True
-        # Remove dominated points
-        is_efficient = is_efficient[nondominated_point_mask]
-        costs_copy = costs_copy[nondominated_point_mask]
-        next_point_index = np.sum(nondominated_point_mask[:next_point_index]) + 1
-    return [costs[i] for i in is_efficient]
 
 
 if __name__ == "__main__":
