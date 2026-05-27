@@ -7,6 +7,7 @@ from typing import List, Optional
 
 import gymnasium as gym
 import numpy as np
+import pandas as pd
 import pygame
 import scipy.stats
 from gymnasium.spaces import Box, Discrete
@@ -170,6 +171,7 @@ class Minecart(gym.Env, EzPickle):
             )
             for i in range(self.ore_cnt)
         ]
+        self.reward_names = ["Ore" + str(i + 1) for i in range(self.ore_cnt)] + ["Fuel"]
         self.generate_mines(None)
 
         if "mines" in data:
@@ -201,7 +203,7 @@ class Minecart(gym.Env, EzPickle):
         )
         self.reward_dim = self.ore_cnt + 1
 
-    def convex_coverage_set(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> np.ndarray:
+    def convex_coverage_set(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> pd.DataFrame:
         """
         Computes an approximate convex coverage set (CCS).
 
@@ -213,15 +215,17 @@ class Minecart(gym.Env, EzPickle):
         Returns:
             The convex coverage set
         """
-        policies = self.pareto_front(gamma, symmetric, batch_size)
-        origin = np.min(policies, axis=0)
-        extended_policies = np.concatenate([[origin], policies], axis=0)
-        hull = ConvexHull(extended_policies)
-        vertices = hull.vertices[hull.vertices != 0]
-        convex_policies = hull.points[vertices]
-        return convex_policies
+        df_pareto = self.pareto_front(gamma, symmetric, batch_size)
+        pareto_rewards = df_pareto[self.reward_names].values
+        origin = np.min(pareto_rewards, axis=0)
+        extended_rewards = np.concatenate([pareto_rewards, [origin]], axis=0)
+        origin_idx = len(extended_rewards) - 1
+        hull = ConvexHull(extended_rewards)
+        vertices = hull.vertices[hull.vertices != origin_idx]
+        df_convex = df_pareto.iloc[vertices]
+        return df_convex
 
-    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> np.ndarray:
+    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> pd.DataFrame:
         """
         Computes an approximate pareto front.
 
@@ -233,7 +237,9 @@ class Minecart(gym.Env, EzPickle):
             The pareto coverage set
         """
         idx = 0
-        rewards_batch = np.empty(shape=(batch_size, self.reward_dim))
+        rewards_batch = np.empty(shape=(batch_size, self.reward_dim), dtype=np.float64)
+        mine_pos_batch = np.empty(shape=(batch_size,), dtype=object)
+        action_seq_batch = np.empty(shape=(batch_size,), dtype=object)
         pareto_batches = []
         base_perimeter = BASE_RADIUS * BASE_SCALE
 
@@ -389,28 +395,38 @@ class Minecart(gym.Env, EzPickle):
                 + longest_pattern
             )
             discount_map = gamma ** np.arange(max_len)
-            for s in all_sequences:
-                reward = np.zeros((len(s), self.reward_dim))
-                reward[:, -1] = fuel_costs[s]
-                mine_actions = s.count(ACT_MINE)
+            for seq in all_sequences:
+                reward = np.zeros((len(seq), self.reward_dim))
+                reward[:, -1] = fuel_costs[seq]
+                mine_actions = seq.count(ACT_MINE)
                 reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)
 
-                reward = np.dot(discount_map[: len(s)], reward)
+                reward = np.dot(discount_map[:len(seq)], reward)
                 rewards_batch[idx] = reward
+                mine_pos_batch[idx] = tuple(mine.pos)
+                action_seq_batch[idx] = tuple(seq)
                 idx += 1
 
-                if idx >= batch_size:
+                if idx == batch_size:
                     pareto_mask = paretoset(rewards_batch, sense=["max"] * self.reward_dim)
-                    pareto_batches.append(rewards_batch[pareto_mask])
-                    rewards_batch = np.empty(shape=(batch_size, self.reward_dim))
+                    df = pd.DataFrame(rewards_batch[pareto_mask], columns=self.reward_names)
+                    df["Mine Position"] = mine_pos_batch[pareto_mask]
+                    df["Action Sequence"] = action_seq_batch[pareto_mask]
+                    pareto_batches.append(df)
                     idx = 0
 
-        pareto_batches.append(rewards_batch[:idx])
-        pareto_concat = np.concatenate(pareto_batches, axis=0)
-        pareto_mask = paretoset(pareto_concat, sense=["max"] * self.reward_dim)
-        pareto_rewards = pareto_concat[pareto_mask]
+        if idx > 0:
+            df = pd.DataFrame(rewards_batch[:idx], columns=self.reward_names)
+            df["Mine Position"] = mine_pos_batch[:idx]
+            df["Action Sequence"] = action_seq_batch[:idx]
+            pareto_batches.append(df)
 
-        return pareto_rewards
+        df_pareto = pd.concat(pareto_batches, axis=0)
+        pareto_mask = paretoset(df_pareto[self.reward_names].values, sense=["max"] * self.reward_dim)
+        df_pareto = df_pareto[pareto_mask]
+        df_pareto = df_pareto.reset_index(drop=True)
+
+        return df_pareto
 
     def generate_mines(self, mine_distributions=None):
         """
