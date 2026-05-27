@@ -228,8 +228,9 @@ class Minecart(gym.Env, EzPickle):
         Returns:
             The pareto coverage set
         """
-        rewards_batch = []
-        pareto_rewards = []
+        idx = 0
+        rewards_batch = np.empty(shape=(batch_size, self.reward_dim))
+        pareto_batches = []
         base_perimeter = BASE_RADIUS * BASE_SCALE
 
         # Empty mine just outside the base
@@ -391,18 +392,19 @@ class Minecart(gym.Env, EzPickle):
                 reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)
 
                 reward = np.dot(discount_map[: len(s)], reward)
-                rewards_batch.append(reward)
+                rewards_batch[idx] = reward
+                idx += 1
 
-                if len(rewards_batch) >= batch_size:
-                    rewards_arr = np.array(rewards_batch)
-                    pareto_mask = paretoset(rewards_arr, sense=["max"] * self.reward_dim)
-                    pareto_rewards.extend(rewards_arr[pareto_mask])
-                    rewards_batch = []
+                if idx >= batch_size:
+                    pareto_mask = paretoset(rewards_batch, sense=["max"] * self.reward_dim)
+                    pareto_batches.append(rewards_batch[pareto_mask])
+                    rewards_batch = np.empty(shape=(batch_size, self.reward_dim))
+                    idx = 0
 
-        pareto_rewards.extend(rewards_batch)
-        pareto_arr = np.array(pareto_rewards)
-        pareto_mask = paretoset(pareto_arr, sense=["max"] * self.reward_dim)
-        pareto_rewards = list(pareto_arr[pareto_mask])
+        pareto_batches.append(rewards_batch[:idx])
+        pareto_concat = np.concatenate(pareto_batches, axis=0)
+        pareto_mask = paretoset(pareto_concat, sense=["max"] * self.reward_dim)
+        pareto_rewards = list(pareto_concat[pareto_mask])
 
         return pareto_rewards
 
