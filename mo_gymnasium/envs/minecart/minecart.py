@@ -201,18 +201,19 @@ class Minecart(gym.Env, EzPickle):
         )
         self.reward_dim = self.ore_cnt + 1
 
-    def convex_coverage_set(self, gamma: float, symmetric: bool = True) -> List[np.ndarray]:
+    def convex_coverage_set(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> List[np.ndarray]:
         """
         Computes an approximate convex coverage set (CCS).
 
         Args:
             gamma (float): Discount factor to apply to rewards.
             symmetric (bool): If true, we assume the pattern of accelerations from the base to the mine is the same as from the mine to the base. Default: True
+            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**5
 
         Returns:
             The convex coverage set
         """
-        policies = self.pareto_front(gamma, symmetric)
+        policies = self.pareto_front(gamma, symmetric, batch_size)
         origin = np.min(policies, axis=0)
         extended_policies = [origin] + policies
         return [policies[idx - 1] for idx in ConvexHull(extended_policies).vertices if idx != 0]
