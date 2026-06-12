@@ -1,9 +1,10 @@
 import itertools
 import json
 import math
+import warnings
 from math import ceil
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -13,7 +14,7 @@ import scipy.stats
 from gymnasium.spaces import Box, Discrete
 from gymnasium.utils import EzPickle
 from paretoset import paretoset
-from scipy.spatial import ConvexHull
+from scipy.optimize import linprog
 
 EPS_SPEED = 0.001  # Minimum speed to be considered in motion
 HOME_X = 0.0
@@ -171,6 +172,7 @@ class Minecart(gym.Env, EzPickle):
             for i in range(self.ore_cnt)
         ]
         self.reward_names = ["Ore_" + str(i + 1) for i in range(self.ore_cnt)] + ["Fuel"]
+        self.weight_names = [f"Weight_{reward_name}" for reward_name in self.reward_names]
         self.generate_mines(None)
 
         if "mines" in data:
@@ -203,30 +205,63 @@ class Minecart(gym.Env, EzPickle):
         self.reward_dim = self.ore_cnt + 1
 
     def convex_coverage_set(
-        self, gamma: float, symmetric: bool = True, batch_size: int = 10**5
+        self,
+        gamma: float,
+        symmetric: bool = True,
+        batch_size: int = 10**5,
+        include_coplanar: bool = True,
+        threshold: float = 0.0,
+        on_error: Literal["warn", "raise", "ignore"] = "warn",
     ) -> tuple[np.ndarray, pd.DataFrame]:
         """
-        Computes an approximate convex coverage set (CCS).
+        Computes an approximate convex coverage set (CCS) by determining which reward vectors are linearly maximizable.
+
+        A point p_i is linearly maximizable if there exists a weight vector v (non-negative, summing to 1) such that
+        p_i @ v >= p_j @ v for all j != i. Equivalently, if margin is the maximum value that satisfies
+        (p_i @ v) - (p_j @ v) >= margin for all j != i then
+        margin > 0 implies p_i is strictly maximizable (i.e. there exists v such that p_i is uniquely maximal),
+        margin == 0 implies p_i is coplanar maximizable (i.e. when p_i is maximal it ties with at least one p_j),
+        and margin < 0 implies p_i is not linearly maximizable (i.e. there is no v for which p_i is maximal).
 
         Args:
-            gamma (float): Discount factor to apply to rewards.
-            symmetric (bool): If true, we assume the pattern of accelerations from the base to the mine is the same as from the mine to the base. Default: True
-            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**5
+            gamma: Discount factor to apply to rewards.
+            symmetric: If True, we assume the pattern of accelerations from the base to the mine is the same as from
+                the mine to the base. Default: True
+            batch_size: The number of trajectory rewards to store before computing a batch of pareto points.
+                Default: 10**5
+            include_coplanar: If True, points that tie for maximality are included (margin >= 0). If False, only points that
+                are uniquely maximal are included (margin > threshold).
+            threshold: minimum margin threshold for strict maximizability. Default: 0.0
+            on_error: Action to take if linprog fails to find a solution (status != 0). Default: "warn"
+                "warn"   - issue a warning and leave the corresponding weights and margin as NaN.
+                "raise"  - raise a RuntimeError.
+                "ignore" - silently leave the corresponding weights and margin as NaN.
 
         Returns:
             A tuple containing:
                 - convex_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of convex coverage set.
                 - df_convex (pd.DataFrame): Convex coverage set with rewards columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                "Mine Position", and "Action Sequence".
+                "Mine_Position", "Action_Sequence", weight columns ("Weight_Ore_1", ..., "Weight_Ore_n", "Weight_Fuel"),
+                and "Margin". Weight columns correspond to the components of the weight vector v that maximizes the margin
+                for each point. "Margin" column contains the maximum achievable margin for each point.
         """
         pareto_rewards, df_pareto = self.pareto_front(gamma, symmetric, batch_size)
-        origin = np.min(pareto_rewards, axis=0)
-        extended_rewards = np.concatenate([pareto_rewards, [origin]], axis=0)
-        origin_idx = len(extended_rewards) - 1
-        hull = ConvexHull(extended_rewards)
-        vertices = hull.vertices[hull.vertices != origin_idx]
-        df_convex = df_pareto.iloc[vertices]
-        convex_rewards = df_convex[self.reward_names].values
+        coplanar_mask, strict_mask, weights, margins = check_linear_maximizability(
+            points=pareto_rewards,
+            threshold=threshold,
+            on_error=on_error,
+        )
+        df_convex = df_pareto
+        df_convex["Coplanar_Maximizable"] = coplanar_mask
+        df_convex["Stricly_Maximizable"] = strict_mask
+        df_convex[self.weight_names] = weights
+        df_convex["Margin"] = margins
+
+        if include_coplanar:
+            mask = coplanar_mask
+        else:
+            mask = strict_mask
+        convex_rewards = df_convex.loc[mask, self.reward_names].values
 
         return convex_rewards, df_convex
 
@@ -242,7 +277,7 @@ class Minecart(gym.Env, EzPickle):
             A tuple containing:
                 - pareto_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of pareto front.
                 - df_pareto (pd.DataFrame): Pareto front with reward columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                "Mine Position", and "Action Sequence".
+                "Mine_Position", and "Action_Sequence".
         """
         idx = 0
         rewards_batch = np.empty(shape=(batch_size, self.reward_dim), dtype=np.float64)
@@ -352,11 +387,6 @@ class Minecart(gym.Env, EzPickle):
                     )
             else:
                 if not symmetric:
-                    print(
-                        [ACT_NONE] + trimmed_sequences[1:],
-                        trimmed_sequences[1:],
-                        trimmed_sequences,
-                    )
                     all_sequences = map(
                         lambda sequences: list(sequences[0])
                         + list(sequences[1])
@@ -418,15 +448,15 @@ class Minecart(gym.Env, EzPickle):
                 if idx == batch_size:
                     pareto_mask = paretoset(rewards_batch, sense=["max"] * self.reward_dim)
                     df = pd.DataFrame(rewards_batch[pareto_mask], columns=self.reward_names)
-                    df["Mine Position"] = mine_pos_batch[pareto_mask]
-                    df["Action Sequence"] = action_seq_batch[pareto_mask]
+                    df["Mine_Position"] = mine_pos_batch[pareto_mask]
+                    df["Action_Sequence"] = action_seq_batch[pareto_mask]
                     pareto_batches.append(df)
                     idx = 0
 
         if idx > 0:
             df = pd.DataFrame(rewards_batch[:idx], columns=self.reward_names)
-            df["Mine Position"] = mine_pos_batch[:idx]
-            df["Action Sequence"] = action_seq_batch[:idx]
+            df["Mine_Position"] = mine_pos_batch[:idx]
+            df["Action_Sequence"] = action_seq_batch[:idx]
             pareto_batches.append(df)
 
         df_pareto = pd.concat(pareto_batches, axis=0)
@@ -868,6 +898,93 @@ def truncated_mean(mean, std, a, b):
 
     trunc_mean = mean + ((phia - phib) / (PHIB - PHIA)) * std
     return trunc_mean
+
+
+def check_linear_maximizability(
+    points: np.ndarray, threshold: float = 0.0, on_error: Literal["warn", "raise", "ignore"] = "warn"
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Determine which reward vectors are linearly maximizable.
+
+    A point p_i is linearly maximizable if there exists a weight vector v (non-negative, summing to 1) such that
+    p_i @ v >= p_j @ v for all j != i. Equivalently, if margin is the maximum value that satisfies
+    (p_i @ v) - (p_j @ v) >= margin for all j != i then
+    margin > 0 implies p_i is strictly maximizable (i.e. there exists v such that p_i is uniquely maximal),
+    margin == 0 implies p_i is coplanar maximizable (i.e. when p_i is maximal it ties with at least one p_j),
+    and margin < 0 implies p_i is not linearly maximizable (i.e. there is no v for which p_i is maximal).
+
+    Args:
+        points: (n, dim) array of reward vectors.
+        threshold: minimum margin threshold for strict maximizability. Default: 0.0
+        on_error: Action to take if linprog fails to find a solution (status != 0). Default: "warn"
+            "warn"   - issue a warning and leave the corresponding weights and margin as NaN.
+            "raise"  - raise a RuntimeError.
+            "ignore" - silently leave the corresponding weights and margin as NaN.
+
+    Returns:
+        coplanar_mask: (n,) bool array - True where point is coplanar maximizable.
+        strict_mask: (n,) bool array - True where point is strictly maximizable.
+        weights: (n, dim) float array - weight vectors v that maximize the margin for each point.
+        margins: (n,) float array - maximum achievable margin for each point.
+    """
+    if on_error not in ("warn", "raise", "ignore"):
+        raise ValueError(f"on_error must be 'warn', 'raise', or 'ignore', got {on_error!r}")
+
+    points = np.atleast_2d(points)
+    n, dim = points.shape
+
+    weights = np.full((n, dim), np.nan)
+    margins = np.full(n, np.nan)
+
+    # v = [w_1, w_2, ..., w_dim]
+    # x = [w_1, w_2, ..., w_dim, margin]
+    # linprog minimizes c @ x
+    # Maximize margin, i.e. minimize -margin
+    # c = [0, ..., 0, -1]
+    c = np.zeros(dim + 1)
+    c[-1] = -1.0
+
+    # Constrain sum(v) == 1 to fix the scale of v.
+    # Without this, if x = [v_0, m_0] is feasible (i.e. satisfies A_ub @ x <= 0) then [k*v_0, k*m_0] is feasible
+    # for any k >= 0. If p_i is strictly maximizable then m_0 > 0, so maximizing k*m_0 gives k -> inf (unbounded).
+    # If p_i is non-maximizable then m_0 < 0, so maximizing k*m_0 gives k = 0, incorrectly reporting margin = 0
+    # and causing p_i to register as coplanar maximizable.
+    A_eq = np.zeros((1, dim + 1))
+    A_eq[0, :dim] = 1.0
+    b_eq = np.array([1.0])
+
+    # Weights must be non-negative. margin unconstrained
+    bounds = [(0, None)] * dim + [(None, None)]
+
+    for i in range(n):
+        # linprog constrains A_ub @ x <= b_ub
+        # so inequality must be rearranged into this form
+        # (p_i @ v) - (p_j @ v) >= margin
+        # (p_i - p_j) @ v >= margin
+        # (p_j - p_i) @ v <= -margin
+        # (p_j - p_i) @ v + margin <= 0
+        # [diff, 1] @ [v, margin] <= 0
+        j_mask = np.arange(n) != i
+        diff = points[j_mask] - points[i]  # (n-1, dim)
+        A_ub = np.hstack([diff, np.ones((n - 1, 1))])  # (n-1, dim+1)
+        b_ub = np.zeros(n - 1)
+
+        res = linprog(c=c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds)
+
+        if res.status == 0:
+            weights[i] = res.x[:-1]
+            margins[i] = res.x[-1]
+        elif on_error == "warn":
+            warnings.warn(f"Linprog status={res.status} for points[{i}] = {points[i]}.")
+        elif on_error == "raise":
+            raise RuntimeError(f"Linprog status={res.status} for points[{i}] = {points[i]}.")
+        elif on_error == "ignore":
+            pass
+
+    coplanar_mask = margins >= 0
+    strict_mask = margins > threshold
+
+    return coplanar_mask, strict_mask, weights, margins
 
 
 if __name__ == "__main__":
