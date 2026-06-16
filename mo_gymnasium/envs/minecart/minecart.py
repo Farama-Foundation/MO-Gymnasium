@@ -4,7 +4,7 @@ import math
 import warnings
 from math import ceil
 from pathlib import Path
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import gymnasium as gym
 import numpy as np
