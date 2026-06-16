@@ -16,6 +16,7 @@ from gymnasium.utils import EzPickle
 from paretoset import paretoset
 from scipy.optimize import linprog
 
+
 EPS_SPEED = 0.001  # Minimum speed to be considered in motion
 HOME_X = 0.0
 HOME_Y = 0.0
