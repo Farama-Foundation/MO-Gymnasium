@@ -16,7 +16,6 @@ from gymnasium.utils import EzPickle
 from paretoset import paretoset
 from scipy.optimize import linprog
 
-
 EPS_SPEED = 0.001  # Minimum speed to be considered in motion
 HOME_X = 0.0
 HOME_Y = 0.0
@@ -253,7 +252,7 @@ class Minecart(gym.Env, EzPickle):
         )
         df_convex = df_pareto
         df_convex["Coplanar_Maximizable"] = coplanar_mask
-        df_convex["Stricly_Maximizable"] = strict_mask
+        df_convex["Strictly_Maximizable"] = strict_mask
         df_convex[self.weight_names] = weights
         df_convex["Margin"] = margins
 
