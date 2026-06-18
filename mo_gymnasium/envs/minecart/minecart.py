@@ -4,7 +4,7 @@ import math
 import warnings
 from math import ceil
 from pathlib import Path
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -15,6 +15,7 @@ from gymnasium.spaces import Box, Discrete
 from gymnasium.utils import EzPickle
 from paretoset import paretoset
 from scipy.optimize import linprog
+
 
 EPS_SPEED = 0.001  # Minimum speed to be considered in motion
 HOME_X = 0.0
@@ -213,8 +214,7 @@ class Minecart(gym.Env, EzPickle):
         threshold: float = 0.0,
         on_error: Literal["warn", "raise", "ignore"] = "warn",
     ) -> tuple[np.ndarray, pd.DataFrame]:
-        """
-        Computes an approximate convex coverage set (CCS) by determining which reward vectors are linearly maximizable.
+        """Computes an approximate convex coverage set (CCS) by determining which reward vectors are linearly maximizable.
 
         A point p_i is linearly maximizable if there exists a weight vector v (non-negative, summing to 1) such that
         p_i @ v >= p_j @ v for all j != i. Equivalently, if margin is the maximum value that satisfies
@@ -231,7 +231,7 @@ class Minecart(gym.Env, EzPickle):
                 Default: 10**5
             include_coplanar: If True, points that tie for maximality are included (margin >= 0). If False, only points that
                 are uniquely maximal are included (margin > threshold).
-            threshold: minimum margin threshold for strict maximizability. Default: 0.0
+            threshold: Minimum margin threshold for strict maximizability. Default: 0.0
             on_error: Action to take if linprog fails to find a solution (status != 0). Default: "warn"
                 "warn"   - issue a warning and leave the corresponding weights and margin as NaN.
                 "raise"  - raise a RuntimeError.
@@ -241,9 +241,9 @@ class Minecart(gym.Env, EzPickle):
             A tuple containing:
                 - convex_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of convex coverage set.
                 - df_convex (pd.DataFrame): Convex coverage set with rewards columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                "Mine_Position", "Action_Sequence", weight columns ("Weight_Ore_1", ..., "Weight_Ore_n", "Weight_Fuel"),
-                and "Margin". Weight columns correspond to the components of the weight vector v that maximizes the margin
-                for each point. "Margin" column contains the maximum achievable margin for each point.
+                    "Mine_Position", "Action_Sequence", weight columns ("Weight_Ore_1", ..., "Weight_Ore_n", "Weight_Fuel"),
+                    and "Margin". Weight columns correspond to the components of the weight vector v that maximizes the margin
+                    for each point. "Margin" column contains the maximum achievable margin for each point.
         """
         pareto_rewards, df_pareto = self.pareto_front(gamma, symmetric, batch_size)
         coplanar_mask, strict_mask, weights, margins = check_linear_maximizability(
@@ -253,7 +253,7 @@ class Minecart(gym.Env, EzPickle):
         )
         df_convex = df_pareto
         df_convex["Coplanar_Maximizable"] = coplanar_mask
-        df_convex["Stricly_Maximizable"] = strict_mask
+        df_convex["Strictly_Maximizable"] = strict_mask
         df_convex[self.weight_names] = weights
         df_convex["Margin"] = margins
 
@@ -266,18 +266,20 @@ class Minecart(gym.Env, EzPickle):
         return convex_rewards, df_convex
 
     def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> tuple[np.ndarray, pd.DataFrame]:
-        """
-        Computes an approximate pareto front.
+        """Computes an approximate pareto front.
 
         Args:
-            gamma (float): Discount factor to apply to rewards symmetric (bool): If true, we assume the pattern of
-            accelerations from the base to the mine is the same as from the mine to the base. Default: True
-            batch_size (int): The number of trajectory rewards to store before computing a batch of pareto points. Default: 10**5
+            gamma: Discount factor to apply to rewards.
+            symmetric: If true, we assume the pattern of accelerations from the base to the mine is the same as from
+                the mine to the base. Default: True
+            batch_size: The number of trajectory rewards to store before computing a batch of pareto points.
+                Default: 10**5
+
         Returns:
             A tuple containing:
                 - pareto_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of pareto front.
                 - df_pareto (pd.DataFrame): Pareto front with reward columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                "Mine_Position", and "Action_Sequence".
+                    "Mine_Position", and "Action_Sequence".
         """
         idx = 0
         rewards_batch = np.empty(shape=(batch_size, self.reward_dim), dtype=np.float64)
@@ -903,8 +905,7 @@ def truncated_mean(mean, std, a, b):
 def check_linear_maximizability(
     points: np.ndarray, threshold: float = 0.0, on_error: Literal["warn", "raise", "ignore"] = "warn"
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Determine which reward vectors are linearly maximizable.
+    """Determine which reward vectors are linearly maximizable.
 
     A point p_i is linearly maximizable if there exists a weight vector v (non-negative, summing to 1) such that
     p_i @ v >= p_j @ v for all j != i. Equivalently, if margin is the maximum value that satisfies
