@@ -604,7 +604,6 @@ class Minecart(gym.Env, EzPickle):
     def render(self):
         if self.canvas is None or self.last_render_mode_used != self.render_mode:
             self.last_render_mode_used = self.render_mode
-            pygame.init()
             self.canvas = pygame.Surface((WIDTH, HEIGHT))
             if self.render_mode == "human":
                 pygame.display.init()
