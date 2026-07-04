@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Release Notes - MO-Gymnasium Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=5b1a364e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
@@ -478,18 +478,17 @@
 <h1>MO-Gymnasium 1.0.0 Release Notes</h1>
 <p>We are thrilled to introduce the mature release of <a href="https://mo-gymnasium.farama.org/" rel="nofollow">MO-Gymnasium</a>, a standardized API and collection of environments designed for Multi-Objective Reinforcement Learning (MORL).</p>
 <p>MORL expands the capabilities of RL to scenarios where agents need to optimize multiple objectives, which may potentially conflict with each other. Each objective is represented by a distinct reward function. In this context, the agent learns to make trade-offs between these objectives based on a reward vector received after each step. For instance, in the well-known Mujoco halfcheetah environment, reward components are combined linearly using predefined weights as shown in the following code snippet from <a href="https://github.com/Farama-Foundation/Gymnasium/blob/main/gymnasium/envs/mujoco/half_cheetah_v4.py#LL201C9-L206C44">Gymnasium</a>:</p>
-<div class="snippet-clipboard-content notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="ctrl_cost = self.control_cost(action)
+<div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="ctrl_cost = self.control_cost(action)
 forward_reward = self._forward_reward_weight * x_velocity
-reward = forward_reward - ctrl_cost"><pre lang="python" class="notranslate"><code>ctrl_cost = self.control_cost(action)
-forward_reward = self._forward_reward_weight * x_velocity
-reward = forward_reward - ctrl_cost
-</code></pre></div>
+reward = forward_reward - ctrl_cost"><pre><span class="pl-s1">ctrl_cost</span> <span class="pl-c1">=</span> <span class="pl-s1">self</span>.<span class="pl-c1">control_cost</span>(<span class="pl-s1">action</span>)
+<span class="pl-s1">forward_reward</span> <span class="pl-c1">=</span> <span class="pl-s1">self</span>.<span class="pl-c1">_forward_reward_weight</span> <span class="pl-c1">*</span> <span class="pl-s1">x_velocity</span>
+<span class="pl-s1">reward</span> <span class="pl-c1">=</span> <span class="pl-s1">forward_reward</span> <span class="pl-c1">-</span> <span class="pl-s1">ctrl_cost</span></pre></div>
 <p>With MORL, users have the flexibility to determine the compromises they desire based on their preferences for each objective. Consequently, the environments in MO-Gymnasium do not have predefined weights. Thus, MO-Gymnasium extends the capabilities of <a href="https://gymnasium.farama.org/" rel="nofollow">Gymnasium</a> to the multi-objective setting, where the agents receives a vectorial reward.</p>
 <p>For example, here is an illustration of the multiple policies learned by an MORL agent for the <code>mo-halfcheetah</code> domain, balancing between saving battery and speed:</p>
-<a target="_blank" rel="noopener noreferrer" href="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA4MTkxNTUsIm5iZiI6MTc3MDgxODg1NSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMTElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjExVDE0MDczNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWYzNGRkZTcxZWY3YWM5ZjM0NDAyMmNhMzEyN2MxNDcyODZmMGZiYjVmZDc0YTE5MTY1ZTk0YWQyOWNhYzk3ZjEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.dk7Bt7LFIaHw6wTDchlElzTl6SyWII7EQo6VUMsKly8"><img src="https://private-user-images.githubusercontent.com/11799929/245189948-10796cae-6f84-4690-8e17-d23f792c32c2.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzA4MTkxNTUsIm5iZiI6MTc3MDgxODg1NSwicGF0aCI6Ii8xMTc5OTkyOS8yNDUxODk5NDgtMTA3OTZjYWUtNmY4NC00NjkwLThlMTctZDIzZjc5MmMzMmMyLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAyMTElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMjExVDE0MDczNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWYzNGRkZTcxZWY3YWM5ZjM0NDAyMmNhMzEyN2MxNDcyODZmMGZiYjVmZDc0YTE5MTY1ZTk0YWQyOWNhYzk3ZjEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.dk7Bt7LFIaHw6wTDchlElzTl6SyWII7EQo6VUMsKly8" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/10796cae-6f84-4690-8e17-d23f792c32c2"><img src="https://github.com/user-attachments/assets/10796cae-6f84-4690-8e17-d23f792c32c2" width="400" content-type-secured-asset="image/gif" style="max-width: 100%;"></a> 
 <p>This release marks the first mature version of MO-Gymnasium within Farama, indicating that the API is stable, and we have achieved a high level of quality in this library.</p>
 <h2>API</h2>
-<div class="snippet-clipboard-content notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="import gymnasium as gym
+<div class="highlight highlight-source-python notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="import gymnasium as gym
 import mo_gymnasium as mo_gym
 import numpy as np
 
@@ -502,21 +501,20 @@ next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(o
 
 # Optionally, you can scalarize the reward function with the LinearReward wrapper.
 # This allows to fall back to single objective RL
-env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre lang="python" class="notranslate"><code>import gymnasium as gym
-import mo_gymnasium as mo_gym
-import numpy as np
+env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))"><pre><span class="pl-k">import</span> <span class="pl-s1">gymnasium</span> <span class="pl-k">as</span> <span class="pl-s1">gym</span>
+<span class="pl-k">import</span> <span class="pl-s1">mo_gymnasium</span> <span class="pl-k">as</span> <span class="pl-s1">mo_gym</span>
+<span class="pl-k">import</span> <span class="pl-s1">numpy</span> <span class="pl-k">as</span> <span class="pl-s1">np</span>
 
-# It follows the original Gymnasium API ...
-env = mo_gym.make('minecart-v0')
+<span class="pl-c"># It follows the original Gymnasium API ...</span>
+<span class="pl-s1">env</span> <span class="pl-c1">=</span> <span class="pl-s1">mo_gym</span>.<span class="pl-c1">make</span>(<span class="pl-s">'minecart-v0'</span>)
 
-obs, info = env.reset()
-# but vector_reward is a numpy array!
-next_obs, vector_reward, terminated, truncated, info = env.step(your_agent.act(obs))
+<span class="pl-s1">obs</span>, <span class="pl-s1">info</span> <span class="pl-c1">=</span> <span class="pl-s1">env</span>.<span class="pl-c1">reset</span>()
+<span class="pl-c"># but vector_reward is a numpy array!</span>
+<span class="pl-s1">next_obs</span>, <span class="pl-s1">vector_reward</span>, <span class="pl-s1">terminated</span>, <span class="pl-s1">truncated</span>, <span class="pl-s1">info</span> <span class="pl-c1">=</span> <span class="pl-s1">env</span>.<span class="pl-c1">step</span>(<span class="pl-s1">your_agent</span>.<span class="pl-c1">act</span>(<span class="pl-s1">obs</span>))
 
-# Optionally, you can scalarize the reward function with the LinearReward wrapper.
-# This allows to fall back to single objective RL
-env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
-</code></pre></div>
+<span class="pl-c"># Optionally, you can scalarize the reward function with the LinearReward wrapper.</span>
+<span class="pl-c"># This allows to fall back to single objective RL</span>
+<span class="pl-s1">env</span> <span class="pl-c1">=</span> <span class="pl-s1">mo_gym</span>.<span class="pl-c1">LinearReward</span>(<span class="pl-s1">env</span>, <span class="pl-s1">weight</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">array</span>([<span class="pl-c1">0.8</span>, <span class="pl-c1">0.2</span>, <span class="pl-c1">0.2</span>]))</pre></div>
 <h2>Environments</h2>
 <p>We support environments ranging from MORL literature to inherently multi-objective problems in the RL literature such as Mujoco. An exhaustive list of environments is available on our <a href="https://mo-gymnasium.farama.org/environments/all-environments/" rel="nofollow">documentation website</a>.</p>
 <h2>Wrappers</h2>
@@ -825,14 +823,6 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
         const jsonResponse = xhr.response;
         const sections = {
           "Core Projects": [],
-          "Mature Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
-          "Incubating Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
           "Foundation": [
             {
               name: "About",
@@ -846,7 +836,14 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
               name: "Donate",
               link: "https://farama.org/donations"
             }
-          ]
+          ],
+          "Mature Projects": {
+            "Documentation": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          }
         }
 
         // Categorize projects
@@ -862,8 +859,6 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
           } else if (projectJson.type == "mature") {
             if (projectJson.website !== null) {
               sections["Mature Projects"]["Documentation"].push(projectJson)
-            } else {
-              sections["Mature Projects"]["Repositories"].push(projectJson)
             }
           } else {
             if (projectJson.website !== null) {
@@ -875,6 +870,13 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        const stackedColumnElem = Object.assign(
+          document.createElement('div'), {
+            style: 'display: flex; flex-direction: column;'
+          }
+        );
+        const stackedKeys = new Set(["Core Projects", "Foundation"]);
 
         Object.keys(sections).forEach((key, i) => {
           const sectionElem = Object.assign(
@@ -919,7 +921,14 @@ env = mo_gym.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
             const ulElem = createProjectsList(projects, true);
             sectionElem.appendChild(ulElem);
           }
-          menuContainer.appendChild(sectionElem)
+          if (stackedKeys.has(key)) {
+            if (!stackedColumnElem.parentNode) {
+              menuContainer.appendChild(stackedColumnElem);
+            }
+            stackedColumnElem.appendChild(sectionElem);
+          } else {
+            menuContainer.appendChild(sectionElem);
+          }
         });
       }
 
