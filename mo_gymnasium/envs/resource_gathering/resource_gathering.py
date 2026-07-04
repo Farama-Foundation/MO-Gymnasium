@@ -180,8 +180,6 @@ class ResourceGathering(gym.Env, EzPickle):
             return
 
         if self.window is None:
-            pygame.init()
-
             if self.render_mode == "human":
                 pygame.display.init()
                 pygame.display.set_caption("Resource Gathering")
