@@ -32,9 +32,7 @@ dynamic = ["version"]
 # Update dependencies in `all` if any are added or removed
 mario = [
     "nes-py >=9.0.0; python_version >= '3.13'",
-    "nes-py <9.0.0; python_version < '3.13'",
-    "numpy >=1.21.0,<2.0; python_version < '3.13'",
-    "gym-super-mario-bros>=9.1.0",
+    "gym-super-mario-bros>=9.1.0; python_version >= '3.13'",
 ]
 minecart = ["scipy >=1.7.3"]
 mujoco = ["mujoco >=2.2.0", "imageio >=2.14.1"]
@@ -45,9 +43,7 @@ all = [
     # NOTE: No need to manually remove the duplicates, setuptools automatically does that.
     # Mario
     "nes-py >=9.0.0; python_version >= '3.13'",
-    "nes-py <9.0.0; python_version < '3.13'",
-    "numpy >=1.21.0,<2.0; python_version < '3.13'",
-    "gym-super-mario-bros >=9.1.0",
+    "gym-super-mario-bros >=9.1.0; python_version >= '3.13'",
     # minecart
     "scipy >=1.7.3",
     # mujoco
