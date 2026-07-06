@@ -135,9 +135,17 @@ title: {title_env_name}
 {related_pages_meta}---
 """
         title = f"# {title_env_name}"
+        screenshot_path = os.path.join(os.path.dirname(__file__), "..", "_static", "screenshots", f"{snake_env_name}.png")
         if "rgb_array" in env.metadata["render_modes"]:
             gif = (
                 "```{figure}" + f" ../_static/videos/{snake_env_name}.gif" + f" \n:width: 200px\n:name: {snake_env_name}\n```"
+            )
+        elif os.path.exists(screenshot_path):
+            # envs without graphical rendering (e.g. fishwood) fall back to a checked-in screenshot
+            gif = (
+                "```{figure}"
+                + f" ../_static/screenshots/{snake_env_name}.png"
+                + f" \n:width: 200px\n:name: {snake_env_name}\n```"
             )
         else:
             gif = ""
