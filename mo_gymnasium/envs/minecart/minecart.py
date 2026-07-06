@@ -604,7 +604,6 @@ class Minecart(gym.Env, EzPickle):
     def render(self):
         if self.canvas is None or self.last_render_mode_used != self.render_mode:
             self.last_render_mode_used = self.render_mode
-            pygame.init()
             self.canvas = pygame.Surface((WIDTH, HEIGHT))
             if self.render_mode == "human":
                 pygame.display.init()
@@ -692,6 +691,10 @@ class Minecart(gym.Env, EzPickle):
         if self.screen is not None:
             pygame.display.quit()
             pygame.quit()
+            self.screen = None
+            self.canvas = None
+            self.clock = None
+            self.last_render_mode_used = None
 
 
 class Mine:
@@ -782,7 +785,7 @@ def compute_angle(p0, p1, p2):
     v0 = np.array(p0) - np.array(p1)
     v1 = np.array(p2) - np.array(p1)
 
-    angle = np.math.atan2(np.linalg.det([v0, v1]), np.dot(v0, v1))
+    angle = np.arctan2(np.linalg.det([v0, v1]), np.dot(v0, v1))
     return np.degrees(angle)
 
 

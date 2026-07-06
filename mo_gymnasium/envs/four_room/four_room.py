@@ -237,7 +237,6 @@ class FourRoom(gym.Env, EzPickle):
         pix_square_size = self.window_size // 13
 
         if self.window is None and self.render_mode is not None:
-            pygame.init()
             if self.render_mode == "human":
                 pygame.display.init()
                 self.window = pygame.display.set_mode((self.window_size, self.window_size))
@@ -345,6 +344,8 @@ class FourRoom(gym.Env, EzPickle):
         if self.window is not None:
             pygame.display.quit()
             pygame.quit()
+            self.window = None
+            self.clock = None
 
 
 def draw_line_dashed(surface, color, start_pos, end_pos, width=1, dash_length=3, exclude_corners=True):
