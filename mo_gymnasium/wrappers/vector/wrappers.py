@@ -430,6 +430,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         ), f"`vector.RecordEpisodeStatistics` requires `info` type to be `dict`, its actual type is {type(infos)}. This may be due to usage of other wrappers in the wrong order."
 
         self.episode_returns[self.prev_dones] = 0
+        self.disc_episode_returns[self.prev_dones] = 0
         self.episode_lengths[self.prev_dones] = 0
         self.episode_start_times[self.prev_dones] = time.perf_counter()
         self.episode_returns[~self.prev_dones] += rewards[~self.prev_dones]
