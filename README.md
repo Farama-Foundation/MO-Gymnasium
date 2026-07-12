@@ -1,6 +1,6 @@
 [![Python](https://img.shields.io/pypi/pyversions/mo-gymnasium.svg)](https://badge.fury.io/py/mo-gymnasium)
 [![PyPI](https://badge.fury.io/py/mo-gymnasium.svg)](https://badge.fury.io/py/mo-gymnasium)
-![tests](https://github.com/Farama-Foundation/mo-gymnasium/workflows/Python%20tests/badge.svg)
+[![tests](https://github.com/Farama-Foundation/MO-Gymnasium/actions/workflows/test.yml/badge.svg?branch=main&event=push)](https://github.com/Farama-Foundation/MO-Gymnasium/actions/workflows/test.yml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
