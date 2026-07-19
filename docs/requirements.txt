@@ -4,5 +4,5 @@ mo_gymnasium[all]
 sphinx
 myst-parser
 tqdm
-git+https://github.com/Farama-Foundation/Celshast#egg=furo
+celshast
 sphinx_github_changelog
