@@ -400,10 +400,10 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         """
         gym.utils.RecordConstructorArgs.__init__(self, buffer_length=buffer_length, stats_key=stats_key)
         RecordEpisodeStatistics.__init__(self, env, buffer_length=buffer_length, stats_key=stats_key)
-        self.disc_episode_returns = None
         self.reward_dim = self.env.unwrapped.reward_space.shape[0]
         self.rewards_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
+        self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
@@ -430,6 +430,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         ), f"`vector.RecordEpisodeStatistics` requires `info` type to be `dict`, its actual type is {type(infos)}. This may be due to usage of other wrappers in the wrong order."
 
         self.episode_returns[self.prev_dones] = 0
+        self.disc_episode_returns[self.prev_dones] = 0
         self.episode_lengths[self.prev_dones] = 0
         self.episode_start_times[self.prev_dones] = time.perf_counter()
         self.episode_returns[~self.prev_dones] += rewards[~self.prev_dones]
