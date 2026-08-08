@@ -400,10 +400,10 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         """
         gym.utils.RecordConstructorArgs.__init__(self, buffer_length=buffer_length, stats_key=stats_key)
         RecordEpisodeStatistics.__init__(self, env, buffer_length=buffer_length, stats_key=stats_key)
-        self.disc_episode_returns = None
         self.reward_dim = self.env.unwrapped.reward_space.shape[0]
         self.rewards_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
+        self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
