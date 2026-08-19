@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers import (
@@ -70,6 +71,61 @@ def test_clip_wrapper():
     np.testing.assert_allclose(rewards, [0.5, -1.0], rtol=0, atol=1e-2)
     rewards, _ = go_to_8_3(clip_treasure_env)
     np.testing.assert_allclose(rewards, [0.5, -1.0], rtol=0, atol=1e-2)
+
+
+@pytest.mark.parametrize("idx", [2, 7, -3, -9])
+def test_reward_index_outside_the_reward_vector(idx):
+    """An index that cannot address a reward component is rejected on construction.
+
+    `deep-sea-treasure-v0` has two of them, so anything outside [-2, 1] used to be
+    accepted and then raised `IndexError` from inside numpy several steps later.
+    """
+    with pytest.raises(ValueError, match="reward components"):
+        MONormalizeReward(mo_gym.make("deep-sea-treasure-v0"), idx=idx)
+
+    with pytest.raises(ValueError, match="reward components"):
+        MOClipReward(mo_gym.make("deep-sea-treasure-v0"), idx=idx, min_r=0, max_r=1)
+
+
+@pytest.mark.parametrize("idx", [0, 1, -1, -2])
+def test_reward_index_inside_the_reward_vector(idx):
+    """Every valid index keeps working, negative ones included."""
+    env = MONormalizeReward(mo_gym.make("deep-sea-treasure-v0"), idx=idx)
+    env.reset(seed=0)
+    env.step(1)
+    env.close()
+
+
+@pytest.mark.parametrize("gamma", [-1.0, -0.01, 1.01, 2.0, 99])
+def test_normalize_reward_rejects_gamma_outside_unit_interval(gamma):
+    """The accumulator is multiplied by `gamma` every step, so it diverges outside [0, 1]."""
+    with pytest.raises(ValueError, match="interval"):
+        MONormalizeReward(mo_gym.make("deep-sea-treasure-v0"), idx=0, gamma=gamma)
+
+
+@pytest.mark.parametrize("gamma", [0.0, 0.5, 0.99, 1.0])
+def test_normalize_reward_accepts_gamma_in_unit_interval(gamma):
+    """Both endpoints are meaningful: 0 keeps only the immediate reward, 1 is undiscounted."""
+    env = MONormalizeReward(mo_gym.make("deep-sea-treasure-v0"), idx=0, gamma=gamma)
+    assert env.gamma == gamma
+    env.close()
+
+
+@pytest.mark.parametrize("epsilon", [0.0, -1e-8, -1.0])
+def test_normalize_reward_rejects_non_positive_epsilon(epsilon):
+    """`epsilon` sits under a square root to keep the division away from zero."""
+    with pytest.raises(ValueError, match="strictly positive"):
+        MONormalizeReward(mo_gym.make("deep-sea-treasure-v0"), idx=0, epsilon=epsilon)
+
+
+def test_clip_reward_rejects_crossed_bounds():
+    """`np.clip` with crossed bounds pins the component to `max_r` instead of clipping."""
+    with pytest.raises(ValueError, match="greater than"):
+        MOClipReward(mo_gym.make("deep-sea-treasure-v0"), idx=0, min_r=5.0, max_r=1.0)
+
+    # Equal bounds are a legitimate way to pin a component and stay accepted.
+    env = MOClipReward(mo_gym.make("deep-sea-treasure-v0"), idx=0, min_r=1.0, max_r=1.0)
+    env.close()
 
 
 def test_mo_record_ep_statistic():
