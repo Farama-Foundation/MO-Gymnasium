@@ -31,7 +31,10 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 # Update dependencies in `all` if any are added or removed
-mario = ["nes-py", "gym-super-mario-bros", "numpy >=1.21.0,<2.0"]
+mario = [
+    "nes-py >=9.0.0",
+    "gym-super-mario-bros>=9.1.0",
+]
 minecart = ["scipy >=1.7.3"]
 mujoco = ["mujoco >=2.2.0", "imageio >=2.14.1"]
 highway = ["highway-env >=1.8"]
@@ -40,8 +43,8 @@ all = [
     # All dependencies above except accept-rom-license
     # NOTE: No need to manually remove the duplicates, setuptools automatically does that.
     # Mario
-    "nes-py",
-    "gym-super-mario-bros",
+    "nes-py >=9.0.0",
+    "gym-super-mario-bros >=9.1.0",
     # minecart
     "scipy >=1.7.3",
     # mujoco

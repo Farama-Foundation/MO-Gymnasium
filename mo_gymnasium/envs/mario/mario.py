@@ -4,18 +4,12 @@ import gymnasium as gym
 import numpy as np
 from gym_super_mario_bros import SuperMarioBrosEnv
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from gymnasium.utils import EzPickle, seeding
-
-# from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
-from nes_py.nes_env import SCREEN_SHAPE_24_BIT
-
-import mo_gymnasium as mo_gym
 
 # from nes_py.wrappers import JoypadSpace
 from mo_gymnasium.envs.mario.joypad_space import JoypadSpace
 
 
-class MOSuperMarioBros(SuperMarioBrosEnv, gym.Env, EzPickle):
+class MOSuperMarioBros(SuperMarioBrosEnv):
     """
     ## Description
     Multi-objective version of the SuperMarioBro environment.
@@ -40,16 +34,14 @@ class MOSuperMarioBros(SuperMarioBrosEnv, gym.Env, EzPickle):
 
     def __init__(
         self,
-        rom_mode="pixel",
         lost_levels=False,
         target=None,
         objectives=["x_pos", "time", "death", "coin", "enemy"],
         death_as_penalty=False,
         render_mode: Optional[str] = None,
     ):
-        EzPickle.__init__(self, rom_mode, lost_levels, target, objectives, death_as_penalty, render_mode)
         self.render_mode = render_mode
-        super().__init__(rom_mode, lost_levels, target)
+        super().__init__(lost_levels, target, render_mode=render_mode)
 
         self.objectives = set(objectives)
         self.death_as_penalty = death_as_penalty
@@ -86,49 +78,18 @@ class MOSuperMarioBros(SuperMarioBrosEnv, gym.Env, EzPickle):
             shape=(len(self.objectives),),
         )
 
-        # observation space for the environment is static across all instances
-        self.observation_space = gym.spaces.Box(low=0, high=255, shape=SCREEN_SHAPE_24_BIT, dtype=np.uint8)
-
-        # action space is a bitmap of button press values for the 8 NES buttons
-        self.action_space = gym.spaces.Discrete(256)
-
-        self.single_stage = True
-        self.done_when_dead = True
-
-    def reset(self, seed=None, **kwargs):
-        self._np_random, seed = seeding.np_random(seed)  # this is not used
-        self.coin = 0
-        self.x_pos = 0
-        self.time = 0
         self.score = 0
-        self.stage_bonus = 0
-        self.lives = 2
-        obs = super().reset()
-        if self.render_mode == "human":
-            self.render()
-        return obs, {}
 
-    def render(self):
-        if self.render_mode is None:
-            assert self.spec is not None
-            gym.logger.warn(
-                "You are calling render method without specifying any render mode. "
-                "You can specify the render_mode at initialization, "
-                f'e.g. gym.make("{self.spec.id}", render_mode="rgb_array")'
-            )
-            return
-
-        if self.render_mode == "human":
-            super().render(mode="human")
-        elif self.render_mode == "rgb_array":
-            return super().render(mode="rgb_array")
+    def reset(self, **kwargs):
+        obs, info = super().reset(**kwargs)
+        self.score = 0
+        return obs, info
 
     def step(self, action):
-        obs, reward, done, info = super().step(action)
+        obs, reward, terminated, truncated, info = super().step(action)
 
-        if self.single_stage and info["flag_get"]:
-            self.stage_bonus = 10000
-            done = True
+        reward_components = info["reward_components"]
+        # breakpoint()
 
         """ Construct Multi-Objective Reward"""
         # [x_pos, time, death, coin, enemy]
@@ -137,91 +98,73 @@ class MOSuperMarioBros(SuperMarioBrosEnv, gym.Env, EzPickle):
 
         # 1. x position
         if "x_pos" in self.objectives:
-            xpos_r = info["x_pos"] - self.x_pos
-            self.x_pos = info["x_pos"]
-            # resolve an issue where after death the x position resets
-            if xpos_r < -5:
-                xpos_r = 0
-            vec_reward[obj_idx] = xpos_r
+            vec_reward[obj_idx] = reward_components["progress"]
             obj_idx += 1
 
         # 2. time penaltiy
         if "time" in self.objectives:
-            time_r = info["time"] - self.time
-            self.time = info["time"]
-            # time is always decreasing
-            if time_r > 0:
-                time_r = 0.0
-            vec_reward[obj_idx] = time_r
+            vec_reward[obj_idx] = reward_components["time"]
             obj_idx += 1
 
         # 3. death
-        if self.lives > info["life"]:
-            death_r = -25.0
-        else:
-            death_r = 0.0
         if "death" in self.objectives:
-            vec_reward[obj_idx] = death_r
+            vec_reward[obj_idx] = reward_components["death"]
             obj_idx += 1
 
         # 4. coin
         coin_r = 0.0
         if "coin" in self.objectives:
-            coin_r = (info["coins"] - self.coin) * 100
-            self.coin = info["coins"]
+            coin_r = reward_components["coins"]
             vec_reward[obj_idx] = coin_r
             obj_idx += 1
 
         # 5. enemy
         if "enemy" in self.objectives:
             enemy_r = info["score"] - self.score
-            if coin_r > 0 or done:
+            if coin_r > 0 or terminated:
                 enemy_r = 0
             self.score = info["score"]
             vec_reward[obj_idx] = enemy_r
             obj_idx += 1
 
         if self.death_as_penalty:
-            vec_reward += death_r  # add death reward to all objectives
-        ############################################################################
-
-        if self.done_when_dead:
-            # when Mario loses life, changes the state to the terminal
-            if self.lives > info["life"] and info["life"] > 0:
-                done = True
-
-        self.lives = info["life"]
+            vec_reward += reward_components["death"]  # add death reward to all objectives
 
         vec_reward *= self.reward_space.shape[0] / 150
 
-        info["score"] = info["score"] + self.stage_bonus
-
-        if self.render_mode == "human":
-            self.render()
-
-        return obs, vec_reward, bool(done), False, info
+        return obs, vec_reward, terminated, truncated, info
 
 
 if __name__ == "__main__":
     from gymnasium.wrappers import ResizeObservation
     from gymnasium.wrappers.transform_observation import GrayscaleObservation
 
-    env = MOSuperMarioBros()
+    import mo_gymnasium as mo_gym
+
+    env = mo_gym.make("mo-supermario-v1", render_mode="human", objectives=["x_pos", "time", "death", "coin", "enemy"])
     env = JoypadSpace(env, SIMPLE_MOVEMENT)
     # env = MaxAndSkipEnv(env, 4)
     env = ResizeObservation(env, (84, 84))
     env = GrayscaleObservation(env)
     # env = FrameStack(env, 4)
-    env = mo_gym.LinearReward(env)
+    # env = mo_gym.wrappers.LinearReward(env)
 
     terminated = False
     env.reset()
+    return_vect = np.zeros(env.unwrapped.reward_dim, dtype=np.float32)
     while True:
-        obs, r, terminated, truncated, info = env.step(env.action_space.sample())
-        print(r, info["vector_reward"], terminated, info["time"])
-        """ plt.figure()
-        plt.imshow(obs, cmap='gray', vmin=0, vmax=255)
-        plt.show() """
+        action = env.action_space.sample()  # int(input("Enter action (0-6): "))
+        obs, r, terminated, truncated, info = env.step(action)
+        return_vect += r
+        print(r, terminated)
+        # plt.figure()
+        # plt.imshow(obs, cmap='gray', vmin=0, vmax=255)
+        # plt.show()
         env.render()
-        if terminated:
+        if r[-2] != 0 or r[-1] != 0:
+            input()
+        if terminated or truncated:
+            input("Press Enter to continue...")
+            print("Episode return:", return_vect)
+            exit()
             env.reset()
