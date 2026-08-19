@@ -348,8 +348,8 @@
 <p>Register the environment in the <a class="reference external" href="https://gymnasium.farama.org/api/registry/">registry</a>. This is done by adding the following line to the <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file in your env directory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.envs.registration</span><span class="w"> </span><span class="kn">import</span> <span class="n">register</span>
 <span class="n">register</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_env_v0&#39;</span><span class="p">,</span>
-    <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;mo_gymnasium.envs.my_env_dir.my_env_file:MyEnv&#39;</span><span class="p">,</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s1">'my_env_v0'</span><span class="p">,</span>
+    <span class="n">entry_point</span><span class="o">=</span><span class="s1">'mo_gymnasium.envs.my_env_dir.my_env_file:MyEnv'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -362,7 +362,7 @@
 <h2>4. Instantiate your environment<a class="headerlink" href="#instantiate-your-environment" title="Link to this heading">¶</a></h2>
 <p>See our <a class="reference external" href="https://mo-gymnasium.farama.org/introduction/api/">API documentation</a>, but essentially:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mo_gymnasium</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;my_env_v0&#39;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">mo_gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'my_env_v0'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

@@ -351,7 +351,7 @@
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">mo_gymnasium</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mo_gym</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">mo_gymnasium.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MONormalizeReward</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;deep-sea-treasure-v0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">mo_gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">"deep-sea-treasure-v0"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">norm_treasure_env</span> <span class="o">=</span> <span class="n">MONormalizeReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">both_norm_env</span> <span class="o">=</span> <span class="n">MONormalizeReward</span><span class="p">(</span><span class="n">norm_treasure_env</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">both_norm_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span> <span class="c1"># This one normalizes both rewards</span>
@@ -377,11 +377,11 @@
 <dd><p>This wrapper will keep track of cumulative rewards and episode lengths.</p>
 <p>After the completion of an episode, <code class="docutils literal notranslate"><span class="pre">info</span></code> will look like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s2">&quot;episode&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;cumulative reward (array)&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;discounted reward (array)&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;episode length (scalar)&gt;&quot;</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;elapsed time since beginning of episode (scalar)&gt;&quot;</span>
+<span class="gp">... </span>    <span class="s2">"episode"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">"r"</span><span class="p">:</span> <span class="s2">"&lt;cumulative reward (array)&gt;"</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">"dr"</span><span class="p">:</span> <span class="s2">"&lt;discounted reward (array)&gt;"</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">"l"</span><span class="p">:</span> <span class="s2">"&lt;episode length (scalar)&gt;"</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">"t"</span><span class="p">:</span> <span class="s2">"&lt;elapsed time since beginning of episode (scalar)&gt;"</span>
 <span class="gp">... </span>    <span class="p">},</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
