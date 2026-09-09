@@ -73,7 +73,7 @@ We have a roadmap for future development available here: https://github.com/Fara
 
 ## Project Maintainers
 
-Project Managers: [Lucas Alegre](https://github.com/LucasAlegre) and [Florian Felten](https://github.com/ffelten).
+Project Manager: [Lucas Alegre](https://github.com/LucasAlegre)
 
 Maintenance for this project is also contributed by the broader Farama team: [farama.org/team](https://farama.org/team).
 

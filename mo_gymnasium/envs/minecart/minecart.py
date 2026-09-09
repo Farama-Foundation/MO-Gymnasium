@@ -139,10 +139,10 @@ class Minecart(gym.Env, EzPickle):
         render_mode: Optional[str] = None,
         image_observation: bool = False,
         frame_skip: int = 4,
-        incremental_frane_skip: bool = True,
+        incremental_frame_skip: bool = True,
         config=str(Path(__file__).parent.absolute()) + "/mine_config.json",
     ):
-        EzPickle.__init__(self, render_mode, image_observation, frame_skip, incremental_frane_skip, config)
+        EzPickle.__init__(self, render_mode, image_observation, frame_skip, incremental_frame_skip, config)
 
         self.render_mode = render_mode
         self.screen = None
@@ -152,7 +152,7 @@ class Minecart(gym.Env, EzPickle):
         self.config = config
         self.frame_skip = frame_skip
         assert self.frame_skip > 0, "Frame skip must be greater than 0."
-        self.incremental_frame_skip = incremental_frane_skip
+        self.incremental_frame_skip = incremental_frame_skip
 
         with open(self.config) as f:
             data = json.load(f)

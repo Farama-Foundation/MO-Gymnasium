@@ -14,6 +14,28 @@ ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
 
+def _check_reward_index(env: gym.Env, idx: int) -> None:
+    """Raise if `idx` does not address a component of the environment's reward vector.
+
+    Negative indices keep their usual meaning; only values that would raise an
+    `IndexError` on the first step are rejected, and they are rejected here so the
+    message names the parameter instead of surfacing later from inside `numpy`.
+
+    Args:
+        env: the environment being wrapped
+        idx: the index of the reward component the wrapper acts on
+
+    Raises:
+        ValueError: If `idx` is outside the reward vector.
+    """
+    reward_space = getattr(env.unwrapped, "reward_space", None)
+    if reward_space is None or reward_space.shape is None or len(reward_space.shape) == 0:
+        return
+    size = int(reward_space.shape[0])
+    if not -size <= idx < size:
+        raise ValueError(f"`idx` should address one of the {size} reward components, actual value: {idx}")
+
+
 class LinearReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
     """Makes the env return a scalar reward, which is the dot-product between the reward vector and the weight vector."""
 
@@ -80,9 +102,22 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
             idx (int): the index of the reward to normalize
             epsilon (float): A stability parameter
             gamma (float): The discount factor that is used in the exponential moving average.
+
+        Raises:
+            ValueError: If `idx` is outside the reward vector, if `gamma` is outside
+                [0, 1], or if `epsilon` is not strictly positive.
         """
         gym.utils.RecordConstructorArgs.__init__(self, idx=idx, gamma=gamma, epsilon=epsilon)
         gym.Wrapper.__init__(self, env)
+        _check_reward_index(env, idx)
+        # The accumulator is multiplied by `gamma` on every step, so a value above one
+        # makes it diverge instead of converging, and `epsilon` is added under a square
+        # root to keep the division away from zero, which a non-positive value cannot
+        # do. Both mirror the checks in Gymnasium's own `NormalizeReward`.
+        if not 0 <= gamma <= 1:
+            raise ValueError(f"`gamma` should be in the interval [0, 1], actual value: {gamma}")
+        if epsilon <= 0:
+            raise ValueError(f"`epsilon` should be strictly positive, actual value: {epsilon}")
         self.idx = idx
         self.return_rms = RunningMeanStd(shape=())
         self.discounted_reward: np.array = np.array([0.0])
@@ -134,9 +169,19 @@ class MOClipReward(gym.RewardWrapper, gym.utils.RecordConstructorArgs):
             idx: index of the MO reward to clip
             min_r: min reward
             max_r: max reward
+
+        Raises:
+            ValueError: If `idx` is outside the reward vector, or if `min_r` is
+                greater than `max_r`.
         """
         gym.utils.RecordConstructorArgs.__init__(self, idx=idx, min_r=min_r, max_r=max_r)
         gym.RewardWrapper.__init__(self, env)
+        _check_reward_index(env, idx)
+        # `np.clip` silently returns `max_r` for every reward when the bounds are
+        # crossed, so the component is pinned to a constant rather than clipped.
+        # Gymnasium's `ClipReward` rejects the same case.
+        if np.any(np.asarray(max_r) < np.asarray(min_r)):
+            raise ValueError(f"`min_r` should not be greater than `max_r`, actual values: {min_r}, {max_r}")
         self.idx = idx
         self.min_r = min_r
         self.max_r = max_r
