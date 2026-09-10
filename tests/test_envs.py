@@ -279,3 +279,25 @@ def test_mountaincar_terminal_reward_in_space(env_id):
     assert terminated
     assert env.unwrapped.reward_space.contains(reward)
     env.close()
+
+
+def test_resource_gathering_invalid_move_from_home_does_not_terminate():
+    """A failed step off the map from home is not a return home."""
+    env = mo_gym.make("resource-gathering-v0")
+    obs, _ = env.reset(seed=0)
+    np.testing.assert_array_equal(obs[:2], [4, 2])
+    obs, reward, terminated, truncated, _ = env.step(1)  # down from home is invalid
+    assert not terminated
+    assert not truncated
+    np.testing.assert_array_equal(obs[:2], [4, 2])
+    np.testing.assert_array_equal(reward, [0.0, 0.0, 0.0])
+
+    env.unwrapped.has_gold = 1
+    env.unwrapped.has_gem = 1
+    env.unwrapped.current_pos = np.array([3, 2], dtype=np.int32)
+    obs, reward, terminated, truncated, _ = env.step(1)  # down onto home
+    assert terminated
+    assert not truncated
+    np.testing.assert_array_equal(obs[:2], [4, 2])
+    np.testing.assert_array_equal(reward, [0.0, 1.0, 1.0])
+    env.close()
