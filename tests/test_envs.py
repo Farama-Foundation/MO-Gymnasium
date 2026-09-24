@@ -259,3 +259,23 @@ def test_pf_fruit_tree_no_discount():
     discounted_front = env.unwrapped.pareto_front(gamma=1.0)
     for desired, actual in zip(known_pf, discounted_front):
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
+
+
+@pytest.mark.parametrize(
+    "env_id",
+    [
+        "mo-mountaincar-v0",
+        "mo-mountaincar-3d-v0",
+        "mo-mountaincar-timemove-v0",
+        "mo-mountaincar-timespeed-v0",
+    ],
+)
+def test_mountaincar_terminal_reward_in_space(env_id):
+    """The time penalty is 0 on the goal step, so that vector must sit in reward_space."""
+    env = mo_gym.make(env_id)
+    env.reset(seed=0)
+    env.unwrapped.state = (env.unwrapped.goal_position, 0.07)
+    _, reward, terminated, _, _ = env.step(1)
+    assert terminated
+    assert env.unwrapped.reward_space.contains(reward)
+    env.close()

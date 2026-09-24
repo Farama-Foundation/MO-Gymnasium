@@ -169,7 +169,7 @@ class DamEnv(gym.Env, EzPickle):
 
     def _render_gui(self, render_mode: str):
         if self.window is None:
-            pygame.init()
+            pygame.font.init()
 
             if render_mode == "human":
                 pygame.display.init()

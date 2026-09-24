@@ -103,8 +103,8 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
     ## Reward Space
     The reward is 2-dimensional:
-    - time penalty: -1 at each time step
     - treasure value: the value of the treasure at the current position
+    - time penalty: -1 at each time step
 
     ## Starting State
     The starting state is always the same: (0, 0)
@@ -234,7 +234,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             return
 
         if self.window is None:
-            pygame.init()
+            pygame.font.init()
 
             if self.render_mode == "human":
                 pygame.display.init()

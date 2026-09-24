@@ -111,6 +111,29 @@ def test_mo_record_ep_statistic_vector_env_async():
     envs.close()
 
 
+def test_mo_record_ep_statistic_disc_return_reset_between_episodes():
+    # Regression: disc_episode_returns must be zeroed for autoreset sub-envs so a new
+    # episode's discounted return is not polluted by the previous episode's.
+    envs = MOSyncVectorEnv([lambda: mo_gym.make("deep-sea-treasure-v0")])
+    envs = MORecordEpisodeStatistics(envs, gamma=0.97)
+    envs.reset()
+    # Episode 1: reach the (8.2, -3) treasure in 3 steps (same trajectory as go_to_8_3)
+    envs.step([3])
+    envs.step([1])
+    _, _, terminateds, _, info = envs.step([1])
+    assert terminateds[0]
+    np.testing.assert_allclose(info["episode"]["dr"][0], [7.71538, -2.9109], rtol=0, atol=1e-2)
+    # Autoreset step (reward is 0 for the reset sub-env)
+    envs.step([0])
+    # Episode 2: identical trajectory must yield the identical discounted return
+    envs.step([3])
+    envs.step([1])
+    _, _, terminateds, _, info = envs.step([1])
+    assert terminateds[0]
+    np.testing.assert_allclose(info["episode"]["dr"][0], [7.71538, -2.9109], rtol=0, atol=1e-2)
+    envs.close()
+
+
 def _test_gym_wrapper_and_vector_logic(envs, num_envs: int):
     envs.reset()
     for i in range(30):

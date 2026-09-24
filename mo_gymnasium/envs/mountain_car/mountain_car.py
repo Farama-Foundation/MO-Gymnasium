@@ -51,7 +51,6 @@ class MOMountainCar(MountainCarEnv, EzPickle):
 
         low = np.array([-1] * self.reward_dim)
         high = np.zeros(self.reward_dim)
-        high[0] = -1  # Time penalty is always -1
         if self.add_speed_objective:
             low[-1] = 0.0
             high[-1] = 1.1

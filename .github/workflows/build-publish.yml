@@ -14,20 +14,24 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build-wheels:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
 
     - name: Install dependencies
       run: pipx install build
     - name: Build sdist and wheels
       run: pyproject-build
     - name: Store wheels
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         path: dist
 
@@ -38,7 +42,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
     - name: Download dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: artifact
         path: dist

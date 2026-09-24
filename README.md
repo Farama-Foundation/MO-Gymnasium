@@ -1,6 +1,6 @@
 [![Python](https://img.shields.io/pypi/pyversions/mo-gymnasium.svg)](https://badge.fury.io/py/mo-gymnasium)
 [![PyPI](https://badge.fury.io/py/mo-gymnasium.svg)](https://badge.fury.io/py/mo-gymnasium)
-![tests](https://github.com/Farama-Foundation/mo-gymnasium/workflows/Python%20tests/badge.svg)
+[![tests](https://github.com/Farama-Foundation/MO-Gymnasium/actions/workflows/test.yml/badge.svg?branch=main&event=push)](https://github.com/Farama-Foundation/MO-Gymnasium/actions/workflows/test.yml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -73,7 +73,7 @@ We have a roadmap for future development available here: https://github.com/Fara
 
 ## Project Maintainers
 
-Project Managers: [Lucas Alegre](https://github.com/LucasAlegre) and [Florian Felten](https://github.com/ffelten).
+Project Manager: [Lucas Alegre](https://github.com/LucasAlegre)
 
 Maintenance for this project is also contributed by the broader Farama team: [farama.org/team](https://farama.org/team).
 
