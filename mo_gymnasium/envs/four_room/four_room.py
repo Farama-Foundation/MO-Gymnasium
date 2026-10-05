@@ -26,7 +26,6 @@ MAZE = np.array(
         ["_", " ", " ", " ", " ", " ", "X", "3", " ", " ", " ", " ", "1"],
     ]
 )
-BLACK = (0, 0, 0)
 
 
 class FourRoom(gym.Env, EzPickle):
@@ -258,11 +257,7 @@ class FourRoom(gym.Env, EzPickle):
         def blit_centered(sprite, pos):
             canvas.blit(sprite, pix_square_size * pos + (pix_square_size - np.array(sprite.get_size())) // 2)
 
-        pygame.font.init()
-        self.font = pygame.font.SysFont(None, 48)
         blit_centered(self.sprites["goal_flag"], np.array(self.goal)[::-1])
-        img = self.font.render("S", True, BLACK)
-        canvas.blit(img, (np.array(self.initial[0])[::-1] + 0.15) * pix_square_size)
 
         for i in range(self.maze.shape[0]):
             for j in range(self.maze.shape[1]):
