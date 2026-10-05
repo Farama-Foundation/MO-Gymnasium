@@ -1,4 +1,5 @@
 import random
+from os import path
 from typing import Optional
 
 import gymnasium as gym
@@ -25,9 +26,6 @@ MAZE = np.array(
         ["_", " ", " ", " ", " ", " ", "X", "3", " ", " ", " ", " ", "1"],
     ]
 )
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
 
 
@@ -92,6 +90,7 @@ class FourRoom(gym.Env, EzPickle):
         self.window_size = int(13 * 35)
         self.window = None
         self.clock = None
+        self.sprites = None
 
         self.height, self.width = maze.shape
         self.maze = maze
@@ -243,13 +242,25 @@ class FourRoom(gym.Env, EzPickle):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
+        if self.sprites is None:
+            self.sprites = {}
+            for name in ["tile_wall", "agent", "goal_flag", "item_1", "item_2", "item_3"]:
+                img = pygame.image.load(path.join(path.dirname(__file__), "assets", f"{name}.png"))
+                # Walls fill the cell; the other sprites are drawn at 2x scale
+                size = (
+                    (pix_square_size, pix_square_size) if name == "tile_wall" else (2 * img.get_width(), 2 * img.get_height())
+                )
+                self.sprites[name] = pygame.transform.scale(img, size)
+
         canvas = pygame.Surface((self.window_size, self.window_size))
         canvas.fill((255, 255, 255))
 
+        def blit_centered(sprite, pos):
+            canvas.blit(sprite, pix_square_size * pos + (pix_square_size - np.array(sprite.get_size())) // 2)
+
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 48)
-        img = self.font.render("G", True, BLACK)
-        canvas.blit(img, (np.array(self.goal)[::-1] + 0.15) * pix_square_size)
+        blit_centered(self.sprites["goal_flag"], np.array(self.goal)[::-1])
         img = self.font.render("S", True, BLACK)
         canvas.blit(img, (np.array(self.initial[0])[::-1] + 0.15) * pix_square_size)
 
@@ -262,47 +273,15 @@ class FourRoom(gym.Env, EzPickle):
 
                 pos = np.array([j, i])
                 if self.maze[i, j] == "1":
-                    pygame.draw.rect(
-                        canvas,
-                        BLUE,
-                        pygame.Rect(
-                            pix_square_size * pos,
-                            (pix_square_size, pix_square_size),
-                        ),
-                    )
+                    blit_centered(self.sprites["item_3"], pos)  # Blue square
                 elif self.maze[i, j] == "X":
-                    pygame.draw.rect(
-                        canvas,
-                        BLACK,
-                        pygame.Rect(
-                            pix_square_size * pos + 1,
-                            (pix_square_size, pix_square_size),
-                        ),
-                    )
+                    canvas.blit(self.sprites["tile_wall"], pix_square_size * pos)
                 elif self.maze[i, j] == "2":
-                    pygame.draw.polygon(
-                        canvas,
-                        GREEN,
-                        [
-                            (pos + np.array([0.5, 0.0])) * pix_square_size,
-                            (pos + np.array([0.0, 1.0])) * pix_square_size,
-                            (pos + 1.0) * pix_square_size,
-                        ],
-                    )
+                    blit_centered(self.sprites["item_2"], pos)
                 elif self.maze[i, j] == "3":
-                    pygame.draw.circle(
-                        canvas,
-                        RED,
-                        (pos + 0.5) * pix_square_size,
-                        pix_square_size / 2,
-                    )
+                    blit_centered(self.sprites["item_1"], pos)  # Red circle
 
-        pygame.draw.circle(
-            canvas,
-            (125, 125, 125),
-            (np.array(self.state[0])[::-1] + 0.5) * pix_square_size,
-            pix_square_size / 3,
-        )
+        blit_centered(self.sprites["agent"], np.array(self.state[0])[::-1])
 
         for x in range(13 + 1):
             if x == 0 or x == 13:
