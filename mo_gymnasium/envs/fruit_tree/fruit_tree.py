@@ -305,6 +305,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
         self.window = None
         self.clock = None
         self.node_img = None
+        self.fruit_img = None
         self.agent_img = None
 
     def get_ind(self, pos):
@@ -389,12 +390,15 @@ class FruitTreeEnv(gym.Env, EzPickle):
                 self.window = pygame.Surface(self.window_size)
 
             if self.node_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "node_blue.png")
+                filename = path.join(path.dirname(__file__), "assets", "node.png")
                 self.node_img = pygame.transform.scale(pygame.image.load(filename), self.node_square_size)
-                self.node_img = pygame.transform.flip(self.node_img, flip_x=True, flip_y=False)
+
+            if self.fruit_img is None:
+                filename = path.join(path.dirname(__file__), "assets", "fruit.png")
+                self.fruit_img = pygame.transform.scale(pygame.image.load(filename), self.node_square_size)
 
             if self.agent_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "agent.png")
+                filename = path.join(path.dirname(__file__), "assets", "marker_agent.png")
                 self.agent_img = pygame.transform.scale(pygame.image.load(filename), self.node_square_size)
 
         canvas = pygame.Surface(self.window_size)
@@ -418,7 +422,7 @@ class FruitTreeEnv(gym.Env, EzPickle):
                 img = self.agent_img
                 font_color = (164, 0, 0)  # Red digits for agent node
             else:
-                img = self.node_img
+                img = self.fruit_img if row == self.tree_depth else self.node_img
                 if ind % 2:
                     font_color = (250, 128, 114)  # Green
                 else:
