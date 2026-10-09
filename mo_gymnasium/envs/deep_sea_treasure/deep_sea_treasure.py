@@ -8,6 +8,9 @@ from gymnasium.spaces import Box, Discrete
 from gymnasium.utils import EzPickle
 
 
+BACKGROUND_COLOR = (250, 250, 246)
+GRID_COLOR = (178, 204, 230)
+
 # As in Yang et al. (2019):
 DEFAULT_MAP = np.array(
     [
@@ -118,8 +121,7 @@ class DeepSeaTreasure(gym.Env, EzPickle):
 
     ## Credits
     The code was adapted from: [Yang's source](https://github.com/RunzheYang/MORL).
-    The background art is from https://ansimuz.itch.io/underwater-fantasy-pixel-art-environment.
-    The submarine art was created with the assistance of DALL·E 2.
+    The pixel art is provided by the Farama Foundation.
     """
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -171,22 +173,17 @@ class DeepSeaTreasure(gym.Env, EzPickle):
         self.current_state = np.array([0, 0], dtype=np.int32)
 
         # pygame
-        ratio = self.sea_map.shape[1] / self.sea_map.shape[0]
-        padding = 10
-        self.pix_inside = (min(64 * self.sea_map.shape[1], 512) * ratio, min(64 * self.sea_map.shape[0], 512))
-        # adding some padding on the sides
-        self.window_size = (self.pix_inside[0] + 2 * padding, self.pix_inside[1])
-        # The size of a single grid square in pixels
-        self.pix_square_size = (
-            self.pix_inside[0] // self.sea_map.shape[1] + 1,
-            self.pix_inside[1] // self.sea_map.shape[0] + 1,  # watch out for axis inversions here
+        # The pixel art is drawn at 4x scale, so each grid square is 64x64 pixels
+        self.cell_size = 64
+        self.border = 32
+        self.window_size = (
+            self.sea_map.shape[1] * self.cell_size + 2 * self.border,
+            self.sea_map.shape[0] * self.cell_size + 2 * self.border,
         )
         self.window = None
         self.clock = None
-        self.submarine_img = None
-        self.treasure_img = None
-        self.sea_img = None
-        self.rock_img = None
+        self.sprites = None
+        self.value_imgs = {}
 
     def pareto_front(self, gamma: float) -> List[np.ndarray]:
         """Return the discounted pareto front of the environment.
@@ -234,8 +231,6 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             return
 
         if self.window is None:
-            pygame.font.init()
-
             if self.render_mode == "human":
                 pygame.display.init()
                 pygame.display.set_caption("Deep Sea Treasure")
@@ -246,36 +241,43 @@ class DeepSeaTreasure(gym.Env, EzPickle):
             if self.clock is None:
                 self.clock = pygame.time.Clock()
 
-            if self.submarine_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "submarine.png")
-                self.submarine_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
-                self.submarine_img = pygame.transform.flip(self.submarine_img, flip_x=True, flip_y=False)
-            if self.treasure_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "treasure.png")
-                self.treasure_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
-            if self.sea_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "sea_bg.png")
-                self.sea_img = pygame.image.load(filename)
-                self.sea_img = pygame.transform.scale(self.sea_img, self.window_size)
-            if self.rock_img is None:
-                filename = path.join(path.dirname(__file__), "assets", "rock.png")
-                self.rock_img = pygame.transform.scale(pygame.image.load(filename), self.pix_square_size)
+        if self.sprites is None:
+            self.sprites = {
+                name: pygame.image.load(path.join(path.dirname(__file__), "assets", f"{name}.png"))
+                for name in ["submarine", "tile_sea", "tile_sea_fleck", "tile_seabed", "treasure_chest"]
+            }
+            # The treasure value labels are pre-rendered, e.g. value_23_7.png (convex) or value_124.png (concave)
+            for value in self.sea_map[self.sea_map > 0]:
+                label = f"{value:.1f}".replace(".", "_") if self.map_name == "convex" else f"{int(value)}"
+                filename = path.join(path.dirname(__file__), "assets", f"value_{label}.png")
+                self.value_imgs[value] = pygame.image.load(filename)
 
-            self.font = pygame.font.Font(path.join(path.dirname(__file__), "assets", "Minecraft.ttf"), 20)
-
-        self.window.blit(self.sea_img, (0, 0))
+        self.window.fill(BACKGROUND_COLOR)
 
         for i in range(self.sea_map.shape[0]):
             for j in range(self.sea_map.shape[1]):
-                if self.sea_map[i, j] == -10:
-                    self.window.blit(self.rock_img, np.array([j, i]) * self.pix_square_size)
-                elif self.sea_map[i, j] != 0:
-                    self.window.blit(self.treasure_img, np.array([j, i]) * self.pix_square_size)
-                    trailing_space = " " if self.sea_map[i, j] < 10 else ""
-                    img = self.font.render(trailing_space + str(self.sea_map[i, j]), True, (255, 255, 255))
-                    self.window.blit(img, np.array([j, i]) * self.pix_square_size + np.array([5, -20]))
+                pos = np.array([j, i]) * self.cell_size + self.border
+                value = self.sea_map[i, j]
+                if value == 0:
+                    tile = "tile_sea_fleck" if (j - i) % 4 == 0 else "tile_sea"
+                    self.window.blit(self.sprites[tile], pos)
+                else:
+                    self.window.blit(self.sprites["tile_seabed"], pos)
+                if value > 0:
+                    self.window.blit(self.sprites["treasure_chest"], pos + np.array([12, 4]))
+                    value_img = self.value_imgs[value]
+                    # Labels are centered in the cell, excluding the 4-pixel grid line of the next cell
+                    self.window.blit(value_img, pos + np.array([(self.cell_size - 4 - value_img.get_width()) // 2, 40]))
 
-        self.window.blit(self.submarine_img, self.current_state[::-1] * self.pix_square_size)
+        # Tiles only draw their top and left grid lines, so close off the grid on the right and bottom
+        grid_width = self.sea_map.shape[1] * self.cell_size
+        grid_height = self.sea_map.shape[0] * self.cell_size
+        pygame.draw.rect(self.window, GRID_COLOR, (self.border + grid_width - 4, self.border, 4, grid_height))
+        pygame.draw.rect(self.window, GRID_COLOR, (self.border, self.border + grid_height - 4, grid_width, 4))
+
+        submarine_img = self.sprites["submarine"]
+        submarine_pos = self.current_state[::-1] * self.cell_size + self.border
+        self.window.blit(submarine_img, submarine_pos + np.array([0, (self.cell_size - submarine_img.get_height()) // 2]))
 
         if self.render_mode == "human":
             pygame.event.pump()

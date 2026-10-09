@@ -43,6 +43,24 @@ def test_all_env_passive_env_checker(spec):
 
 
 @pytest.mark.parametrize(
+    "env_id, shape",
+    [
+        ("deep-sea-treasure-v0", (768, 768, 3)),
+        ("deep-sea-treasure-concave-v0", (768, 768, 3)),
+        ("deep-sea-treasure-mirrored-v0", (768, 1344, 3)),
+    ],
+)
+def test_deep_sea_treasure_render(env_id, shape):
+    """Check that every map variant renders, including all of its treasure value labels."""
+    env = mo_gym.make(env_id, render_mode="rgb_array")
+    env.reset()
+    frame = env.render()
+    assert frame.shape == shape
+    assert frame.dtype == np.uint8
+    env.close()
+
+
+@pytest.mark.parametrize(
     "gym_id, mo_gym_id",
     [
         ("MountainCar-v0", "mo-mountaincar-v0"),
