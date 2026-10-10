@@ -1,5 +1,8 @@
+import inspect
+
 import gymnasium as gym
 import numpy as np
+import pytest
 
 import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers.vector import (
@@ -161,3 +164,23 @@ def test_gym_wrapper_and_vector_async():
     )
     _test_gym_wrapper_and_vector_logic(envs, num_envs)
     envs.close()
+
+
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("max_concurrency", [None, 1, 2])
+def test_mo_async_concurrency(shared_memory, max_concurrency):
+    kwargs = {}
+    if max_concurrency is not None:
+        if "max_concurrency" not in inspect.signature(gym.vector.AsyncVectorEnv).parameters:
+            pytest.skip("Gymnasium does not support max_concurrency")
+        kwargs["max_concurrency"] = max_concurrency
+    envs = MOAsyncVectorEnv(
+        [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)],
+        shared_memory=shared_memory,
+        **kwargs,
+    )
+    try:
+        envs.reset(seed=0)
+        _test_autoreset_logic(envs)
+    finally:
+        envs.close()
