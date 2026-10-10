@@ -145,7 +145,7 @@ def _mo_async_worker(
                 if shared_memory:
                     write_to_shared_memory(observation_space, index, observation, shared_memory)
                     observation = None
-                    autoreset = False
+                autoreset = False
                 pipe.send(((observation, info), True))
             elif command == "reset-noop":
                 pipe.send(((observation, {}), True))

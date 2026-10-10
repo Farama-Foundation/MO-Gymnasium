@@ -1,5 +1,6 @@
 import gymnasium as gym
 import numpy as np
+import pytest
 
 import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers.vector import (
@@ -161,3 +162,26 @@ def test_gym_wrapper_and_vector_async():
     )
     _test_gym_wrapper_and_vector_logic(envs, num_envs)
     envs.close()
+
+
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("masked_reset", [True, False])
+def test_mo_async_step_after_explicit_reset(shared_memory, masked_reset):
+    envs = MOAsyncVectorEnv(
+        [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)],
+        shared_memory=shared_memory,
+    )
+    try:
+        envs.reset(seed=0)
+        _, _, terminated, _, _ = envs.step([1, 3])
+        np.testing.assert_array_equal(terminated, [True, False])
+        if masked_reset:
+            envs.reset(options={"reset_mask": np.array([True, False])})
+        else:
+            envs.reset()
+        obs, rewards, terminated, truncated, _ = envs.step([3, 3])
+        np.testing.assert_array_equal(obs, [[0, 1], [0, 2 if masked_reset else 1]])
+        np.testing.assert_array_equal(rewards, [[0, -1], [0, -1]])
+        assert not terminated.any() and not truncated.any()
+    finally:
+        envs.close()
