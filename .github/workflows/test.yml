@@ -32,3 +32,4 @@ jobs:
       run: |
         pytest tests/test_envs.py
         pytest tests/test_wrappers.py
+        pytest tests/test_vector_wrappers.py
