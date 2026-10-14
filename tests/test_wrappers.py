@@ -165,3 +165,15 @@ def test_mo_record_ep_statistic():
     assert isinstance(info["episode"]["l"], int)
     assert info["episode"]["l"] == 3
     assert isinstance(info["episode"]["t"], float)
+
+
+def test_mo_record_ep_statistic_custom_stats_key():
+    env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-v0"), stats_key="custom")
+    env.reset()
+    _, info = go_to_8_3(env)
+
+    assert "episode" not in info
+    assert isinstance(info["custom"]["r"], np.ndarray)
+    assert isinstance(info["custom"]["dr"], np.ndarray)
+    assert info["custom"]["l"] == 3
+    assert isinstance(info["custom"]["t"], float)

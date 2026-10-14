@@ -264,7 +264,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics, gym.utils.RecordConstru
             episode_returns = deepcopy(self.episode_returns)
             disc_episode_returns = deepcopy(self.disc_episode_returns)
 
-            info["episode"] = {
+            info[self._stats_key] = {
                 "r": episode_returns,
                 "dr": disc_episode_returns,
                 "l": self.episode_lengths,
