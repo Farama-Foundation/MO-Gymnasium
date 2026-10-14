@@ -72,7 +72,7 @@ class LinearReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info["vector_reward"] = reward
-        info["reward_weights"] = self.w
+        info["reward_weights"] = self.w.copy()
 
         return observation, scalar_reward, terminated, truncated, info
 

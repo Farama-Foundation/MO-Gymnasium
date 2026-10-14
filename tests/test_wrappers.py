@@ -3,10 +3,29 @@ import pytest
 
 import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers import (
+    LinearReward,
     MOClipReward,
     MONormalizeReward,
     MORecordEpisodeStatistics,
 )
+
+
+def test_linear_reward_info_does_not_share_weights():
+    """Mutating returned weights must not affect scalarization or other steps."""
+    env = LinearReward(mo_gym.make("deep-sea-treasure-v0"), weight=np.array([2.0, 3.0]))
+    try:
+        env.reset(seed=0)
+        _, reward, _, _, first_info = env.step(3)
+        assert reward == -3.0
+        first_info["reward_weights"][:] = 0
+        _, reward, _, _, second_info = env.step(3)
+        assert reward == -3.0
+        np.testing.assert_array_equal(env.w, [2.0, 3.0])
+        np.testing.assert_array_equal(second_info["reward_weights"], [2.0, 3.0])
+        env.w[:] = 1
+        np.testing.assert_array_equal(second_info["reward_weights"], [2.0, 3.0])
+    finally:
+        env.close()
 
 
 def go_to_8_3(env):
