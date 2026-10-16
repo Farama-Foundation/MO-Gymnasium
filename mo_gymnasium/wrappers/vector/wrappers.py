@@ -407,15 +407,28 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         self.reward_dim = self.env.unwrapped.reward_space.shape[0]
         self.rewards_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
+        self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
         self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
-        obs, info = super().reset(**kwargs)
+        # Vector environments may consume reset_mask from options during reset.
+        options = kwargs.get("options")
+        reset_mask = options.get("reset_mask") if options is not None else None
+        obs, info = self.env.reset(**kwargs)
 
-        # CHANGE: Here we just override the standard implementation to extend to MO
-        self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
-        self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+        if reset_mask is None:
+            self.episode_start_times = np.full(self.num_envs, time.perf_counter())
+            self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+            self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+            self.episode_lengths = np.zeros(self.num_envs, dtype=int)
+            self.prev_dones = np.zeros(self.num_envs, dtype=bool)
+        else:
+            self.episode_start_times[reset_mask] = time.perf_counter()
+            self.episode_returns[reset_mask] = 0
+            self.disc_episode_returns[reset_mask] = 0
+            self.episode_lengths[reset_mask] = 0
+            self.prev_dones[reset_mask] = False
 
         return obs, info
 
