@@ -251,3 +251,40 @@ def test_mo_async_step_after_explicit_reset(shared_memory, masked_reset):
         assert not terminated.any() and not truncated.any()
     finally:
         envs.close()
+
+
+@pytest.mark.parametrize("kind", ["sync", "async_shared", "async_serial"])
+@pytest.mark.parametrize("retained", [0, 1])
+@pytest.mark.parametrize("gamma", [0.0, 0.5, 1.0])
+def test_partial_reset_preserves_other_episode_statistics(kind, retained, gamma):
+    """Resetting one game leaves the other game's reward, discount and length intact."""
+    makers = [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)]
+    if kind == "sync":
+        vec = MOSyncVectorEnv(makers)
+    else:
+        vec = MOAsyncVectorEnv(makers, shared_memory=kind == "async_shared")
+    envs = MORecordEpisodeStatistics(vec, gamma=gamma)
+    try:
+        envs.reset(seed=0)
+        envs.step([3, 3])
+        start_time = envs.episode_start_times[retained]
+        mask = np.array([i != retained for i in range(2)])
+        envs.reset(options={"reset_mask": mask.copy()})
+        np.testing.assert_array_equal(envs.episode_returns[retained], [0, -1])
+        np.testing.assert_array_equal(envs.disc_episode_returns[retained], [0, -1])
+        assert envs.episode_lengths[retained] == 1
+        assert envs.episode_start_times[retained] == start_time
+        envs.step([1, 1])
+        envs.reset(options={"reset_mask": mask.copy()})
+        _, _, terminated, _, info = envs.step([1, 1])
+        assert terminated[retained]
+        np.testing.assert_allclose(info["episode"]["r"][retained], [8.2, -3])
+        np.testing.assert_allclose(info["episode"]["dr"][retained], [8.2 * gamma**2, -(1 + gamma + gamma**2)])
+        assert info["episode"]["l"][retained] == 3
+        envs.reset()
+        np.testing.assert_array_equal(envs.episode_returns, np.zeros((2, 2)))
+        np.testing.assert_array_equal(envs.disc_episode_returns, np.zeros((2, 2)))
+        np.testing.assert_array_equal(envs.episode_lengths, [0, 0])
+        np.testing.assert_array_equal(envs.prev_dones, [False, False])
+    finally:
+        envs.close()
