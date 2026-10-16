@@ -5,6 +5,7 @@ import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers import (
     LinearReward,
     MOClipReward,
+    MOMaxAndSkipObservation,
     MONormalizeReward,
     MORecordEpisodeStatistics,
 )
@@ -177,3 +178,33 @@ def test_mo_record_ep_statistic_custom_stats_key():
     assert isinstance(info["custom"]["dr"], np.ndarray)
     assert info["custom"]["l"] == 3
     assert isinstance(info["custom"]["t"], float)
+
+
+@pytest.mark.parametrize("skip", [2, 3, 4, 6])
+@pytest.mark.parametrize("limit,action", [(100, 1), (1, 3), (2, 3), (3, 3), (4, 3), (5, 3), (100, 3)])
+def test_max_and_skip_uses_last_observations(skip, limit, action):
+    """Early termination and truncation use frames from the current call and episode."""
+    native = mo_gym.make("deep-sea-treasure-v0", max_episode_steps=limit)
+    wrapped = MOMaxAndSkipObservation(mo_gym.make("deep-sea-treasure-v0", max_episode_steps=limit), skip=skip)
+    try:
+        for episode in range(2):
+            native.reset(seed=episode)
+            wrapped.reset(seed=episode)
+            for _ in range(2):
+                frames, expected_reward = [], np.zeros(2, dtype=np.float32)
+                for _ in range(skip):
+                    obs, reward, terminated, truncated, info = native.step(action)
+                    frames.append(obs.copy())
+                    expected_reward += reward
+                    if terminated or truncated:
+                        break
+                actual, reward, actual_terminated, actual_truncated, actual_info = wrapped.step(action)
+                np.testing.assert_array_equal(actual, np.maximum.reduce(frames[-2:]))
+                np.testing.assert_array_equal(reward, expected_reward)
+                assert (actual_terminated, actual_truncated) == (terminated, truncated)
+                assert actual_info == info
+                if terminated or truncated:
+                    break
+    finally:
+        native.close()
+        wrapped.close()
