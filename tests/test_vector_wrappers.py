@@ -137,6 +137,50 @@ def test_mo_record_ep_statistic_disc_return_reset_between_episodes():
     envs.close()
 
 
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("truncate", [True, False])
+def test_mo_record_ep_statistics_same_step(shared_memory, truncate):
+    envs = MORecordEpisodeStatistics(
+        MOAsyncVectorEnv(
+            [
+                lambda: mo_gym.make("deep-sea-treasure-v0", max_episode_steps=1 if truncate else 100),
+                lambda: mo_gym.make("deep-sea-treasure-v0", max_episode_steps=3 if truncate else 100),
+            ],
+            shared_memory=shared_memory,
+            autoreset_mode=gym.vector.AutoresetMode.SAME_STEP,
+        ),
+        gamma=0.5,
+    )
+    episode_rewards = [[], []]
+    expected_returns, expected_lengths = [], []
+    try:
+        envs.reset(seed=0)
+        for _ in range(3):
+            for action in [3, 1, 1]:
+                actions = [0, 0] if truncate else [1, action]
+                _, rewards, terminated, truncated, info = envs.step(actions)
+                dones = np.logical_or(terminated, truncated)
+                np.testing.assert_array_equal(info["_episode"], dones)
+                for i in range(2):
+                    episode_rewards[i].append(rewards[i].copy())
+                    if dones[i]:
+                        trajectory = np.array(episode_rewards[i])
+                        length = len(trajectory)
+                        expected_return = trajectory.sum(axis=0)
+                        expected_discounted_return = (trajectory * 0.5 ** np.arange(length)[:, None]).sum(axis=0)
+                        np.testing.assert_allclose(info["episode"]["r"][i], expected_return)
+                        np.testing.assert_allclose(info["episode"]["dr"][i], expected_discounted_return)
+                        assert info["episode"]["l"][i] == length
+                        expected_returns.append(expected_return)
+                        expected_lengths.append(length)
+                        episode_rewards[i].clear()
+        np.testing.assert_allclose(envs.return_queue, expected_returns)
+        np.testing.assert_array_equal(envs.length_queue, expected_lengths)
+        assert envs.episode_count == 12
+    finally:
+        envs.close()
+
+
 def _test_gym_wrapper_and_vector_logic(envs, num_envs: int):
     envs.reset()
     for i in range(30):
