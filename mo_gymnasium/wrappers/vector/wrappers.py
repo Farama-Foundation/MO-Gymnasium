@@ -437,13 +437,18 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         self.disc_episode_returns[self.prev_dones] = 0
         self.episode_lengths[self.prev_dones] = 0
         self.episode_start_times[self.prev_dones] = time.perf_counter()
-        self.episode_returns[~self.prev_dones] += rewards[~self.prev_dones]
+        # Same-step autoreset has already reset the env, so every transition counts.
+        if self._autoreset_mode == AutoresetMode.SAME_STEP:
+            episode_steps = np.ones(self.num_envs, dtype=bool)
+        else:
+            episode_steps = ~self.prev_dones
+        self.episode_returns[episode_steps] += rewards[episode_steps]
 
         # CHANGE: The discounted returns are also computed here
         self.disc_episode_returns += rewards * np.repeat(self.gamma**self.episode_lengths, self.reward_dim).reshape(
             self.episode_returns.shape
         )
-        self.episode_lengths[~self.prev_dones] += 1
+        self.episode_lengths[episode_steps] += 1
 
         self.prev_dones = dones = np.logical_or(terminations, truncations)
         num_dones = np.sum(dones)
