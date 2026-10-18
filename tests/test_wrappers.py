@@ -56,9 +56,9 @@ def test_normalization_wrapper():
         go_to_8_3(both_norm_env)
     both_norm_env.reset(seed=0)
     _, rewards, _, _, _ = both_norm_env.step(1)  # down
-    np.testing.assert_almost_equal(rewards, [0.5, -1.24], decimal=2)
+    np.testing.assert_almost_equal(rewards, [0.18, -1.24], decimal=2)
     rewards, _ = go_to_8_3(both_norm_env)
-    np.testing.assert_almost_equal(rewards, [4.73, -1.24], decimal=2)
+    np.testing.assert_almost_equal(rewards, [2.13, -1.24], decimal=2)
 
     # Tests for only treasure normalized
     for i in range(30):
@@ -66,9 +66,42 @@ def test_normalization_wrapper():
     norm_treasure_env.reset(seed=0)
     _, rewards, _, _, _ = norm_treasure_env.step(1)  # down
     # Time rewards are not normalized (-1)
-    np.testing.assert_almost_equal(rewards, [0.51, -1.0], decimal=2)
+    np.testing.assert_almost_equal(rewards, [0.18, -1.0], decimal=2)
     rewards, _ = go_to_8_3(norm_treasure_env)
-    np.testing.assert_almost_equal(rewards, [5.33, -1.0], decimal=2)
+    np.testing.assert_almost_equal(rewards, [2.13, -1.0], decimal=2)
+
+
+@pytest.mark.parametrize("gamma", [0.0, 0.9, 1.0])
+@pytest.mark.parametrize("ending", ["terminal", "truncated", "manual"])
+def test_normalization_episode_returns(gamma, ending):
+    """Each episode contributes its full discounted prefixes, including its last step."""
+    import gymnasium as gym
+
+    env = mo_gym.make("deep-sea-treasure-v0")
+    if ending == "truncated":
+        env = gym.wrappers.TimeLimit(env, max_episode_steps=2)
+    env = MONormalizeReward(env, idx=1, gamma=gamma)
+    prefixes = []
+    try:
+        for episode in range(2):
+            env.reset(seed=episode)
+            np.testing.assert_array_equal(env.discounted_reward, [0.0])
+            discounted = 0.0
+            for action in [3, 1, 1] if ending == "terminal" else [3, 1]:
+                _, reward, terminated, truncated, _ = env.step(action)
+                discounted = gamma * discounted - 1
+                prefixes.append(discounted)
+                np.testing.assert_allclose(env.discounted_reward, [discounted])
+                count = len(prefixes) + 1e-4
+                mean = sum(prefixes) / count
+                variance = (sum(value**2 for value in prefixes) + 1e-4) / count - mean**2
+                np.testing.assert_allclose(env.return_rms.mean, mean)
+                np.testing.assert_allclose(env.return_rms.var, variance)
+                np.testing.assert_allclose(reward[1], -1 / np.sqrt(variance + env.epsilon))
+                if terminated or truncated:
+                    break
+    finally:
+        env.close()
 
 
 def test_clip_wrapper():
