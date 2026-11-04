@@ -297,3 +297,53 @@ def test_mountaincar_terminal_reward_in_space(env_id):
     assert terminated
     assert env.unwrapped.reward_space.contains(reward)
     env.close()
+
+
+BOTTLES_LEFT, BOTTLES_RIGHT, BOTTLES_PICKUP = 0, 1, 2
+
+
+def _walk_to_source_and_pick_two(env):
+    """From the start tile, walk to the source and pick up two bottles."""
+    for _ in range(env.unwrapped.size - 1):
+        env.step(BOTTLES_LEFT)
+    env.step(BOTTLES_PICKUP)
+    env.step(BOTTLES_PICKUP)
+
+
+def test_unbreakable_bottles_pickup_reward_in_space():
+    """Picking the only dropped bottle back up raises the potential by +1, which must fit reward_space."""
+    env = mo_gym.make("breakable-bottles-v0", prob_drop=1.0, unbreakable_bottles=True)
+    env.reset(seed=0)
+    _walk_to_source_and_pick_two(env)
+    env.step(BOTTLES_RIGHT)  # to tile 1, nothing drops on the source tile
+    _, reward, _, _, _ = env.step(BOTTLES_RIGHT)  # leaving tile 1 with two bottles drops one there
+    assert reward[2] == -1
+    env.step(BOTTLES_LEFT)
+    _, reward, _, _, _ = env.step(BOTTLES_PICKUP)
+    assert reward[2] == 1
+    assert env.unwrapped.reward_space.contains(reward)
+    env.close()
+
+
+def test_breakable_bottles_impact_reward_stays_non_positive():
+    """Dropped bottles can't be picked up when breakable, so the impact upper bound stays 0."""
+    env = mo_gym.make("breakable-bottles-v0")
+    assert env.unwrapped.reward_space.high[2] == 0
+    env.close()
+
+
+def test_breakable_bottles_observation_in_space_after_two_drops_on_one_tile():
+    """Two bottles dropped on the same tile still give a 0/1 flag, as the MultiBinary space declares."""
+    env = mo_gym.make("breakable-bottles-v0", prob_drop=1.0)
+    env.reset(seed=0)
+    for _ in range(2):
+        _walk_to_source_and_pick_two(env)
+        env.step(BOTTLES_RIGHT)
+        obs, _, _, _, _ = env.step(BOTTLES_RIGHT)  # drops one bottle on tile 1
+        assert env.observation_space.contains(obs)
+        for _ in range(2):
+            env.step(BOTTLES_LEFT)  # back to the source, carrying one bottle, so nothing drops
+    assert env.unwrapped.bottles_dropped[0] == 2
+    assert obs["bottles_dropped"][0] == 1
+    assert env.observation_space.contains(obs)
+    env.close()

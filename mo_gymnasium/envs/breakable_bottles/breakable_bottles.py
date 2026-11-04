@@ -37,6 +37,7 @@ class BreakableBottles(Env, EzPickle):
     - time penalty: -1 for each time step
     - bottle reward: bottle_reward for each bottle delivered
     - potential: While carrying multiple bottles there is a small probability of dropping them. A potential-based penalty is applied for bottles left on the ground.
+      It lies in [-1, 0], or in [-1, 1] when unbreakable_bottles is True, since picking the last dropped bottle back up restores the potential.
 
     ## Starting State
     The agent starts at location 0, carrying no bottles, having delivered no bottles and having dropped no bottles.
@@ -110,7 +111,10 @@ class BreakableBottles(Env, EzPickle):
         self.num_actions = 3
 
         # reward space
-        self.reward_space = Box(np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward * 2, 0]))
+        # The impact reward is the change in potential (-1 while any bottle is on the ground, else 0).
+        # When bottles are unbreakable, picking the last dropped one back up raises it by +1.
+        max_impact = 1 if self.unbreakable_bottles else 0
+        self.reward_space = Box(np.array([-np.inf, 0, -1]), np.array([0, self.bottle_reward * 2, max_impact]))
         self.reward_dim = 3
 
         # pygame
@@ -231,7 +235,9 @@ class BreakableBottles(Env, EzPickle):
             "location": self.location,
             "bottles_carrying": self.bottles_carrying,
             "bottles_delivered": self.bottles_delivered,
-            "bottles_dropped": self.bottles_dropped.copy(),
+            # A tile can hold several dropped bottles, but the observation is a presence flag per
+            # tile (MultiBinary), the same encoding get_obs_idx and num_observations assume.
+            "bottles_dropped": [int(count > 0) for count in self.bottles_dropped],
         }
 
     def render(self):
