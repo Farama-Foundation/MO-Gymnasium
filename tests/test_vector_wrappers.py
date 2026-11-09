@@ -1,5 +1,8 @@
+import inspect
+
 import gymnasium as gym
 import numpy as np
+import pytest
 
 import mo_gymnasium as mo_gym
 from mo_gymnasium.wrappers.vector import (
@@ -134,6 +137,50 @@ def test_mo_record_ep_statistic_disc_return_reset_between_episodes():
     envs.close()
 
 
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("truncate", [True, False])
+def test_mo_record_ep_statistics_same_step(shared_memory, truncate):
+    envs = MORecordEpisodeStatistics(
+        MOAsyncVectorEnv(
+            [
+                lambda: mo_gym.make("deep-sea-treasure-v0", max_episode_steps=1 if truncate else 100),
+                lambda: mo_gym.make("deep-sea-treasure-v0", max_episode_steps=3 if truncate else 100),
+            ],
+            shared_memory=shared_memory,
+            autoreset_mode=gym.vector.AutoresetMode.SAME_STEP,
+        ),
+        gamma=0.5,
+    )
+    episode_rewards = [[], []]
+    expected_returns, expected_lengths = [], []
+    try:
+        envs.reset(seed=0)
+        for _ in range(3):
+            for action in [3, 1, 1]:
+                actions = [0, 0] if truncate else [1, action]
+                _, rewards, terminated, truncated, info = envs.step(actions)
+                dones = np.logical_or(terminated, truncated)
+                np.testing.assert_array_equal(info["_episode"], dones)
+                for i in range(2):
+                    episode_rewards[i].append(rewards[i].copy())
+                    if dones[i]:
+                        trajectory = np.array(episode_rewards[i])
+                        length = len(trajectory)
+                        expected_return = trajectory.sum(axis=0)
+                        expected_discounted_return = (trajectory * 0.5 ** np.arange(length)[:, None]).sum(axis=0)
+                        np.testing.assert_allclose(info["episode"]["r"][i], expected_return)
+                        np.testing.assert_allclose(info["episode"]["dr"][i], expected_discounted_return)
+                        assert info["episode"]["l"][i] == length
+                        expected_returns.append(expected_return)
+                        expected_lengths.append(length)
+                        episode_rewards[i].clear()
+        np.testing.assert_allclose(envs.return_queue, expected_returns)
+        np.testing.assert_array_equal(envs.length_queue, expected_lengths)
+        assert envs.episode_count == 12
+    finally:
+        envs.close()
+
+
 def _test_gym_wrapper_and_vector_logic(envs, num_envs: int):
     envs.reset()
     for i in range(30):
@@ -161,3 +208,83 @@ def test_gym_wrapper_and_vector_async():
     )
     _test_gym_wrapper_and_vector_logic(envs, num_envs)
     envs.close()
+
+
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("max_concurrency", [None, 1, 2])
+def test_mo_async_concurrency(shared_memory, max_concurrency):
+    kwargs = {}
+    if max_concurrency is not None:
+        if "max_concurrency" not in inspect.signature(gym.vector.AsyncVectorEnv).parameters:
+            pytest.skip("Gymnasium does not support max_concurrency")
+        kwargs["max_concurrency"] = max_concurrency
+    envs = MOAsyncVectorEnv(
+        [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)],
+        shared_memory=shared_memory,
+        **kwargs,
+    )
+    try:
+        envs.reset(seed=0)
+        _test_autoreset_logic(envs)
+    finally:
+        envs.close()
+
+
+@pytest.mark.parametrize("shared_memory", [True, False])
+@pytest.mark.parametrize("masked_reset", [True, False])
+def test_mo_async_step_after_explicit_reset(shared_memory, masked_reset):
+    envs = MOAsyncVectorEnv(
+        [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)],
+        shared_memory=shared_memory,
+    )
+    try:
+        envs.reset(seed=0)
+        _, _, terminated, _, _ = envs.step([1, 3])
+        np.testing.assert_array_equal(terminated, [True, False])
+        if masked_reset:
+            envs.reset(options={"reset_mask": np.array([True, False])})
+        else:
+            envs.reset()
+        obs, rewards, terminated, truncated, _ = envs.step([3, 3])
+        np.testing.assert_array_equal(obs, [[0, 1], [0, 2 if masked_reset else 1]])
+        np.testing.assert_array_equal(rewards, [[0, -1], [0, -1]])
+        assert not terminated.any() and not truncated.any()
+    finally:
+        envs.close()
+
+
+@pytest.mark.parametrize("kind", ["sync", "async_shared", "async_serial"])
+@pytest.mark.parametrize("retained", [0, 1])
+@pytest.mark.parametrize("gamma", [0.0, 0.5, 1.0])
+def test_partial_reset_preserves_other_episode_statistics(kind, retained, gamma):
+    """Resetting one game leaves the other game's reward, discount and length intact."""
+    makers = [lambda: mo_gym.make("deep-sea-treasure-v0") for _ in range(2)]
+    if kind == "sync":
+        vec = MOSyncVectorEnv(makers)
+    else:
+        vec = MOAsyncVectorEnv(makers, shared_memory=kind == "async_shared")
+    envs = MORecordEpisodeStatistics(vec, gamma=gamma)
+    try:
+        envs.reset(seed=0)
+        envs.step([3, 3])
+        start_time = envs.episode_start_times[retained]
+        mask = np.array([i != retained for i in range(2)])
+        envs.reset(options={"reset_mask": mask.copy()})
+        np.testing.assert_array_equal(envs.episode_returns[retained], [0, -1])
+        np.testing.assert_array_equal(envs.disc_episode_returns[retained], [0, -1])
+        assert envs.episode_lengths[retained] == 1
+        assert envs.episode_start_times[retained] == start_time
+        envs.step([1, 1])
+        envs.reset(options={"reset_mask": mask.copy()})
+        _, _, terminated, _, info = envs.step([1, 1])
+        assert terminated[retained]
+        np.testing.assert_allclose(info["episode"]["r"][retained], [8.2, -3])
+        np.testing.assert_allclose(info["episode"]["dr"][retained], [8.2 * gamma**2, -(1 + gamma + gamma**2)])
+        assert info["episode"]["l"][retained] == 3
+        envs.reset()
+        np.testing.assert_array_equal(envs.episode_returns, np.zeros((2, 2)))
+        np.testing.assert_array_equal(envs.disc_episode_returns, np.zeros((2, 2)))
+        np.testing.assert_array_equal(envs.episode_lengths, [0, 0])
+        np.testing.assert_array_equal(envs.prev_dones, [False, False])
+    finally:
+        envs.close()

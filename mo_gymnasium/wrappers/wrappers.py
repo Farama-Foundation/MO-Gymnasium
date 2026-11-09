@@ -72,7 +72,7 @@ class LinearReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         observation, reward, terminated, truncated, info = self.env.step(action)
         scalar_reward = np.dot(reward, self.w)
         info["vector_reward"] = reward
-        info["reward_weights"] = self.w
+        info["reward_weights"] = self.w.copy()
 
         return observation, scalar_reward, terminated, truncated, info
 
@@ -135,6 +135,12 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         """Sets the property to freeze/continue the running mean calculation of the reward statistics."""
         self._update_running_mean = setting
 
+    def reset(self, **kwargs):
+        """Resets the discounted reward while retaining the running statistics."""
+        observation, info = self.env.reset(**kwargs)
+        self.discounted_reward = np.array([0.0])
+        return observation, info
+
     def step(self, action: ActType):
         """Steps through the environment, normalizing the rewards returned.
 
@@ -146,7 +152,7 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         # Extracts the objective value to normalize
         to_normalize = rews[self.idx]
 
-        self.discounted_reward = self.discounted_reward * self.gamma * (1 - terminated) + float(to_normalize)
+        self.discounted_reward = self.discounted_reward * self.gamma + float(to_normalize)
         if self._update_running_mean:
             self.return_rms.update(self.discounted_reward)
 
@@ -264,7 +270,7 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics, gym.utils.RecordConstru
             episode_returns = deepcopy(self.episode_returns)
             disc_episode_returns = deepcopy(self.disc_episode_returns)
 
-            info["episode"] = {
+            info[self._stats_key] = {
                 "r": episode_returns,
                 "dr": disc_episode_returns,
                 "l": self.episode_lengths,

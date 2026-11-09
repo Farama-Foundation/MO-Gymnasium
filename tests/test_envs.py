@@ -20,6 +20,24 @@ for env_spec in gym.envs.registry.values():
         all_testing_env_specs.append(env_spec)
 
 
+def test_minecart_rgb_observations_do_not_share_pixels():
+    """Idle steps return independent observations even when the image is cached."""
+    env = mo_gym.make("minecart-rgb-v0")
+    try:
+        initial_obs, _ = env.reset(seed=0)
+        first_obs, _, _, _, _ = env.step(5)  # Idle without redrawing the cached image.
+        second_obs, _, _, _, _ = env.step(5)
+        expected = initial_obs.copy()
+        np.testing.assert_array_equal(first_obs, expected)
+        np.testing.assert_array_equal(second_obs, expected)
+        first_obs[:] = 0
+        np.testing.assert_array_equal(initial_obs, expected)
+        np.testing.assert_array_equal(second_obs, expected)
+        np.testing.assert_array_equal(env.unwrapped.get_state(update=False), expected)
+    finally:
+        env.close()
+
+
 @pytest.mark.parametrize(
     "spec",
     all_testing_env_specs,
