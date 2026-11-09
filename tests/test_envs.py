@@ -279,6 +279,33 @@ def test_pf_fruit_tree_no_discount():
         np.testing.assert_array_almost_equal(desired, actual, decimal=2)
 
 
+@pytest.mark.parametrize("gamma", [0.99, 0.9])
+@pytest.mark.parametrize(
+    "actions, expected_undiscounted",
+    [
+        # up, up, right, right, up to the diamond; down, left, left, down, down home: 10 steps
+        ([0, 0, 3, 3, 0, 1, 2, 2, 1, 1], [0.0, 0.0, 1.0]),
+        # up, up, left, up, up, right to the gold; left, down, down, right, down, down home: 12 steps
+        ([0, 0, 2, 0, 0, 3, 2, 1, 1, 3, 1, 1], [0.0, 1.0, 0.0]),
+    ],
+    ids=["diamond", "gold"],
+)
+def test_pf_resource_gathering_matches_recorded_return(actions, expected_undiscounted, gamma):
+    # These policies never enter an enemy cell, so their return is deterministic: the reward
+    # arrives on the last step and is discounted by gamma ** (len(actions) - 1).
+    env = mo_gym.wrappers.MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=gamma)
+    env.reset(seed=0)
+    for action in actions:
+        _, _, terminated, _, info = env.step(action)
+    assert terminated
+
+    expected = np.array(expected_undiscounted) * gamma ** (len(actions) - 1)
+    np.testing.assert_allclose(info["episode"]["dr"], expected, rtol=1e-6)
+
+    discounted_front = env.unwrapped.pareto_front(gamma=gamma)
+    assert any(np.allclose(point, expected) for point in discounted_front), f"{expected} not in {discounted_front}"
+
+
 @pytest.mark.parametrize(
     "env_id",
     [
