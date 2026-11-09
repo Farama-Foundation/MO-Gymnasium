@@ -4,16 +4,14 @@ import math
 import warnings
 from math import ceil
 from pathlib import Path
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 
 import gymnasium as gym
 import numpy as np
-import pandas as pd
 import pygame
 import scipy.stats
 from gymnasium.spaces import Box, Discrete
 from gymnasium.utils import EzPickle
-from paretoset import paretoset
 from scipy.optimize import linprog
 
 
@@ -172,8 +170,6 @@ class Minecart(gym.Env, EzPickle):
             )
             for i in range(self.ore_cnt)
         ]
-        self.reward_names = ["Ore_" + str(i + 1) for i in range(self.ore_cnt)] + ["Fuel"]
-        self.weight_names = [f"Weight_{reward_name}" for reward_name in self.reward_names]
         self.generate_mines(None)
 
         if "mines" in data:
@@ -213,7 +209,7 @@ class Minecart(gym.Env, EzPickle):
         include_coplanar: bool = True,
         threshold: float = 0.0,
         on_error: Literal["warn", "raise", "ignore"] = "warn",
-    ) -> tuple[np.ndarray, pd.DataFrame]:
+    ) -> List[np.ndarray]:
         """Computes an approximate convex coverage set (CCS) by determining which reward vectors are linearly maximizable.
 
         A point p_i is linearly maximizable if there exists a weight vector v (non-negative, summing to 1) such that
@@ -238,34 +234,25 @@ class Minecart(gym.Env, EzPickle):
                 "ignore" - silently leave the corresponding weights and margin as NaN.
 
         Returns:
-            A tuple containing:
-                - convex_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of convex coverage set.
-                - df_convex (pd.DataFrame): Convex coverage set with rewards columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                    "Mine_Position", "Action_Sequence", weight columns ("Weight_Ore_1", ..., "Weight_Ore_n", "Weight_Fuel"),
-                    and "Margin". Weight columns correspond to the components of the weight vector v that maximizes the margin
-                    for each point. "Margin" column contains the maximum achievable margin for each point.
+            The convex coverage set.
         """
-        pareto_rewards, df_pareto = self.pareto_front(gamma, symmetric, batch_size)
+        pareto_rewards = self.pareto_front(gamma, symmetric, batch_size)
+        pareto_rewards_arr = np.array(pareto_rewards)
         coplanar_mask, strict_mask, weights, margins = check_linear_maximizability(
-            points=pareto_rewards,
+            points=pareto_rewards_arr,
             threshold=threshold,
             on_error=on_error,
         )
-        df_convex = df_pareto
-        df_convex["Coplanar_Maximizable"] = coplanar_mask
-        df_convex["Strictly_Maximizable"] = strict_mask
-        df_convex[self.weight_names] = weights
-        df_convex["Margin"] = margins
 
         if include_coplanar:
             mask = coplanar_mask
         else:
             mask = strict_mask
-        convex_rewards = df_convex.loc[mask, self.reward_names].values
+        convex_rewards = list(pareto_rewards_arr[mask])
 
-        return convex_rewards, df_convex
+        return convex_rewards
 
-    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> tuple[np.ndarray, pd.DataFrame]:
+    def pareto_front(self, gamma: float, symmetric: bool = True, batch_size: int = 10**5) -> List[np.ndarray]:
         """Computes an approximate pareto front.
 
         Args:
@@ -276,16 +263,10 @@ class Minecart(gym.Env, EzPickle):
                 Default: 10**5
 
         Returns:
-            A tuple containing:
-                - pareto_rewards (np.ndarray): Reward values ("Ore_1", ..., "Ore_n", "Fuel") of pareto front.
-                - df_pareto (pd.DataFrame): Pareto front with reward columns ("Ore_1", ..., "Ore_n", "Fuel"),
-                    "Mine_Position", and "Action_Sequence".
+            The pareto coverage set.
         """
-        idx = 0
-        rewards_batch = np.empty(shape=(batch_size, self.reward_dim), dtype=np.float64)
-        mine_pos_batch = np.empty(shape=(batch_size,), dtype=object)
-        action_seq_batch = np.empty(shape=(batch_size,), dtype=object)
-        pareto_batches = []
+        rewards_batch = []
+        pareto_rewards = []
         base_perimeter = BASE_RADIUS * BASE_SCALE
 
         # Empty mine just outside the base
@@ -442,32 +423,17 @@ class Minecart(gym.Env, EzPickle):
                 reward[-1, :-1] = mine_means * mine_actions / max(1, (mn_sum * mine_actions) / self.capacity)
 
                 reward = np.dot(discount_map[: len(seq)], reward)
-                rewards_batch[idx] = reward
-                mine_pos_batch[idx] = tuple(mine.pos)
-                action_seq_batch[idx] = tuple(seq)
-                idx += 1
+                rewards_batch.append(reward)
 
-                if idx == batch_size:
-                    pareto_mask = paretoset(rewards_batch, sense=["max"] * self.reward_dim)
-                    df = pd.DataFrame(rewards_batch[pareto_mask], columns=self.reward_names)
-                    df["Mine_Position"] = mine_pos_batch[pareto_mask]
-                    df["Action_Sequence"] = action_seq_batch[pareto_mask]
-                    pareto_batches.append(df)
-                    idx = 0
+                if len(rewards_batch) >= batch_size:
+                    pareto_batch = pareto_filter(rewards_batch, minimize=False)
+                    pareto_rewards.extend(pareto_batch)
+                    rewards_batch = []
 
-        if idx > 0:
-            df = pd.DataFrame(rewards_batch[:idx], columns=self.reward_names)
-            df["Mine_Position"] = mine_pos_batch[:idx]
-            df["Action_Sequence"] = action_seq_batch[:idx]
-            pareto_batches.append(df)
+        pareto_rewards.extend(rewards_batch)
+        pareto_rewards = pareto_filter(pareto_rewards, minimize=False)
 
-        df_pareto = pd.concat(pareto_batches, axis=0)
-        pareto_mask = paretoset(df_pareto[self.reward_names].values, sense=["max"] * self.reward_dim)
-        df_pareto = df_pareto[pareto_mask]
-        df_pareto = df_pareto.reset_index(drop=True)
-        pareto_rewards = df_pareto[self.reward_names].values
-
-        return pareto_rewards, df_pareto
+        return pareto_rewards
 
     def generate_mines(self, mine_distributions=None):
         """
@@ -605,7 +571,7 @@ class Minecart(gym.Env, EzPickle):
         if update:
             self.pixels = np.transpose(np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2))
 
-        return self.pixels
+        return self.pixels.copy()
 
     def get_state(self, update=True):
         """Returns the environment's state
@@ -985,6 +951,29 @@ def check_linear_maximizability(
     strict_mask = margins > threshold
 
     return coplanar_mask, strict_mask, weights, margins
+
+
+def pareto_filter(costs, minimize=True):
+    """
+    Find the pareto-efficient points
+    :param costs: An (n_points, n_costs) array
+    :param return_mask: True to return a mask
+    :return: An array of indices of pareto-efficient points.
+        If return_mask is True, this will be an (n_points, ) boolean array
+        Otherwise it will be a (n_efficient_points, ) integer array of indices.
+    from https://stackoverflow.com/a/40239615
+    """
+    costs_copy = np.copy(costs) if minimize else -np.copy(costs)
+    is_efficient = np.arange(costs_copy.shape[0])
+    next_point_index = 0  # Next index in the is_efficient array to search for
+    while next_point_index < len(costs_copy):
+        nondominated_point_mask = np.any(costs_copy < costs_copy[next_point_index], axis=1)
+        nondominated_point_mask[next_point_index] = True
+        # Remove dominated points
+        is_efficient = is_efficient[nondominated_point_mask]
+        costs_copy = costs_copy[nondominated_point_mask]
+        next_point_index = np.sum(nondominated_point_mask[:next_point_index]) + 1
+    return [costs[i] for i in is_efficient]
 
 
 if __name__ == "__main__":
