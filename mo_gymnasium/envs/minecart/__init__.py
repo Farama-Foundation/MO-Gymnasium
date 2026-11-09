@@ -2,6 +2,7 @@ from pathlib import Path
 
 from gymnasium.envs.registration import register
 
+
 register(
     id="minecart-v0",
     entry_point="mo_gymnasium.envs.minecart.minecart:Minecart",
