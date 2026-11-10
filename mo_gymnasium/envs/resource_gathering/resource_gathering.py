@@ -274,7 +274,8 @@ class ResourceGathering(gym.Env, EzPickle):
         next_pos = self.current_pos + self.dir[action]
         self.last_action = action
 
-        if self.is_valid_state(next_pos):
+        moved = self.is_valid_state(next_pos)
+        if moved:
             self.current_pos = next_pos
 
         vec_reward = np.zeros(3, dtype=np.float32)
@@ -289,7 +290,7 @@ class ResourceGathering(gym.Env, EzPickle):
             if self.np_random.random() < 0.1:
                 vec_reward[0] = -1.0
                 done = True
-        elif cell == "H":
+        elif cell == "H" and moved:
             done = True
             vec_reward[1] = self.has_gold
             vec_reward[2] = self.has_gem
