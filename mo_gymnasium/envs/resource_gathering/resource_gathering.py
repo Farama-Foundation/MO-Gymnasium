@@ -137,29 +137,31 @@ class ResourceGathering(gym.Env, EzPickle):
 
             return [np.array(point) for point in non_dominated]
 
+        # A reward received on the n-th step is discounted by gamma ** (n - 1), as in
+        # MORecordEpisodeStatistics and the deep-sea-treasure front.
         # Go directly to the diamond (R2) in 10 steps
-        ret1 = np.array([0.0, 0.0, 1.0]) * gamma**10
+        ret1 = np.array([0.0, 0.0, 1.0]) * gamma**9
 
         # Go to both resources, through both Es
-        ret2 = 0.9 * 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**12  # Didn't die
-        ret2 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E2
-        ret2 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**9  # Died to E1
+        ret2 = 0.9 * 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**11  # Didn't die
+        ret2 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**6  # Died to E2
+        ret2 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**8  # Died to E1
 
         # Go to gold (R1), through E1 both ways
-        ret3 = 0.9 * 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**8  # Didn't die
-        ret3 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**3  # Died to E1
-        ret3 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**5  # Died to E1 in the way back
+        ret3 = 0.9 * 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**7  # Didn't die
+        ret3 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**2  # Died to E1
+        ret3 += 0.9 * 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**4  # Died to E1 in the way back
 
         # Go to both resources, dodging E1 but through E2
-        ret4 = 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**14  # Didn't die
-        ret4 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E2
+        ret4 = 0.9 * np.array([0.0, 1.0, 1.0]) * gamma**13  # Didn't die
+        ret4 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**6  # Died to E2
 
         # Go to gold (R1), doging all E's in 12 steps
-        ret5 = np.array([0.0, 1.0, 0.0]) * gamma**12  # Didn't die
+        ret5 = np.array([0.0, 1.0, 0.0]) * gamma**11  # Didn't die
 
         # Go to gold (R1), going through E1 only once
-        ret6 = 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**10  # Didn't die
-        ret6 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**7  # Died to E1
+        ret6 = 0.9 * np.array([0.0, 1.0, 0.0]) * gamma**9  # Didn't die
+        ret6 += 0.1 * np.array([-1.0, 0.0, 0.0]) * gamma**6  # Died to E1
 
         return get_non_dominated([ret1, ret2, ret3, ret4, ret5, ret6])
 
