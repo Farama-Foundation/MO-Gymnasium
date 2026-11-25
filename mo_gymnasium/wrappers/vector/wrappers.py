@@ -6,6 +6,7 @@ import multiprocessing
 import sys
 import time
 import traceback
+from contextlib import nullcontext
 from copy import deepcopy
 from multiprocessing import Array, Queue
 from multiprocessing.connection import Connection
@@ -126,6 +127,7 @@ def _mo_async_worker(
     shared_memory: Array | dict[str, Any] | tuple[Any, ...],
     error_queue: Queue,
     autoreset_mode: AutoresetMode,
+    semaphore=None,
 ):
     env = env_fn()
     observation_space = env.observation_space
@@ -141,24 +143,35 @@ def _mo_async_worker(
             command, data = pipe.recv()
 
             if command == "reset":
-                observation, info = env.reset(**data)
+                with semaphore if semaphore is not None else nullcontext():
+                    observation, info = env.reset(**data)
                 if shared_memory:
                     write_to_shared_memory(observation_space, index, observation, shared_memory)
                     observation = None
-                    autoreset = False
+                autoreset = False
                 pipe.send(((observation, info), True))
             elif command == "reset-noop":
                 pipe.send(((observation, {}), True))
             elif command == "step":
-                if autoreset_mode == AutoresetMode.NEXT_STEP:
-                    if autoreset:
-                        observation, info = env.reset()
-                        reward, terminated, truncated = (
-                            np.zeros(reward_space.shape[0], dtype=np.float32),
-                            False,
-                            False,
-                        )
-                    else:
+                with semaphore if semaphore is not None else nullcontext():
+                    if autoreset_mode == AutoresetMode.NEXT_STEP:
+                        if autoreset:
+                            observation, info = env.reset()
+                            reward, terminated, truncated = (
+                                np.zeros(reward_space.shape[0], dtype=np.float32),
+                                False,
+                                False,
+                            )
+                        else:
+                            (
+                                observation,
+                                reward,
+                                terminated,
+                                truncated,
+                                info,
+                            ) = env.step(data)
+                        autoreset = terminated or truncated
+                    elif autoreset_mode == AutoresetMode.SAME_STEP:
                         (
                             observation,
                             reward,
@@ -166,36 +179,27 @@ def _mo_async_worker(
                             truncated,
                             info,
                         ) = env.step(data)
-                    autoreset = terminated or truncated
-                elif autoreset_mode == AutoresetMode.SAME_STEP:
-                    (
-                        observation,
-                        reward,
-                        terminated,
-                        truncated,
-                        info,
-                    ) = env.step(data)
 
-                    if terminated or truncated:
-                        reset_observation, reset_info = env.reset()
+                        if terminated or truncated:
+                            reset_observation, reset_info = env.reset()
 
-                        info = {
-                            "final_info": info,
-                            "final_obs": observation,
-                            **reset_info,
-                        }
-                        observation = reset_observation
-                elif autoreset_mode == AutoresetMode.DISABLED:
-                    assert autoreset is False
-                    (
-                        observation,
-                        reward,
-                        terminated,
-                        truncated,
-                        info,
-                    ) = env.step(data)
-                else:
-                    raise ValueError(f"Unexpected autoreset_mode: {autoreset_mode}")
+                            info = {
+                                "final_info": info,
+                                "final_obs": observation,
+                                **reset_info,
+                            }
+                            observation = reset_observation
+                    elif autoreset_mode == AutoresetMode.DISABLED:
+                        assert autoreset is False
+                        (
+                            observation,
+                            reward,
+                            terminated,
+                            truncated,
+                            info,
+                        ) = env.step(data)
+                    else:
+                        raise ValueError(f"Unexpected autoreset_mode: {autoreset_mode}")
 
                 if shared_memory:
                     write_to_shared_memory(observation_space, index, observation, shared_memory)
@@ -403,15 +407,28 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         self.reward_dim = self.env.unwrapped.reward_space.shape[0]
         self.rewards_shape = (self.num_envs, self.reward_dim)
         self.gamma = gamma
+        self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
         self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
 
     def reset(self, **kwargs):
         """Resets the environment using kwargs and resets the episode returns and lengths."""
-        obs, info = super().reset(**kwargs)
+        # Vector environments may consume reset_mask from options during reset.
+        options = kwargs.get("options")
+        reset_mask = options.get("reset_mask") if options is not None else None
+        obs, info = self.env.reset(**kwargs)
 
-        # CHANGE: Here we just override the standard implementation to extend to MO
-        self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
-        self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+        if reset_mask is None:
+            self.episode_start_times = np.full(self.num_envs, time.perf_counter())
+            self.episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+            self.disc_episode_returns = np.zeros(self.rewards_shape, dtype=np.float32)
+            self.episode_lengths = np.zeros(self.num_envs, dtype=int)
+            self.prev_dones = np.zeros(self.num_envs, dtype=bool)
+        else:
+            self.episode_start_times[reset_mask] = time.perf_counter()
+            self.episode_returns[reset_mask] = 0
+            self.disc_episode_returns[reset_mask] = 0
+            self.episode_lengths[reset_mask] = 0
+            self.prev_dones[reset_mask] = False
 
         return obs, info
 
@@ -433,13 +450,18 @@ class MORecordEpisodeStatistics(RecordEpisodeStatistics):
         self.disc_episode_returns[self.prev_dones] = 0
         self.episode_lengths[self.prev_dones] = 0
         self.episode_start_times[self.prev_dones] = time.perf_counter()
-        self.episode_returns[~self.prev_dones] += rewards[~self.prev_dones]
+        # Same-step autoreset has already reset the env, so every transition counts.
+        if self._autoreset_mode == AutoresetMode.SAME_STEP:
+            episode_steps = np.ones(self.num_envs, dtype=bool)
+        else:
+            episode_steps = ~self.prev_dones
+        self.episode_returns[episode_steps] += rewards[episode_steps]
 
         # CHANGE: The discounted returns are also computed here
         self.disc_episode_returns += rewards * np.repeat(self.gamma**self.episode_lengths, self.reward_dim).reshape(
             self.episode_returns.shape
         )
-        self.episode_lengths[~self.prev_dones] += 1
+        self.episode_lengths[episode_steps] += 1
 
         self.prev_dones = dones = np.logical_or(terminations, truncations)
         num_dones = np.sum(dones)

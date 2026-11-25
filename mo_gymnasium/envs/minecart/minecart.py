@@ -531,7 +531,7 @@ class Minecart(gym.Env, EzPickle):
         if update:
             self.pixels = np.transpose(np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2))
 
-        return self.pixels
+        return self.pixels.copy()
 
     def get_state(self, update=True):
         """Returns the environment's state
