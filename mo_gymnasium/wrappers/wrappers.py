@@ -337,16 +337,15 @@ class MOMaxAndSkipObservation(gym.Wrapper):
         info = {}
         for i in range(self._skip):
             obs, reward, terminated, truncated, info = self.env.step(action)
-            done = terminated or truncated
-            if i == 0:
-                # A terminal first step has only one frame in this call.
-                self._obs_buffer[:] = obs
-            else:
-                self._obs_buffer[0] = self._obs_buffer[1]
-                self._obs_buffer[1] = obs
+            # Alternate slots so the buffer holds the last two frames of this call.
+            self._obs_buffer[i % 2] = obs
             total_reward += reward
-            if done:
+            if terminated or truncated:
                 break
-        max_frame = self._obs_buffer.max(axis=0)
+        if i == 0:
+            # Only one frame in this call: the other slot holds a frame from an earlier call.
+            max_frame = self._obs_buffer[0].copy()
+        else:
+            max_frame = self._obs_buffer.max(axis=0)
 
         return max_frame, total_reward, terminated, truncated, info
