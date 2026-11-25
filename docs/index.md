@@ -54,6 +54,7 @@ Donate <https://farama.org/donations>
 
 ```{project-logo} _static/img/MO-Gymnasium-text_small.png
 :alt: MO-Gymnasium Logo
+:class: farama-black-logo-invert
 ```
 
 ```{project-heading}

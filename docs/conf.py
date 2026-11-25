@@ -65,7 +65,7 @@ html_theme = "celshast"
 html_title = "MO-Gymnasium Documentation"
 html_baseurl = "https://mo-gymnasium.farama.org"
 html_copy_source = False
-html_favicon = "_static/img/favicon.png"
+html_favicon = "_static/img/favicon.svg"
 html_theme_options = {
     "light_logo": "img/MO-Gymnasium.svg",
     "dark_logo": "img/MO-Gymnasium-white.svg",

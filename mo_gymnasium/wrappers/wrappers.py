@@ -135,6 +135,12 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         """Sets the property to freeze/continue the running mean calculation of the reward statistics."""
         self._update_running_mean = setting
 
+    def reset(self, **kwargs):
+        """Resets the discounted reward while retaining the running statistics."""
+        observation, info = self.env.reset(**kwargs)
+        self.discounted_reward = np.array([0.0])
+        return observation, info
+
     def step(self, action: ActType):
         """Steps through the environment, normalizing the rewards returned.
 
@@ -146,7 +152,7 @@ class MONormalizeReward(gym.Wrapper, gym.utils.RecordConstructorArgs):
         # Extracts the objective value to normalize
         to_normalize = rews[self.idx]
 
-        self.discounted_reward = self.discounted_reward * self.gamma * (1 - terminated) + float(to_normalize)
+        self.discounted_reward = self.discounted_reward * self.gamma + float(to_normalize)
         if self._update_running_mean:
             self.return_rms.update(self.discounted_reward)
 
